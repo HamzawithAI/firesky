@@ -1,0 +1,23 @@
+{
+  "name": "decision-state-kit",
+  "version": "0.1.0",
+  "description": "Agent-native decision state kit: append-only markdown ledgers, a deterministic validator, and a Claude Code skill. Working name dsk (D-006 open).",
+  "license": "MIT",
+  "type": "module",
+  "engines": { "node": ">=22" },
+  "bin": { "dsk": "dist/cli.js" },
+  "files": ["dist", "SCHEMA.md", "templates"],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "node --test test/",
+    "evals": "bash evals/run.sh"
+  },
+  "dependencies": {
+    "yaml": "^2.9.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.0",
+    "@types/node": "^22.0.0"
+  }
+}
