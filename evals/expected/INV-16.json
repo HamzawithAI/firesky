@@ -1,0 +1,18 @@
+{
+  "ok": false,
+  "errors": [
+    {
+      "code": "ERR_SCOPE",
+      "file": "state/signoffs.md",
+      "id": "S-001",
+      "line": 3,
+      "message": "scope member AC-999 does not resolve within state/"
+    }
+  ],
+  "counts": {
+    "decisions": 1,
+    "flags": 1,
+    "criteria": 1,
+    "signoffs": 1
+  }
+}

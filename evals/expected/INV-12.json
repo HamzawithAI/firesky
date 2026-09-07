@@ -1,0 +1,18 @@
+{
+  "ok": false,
+  "errors": [
+    {
+      "code": "ERR_SCHEMA_VERSION",
+      "file": "state/state.yaml",
+      "id": null,
+      "line": 1,
+      "message": "state.yaml has no schema version"
+    }
+  ],
+  "counts": {
+    "decisions": 1,
+    "flags": 1,
+    "criteria": 1,
+    "signoffs": 0
+  }
+}

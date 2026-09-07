@@ -1,0 +1,6 @@
+{
+  "kind": "git",
+  "base_commit": "seed: state tree with one locked decision",
+  "head_commit": "chore: reword the locked decision in place",
+  "target": "state/decisions.md"
+}

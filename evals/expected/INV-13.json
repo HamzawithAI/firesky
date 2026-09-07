@@ -1,0 +1,18 @@
+{
+  "ok": false,
+  "errors": [
+    {
+      "code": "ERR_DATE",
+      "file": "state/decisions.md",
+      "id": "D-001",
+      "line": 3,
+      "message": "date is not ISO YYYY-MM-DD"
+    }
+  ],
+  "counts": {
+    "decisions": 1,
+    "flags": 1,
+    "criteria": 1,
+    "signoffs": 0
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "ok": false,
+  "errors": [
+    {
+      "code": "ERR_PROVENANCE",
+      "file": "state/decisions.md",
+      "id": "D-001",
+      "line": 3,
+      "message": "entry has no provenance block"
+    }
+  ],
+  "counts": {
+    "decisions": 1,
+    "flags": 1,
+    "criteria": 1,
+    "signoffs": 0
+  }
+}

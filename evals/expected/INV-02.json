@@ -1,0 +1,18 @@
+{
+  "ok": false,
+  "errors": [
+    {
+      "code": "ERR_DUP_ID",
+      "file": "state/decisions.md",
+      "id": "D-001",
+      "line": 14,
+      "message": "identifier D-001 is already used"
+    }
+  ],
+  "counts": {
+    "decisions": 2,
+    "flags": 1,
+    "criteria": 1,
+    "signoffs": 0
+  }
+}

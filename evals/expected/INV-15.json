@@ -1,0 +1,18 @@
+{
+  "ok": false,
+  "errors": [
+    {
+      "code": "ERR_RATIONALE",
+      "file": "state/decisions.md",
+      "id": "D-001",
+      "line": 3,
+      "message": "rationale is longer than five lines"
+    }
+  ],
+  "counts": {
+    "decisions": 1,
+    "flags": 1,
+    "criteria": 1,
+    "signoffs": 0
+  }
+}

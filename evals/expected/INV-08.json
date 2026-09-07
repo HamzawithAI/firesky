@@ -1,0 +1,18 @@
+{
+  "ok": false,
+  "errors": [
+    {
+      "code": "ERR_SIGNOFF_MUTATION",
+      "file": "state/signoffs.md",
+      "id": "S-001",
+      "line": 3,
+      "message": "sign-off S-001 was modified after it was appended"
+    }
+  ],
+  "counts": {
+    "decisions": 1,
+    "flags": 1,
+    "criteria": 1,
+    "signoffs": 1
+  }
+}

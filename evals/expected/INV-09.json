@@ -1,0 +1,18 @@
+{
+  "ok": false,
+  "errors": [
+    {
+      "code": "ERR_OWNER",
+      "file": "state/flags.md",
+      "id": "F-001",
+      "line": 3,
+      "message": "flag has no owner"
+    }
+  ],
+  "counts": {
+    "decisions": 1,
+    "flags": 1,
+    "criteria": 1,
+    "signoffs": 0
+  }
+}

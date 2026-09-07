@@ -1,0 +1,18 @@
+{
+  "ok": false,
+  "errors": [
+    {
+      "code": "ERR_STALE_REF",
+      "file": "state/decisions.md",
+      "id": "D-003",
+      "line": 25,
+      "message": "links to D-001, which is superseded by D-002"
+    }
+  ],
+  "counts": {
+    "decisions": 3,
+    "flags": 1,
+    "criteria": 1,
+    "signoffs": 0
+  }
+}

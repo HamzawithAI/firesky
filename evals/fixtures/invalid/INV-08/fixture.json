@@ -1,0 +1,6 @@
+{
+  "kind": "git",
+  "base_commit": "seed: state tree with one sign-off",
+  "head_commit": "chore: backdate the sign-off in place",
+  "target": "state/signoffs.md"
+}

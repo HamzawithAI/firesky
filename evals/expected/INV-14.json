@@ -1,0 +1,18 @@
+{
+  "ok": false,
+  "errors": [
+    {
+      "code": "ERR_INPLACE_EDIT",
+      "file": "state/decisions.md",
+      "id": "D-001",
+      "line": 3,
+      "message": "locked decision D-001 was edited in place instead of superseded"
+    }
+  ],
+  "counts": {
+    "decisions": 1,
+    "flags": 1,
+    "criteria": 1,
+    "signoffs": 0
+  }
+}
