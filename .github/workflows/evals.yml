@@ -1,0 +1,55 @@
+name: evals
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  inventory:
+    name: fixture inventory matches the spec
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      # Derives the expected fixture set by scanning EVALS.md and SCHEMA.md and
+      # compares it against the tree. Must be green at every milestone, M0
+      # included: a milestone may be red, the inventory may not.
+      - run: node evals/runner.mjs --inventory-only
+
+  typecheck:
+    name: typescript strict
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+
+  evals:
+    name: eval suite
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      # RED AT M0 BY DESIGN. Fixtures and expected outputs exist and fail
+      # before feature code exists (D-007, EVALS.md section 1.1). This job
+      # turns green when the M1 validator lands, with no change to this file
+      # and no change to any fixture or threshold (D-014 clause 4).
+      - run: bash evals/run.sh
+      - name: upload eval report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eval-report
+          path: evals/reports/
