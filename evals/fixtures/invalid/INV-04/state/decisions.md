@@ -1,7 +1,7 @@
 # Decisions
 
 ### D-001: Retired position
-status: superseded-by:D-002
+status: locked
 date: 2026-09-01
 owner: hamza
 author: human

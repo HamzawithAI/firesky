@@ -6,7 +6,7 @@
       "file": "state/decisions.md",
       "id": "D-003",
       "line": 25,
-      "message": "links to D-001, which is superseded by D-002"
+      "message": "links to D-001, which D-002 supersedes"
     }
   ],
   "counts": {

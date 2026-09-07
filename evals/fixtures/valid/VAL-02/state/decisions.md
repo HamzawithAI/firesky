@@ -1,7 +1,7 @@
 # Decisions
 
 ### D-001: First position on storage
-status: superseded-by:D-002
+status: locked
 date: 2026-09-01
 owner: hamza
 author: human
@@ -12,7 +12,7 @@ supersedes: none
 Baseline decision for this fixture tree.
 
 ### D-002: Second position on storage
-status: superseded-by:D-003
+status: locked
 date: 2026-09-01
 owner: hamza
 author: human
