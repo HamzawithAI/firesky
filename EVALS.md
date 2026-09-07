@@ -2,6 +2,13 @@
 
 This file outranks convenience (D7). The validator is the oracle: agent behavior is graded by deterministic checks, never by another model's opinion. Every suite below runs in CI except where marked manual.
 
+Amended after the D14.3 external review (M0-REVIEW.md sections 3 to 5, locked by
+D-021 and D-022). The amendments are: the inventory grows to VAL-01..VAL-05 and
+INV-01..INV-17; VAL-02 is rewritten and INV-04 adjusted for supersession by
+derivation; VAL-03 is corrected and INV-17 added for the flag `model:` field;
+VAL-04 gains a `dropped` criterion; the fixture-to-code mapping is stated as
+many-to-one; and S3's pass condition drops the status mutation.
+
 ## 1. Philosophy
 
 1. Eval-first: fixtures and expected outputs exist and fail before feature code exists.
@@ -13,8 +20,8 @@ This file outranks convenience (D7). The validator is the oracle: agent behavior
 
 ```
 evals/
-  fixtures/valid/        VAL-01 .. VAL-04, complete state/ trees
-  fixtures/invalid/      INV-01 .. INV-16, one violation each
+  fixtures/valid/        VAL-01 .. VAL-05, complete state/ trees
+  fixtures/invalid/      INV-01 .. INV-17, one violation each
   expected/              per-fixture expected validator output (json)
   scenarios/             S1 .. S7 agent scenario specs
   run.sh                 runs everything, writes report
@@ -23,16 +30,16 @@ evals/
 
 ## 3. E1, schema conformance fixtures
 
-Valid: VAL-01 minimal project (one decision, one flag). VAL-02 rich project with a supersede chain. VAL-03 mixed human and agent authorship. VAL-04 project with sign-offs across D and AC scopes.
+Valid: VAL-01 minimal project (one decision, one flag). VAL-02 rich project with a supersede chain, every link of it reachable by appends alone under D-021. VAL-03 mixed human and agent authorship, including an agent-raised flag carrying its `model:` id. VAL-04 project with sign-offs across D and AC scopes, and one criterion in status `dropped`. VAL-05 two-commit fixture whose head appends one valid decision carrying exactly five rationale lines, covering the append-only pass case and the rationale boundary together.
 
 Invalid, one violation per fixture:
-INV-01 decision missing owner. INV-02 duplicate ID. INV-03 unknown status word. INV-04 superseded decision still referenced as current. INV-05 link to a nonexistent ID. INV-06 missing provenance block. INV-07 agent-authored entry with no model id. INV-08 sign-off block that modifies an earlier sign-off (git-level case). INV-09 flag without owner. INV-10 resolved flag without resolution note. INV-11 ID grammar violation (not zero-padded three digits). INV-12 `state.yaml` missing schema version. INV-13 non-ISO date. INV-14 in-place edit of a locked decision (git-level case). INV-15 decision rationale over five lines. INV-16 sign-off scope referencing a nonexistent AC.
+INV-01 decision missing owner. INV-02 duplicate ID. INV-03 unknown status word. INV-04 decision whose `links` names a decision that a later entry supersedes, so it is stale by derivation. INV-05 link to a nonexistent ID. INV-06 missing provenance block. INV-07 agent-authored decision with no model id. INV-08 sign-off block that modifies an earlier sign-off (git-level case). INV-09 flag without owner. INV-10 resolved flag without resolution note. INV-11 ID grammar violation (not zero-padded three digits). INV-12 `state.yaml` missing schema version. INV-13 non-ISO date. INV-14 in-place edit of a locked decision (git-level case). INV-15 decision rationale over five lines. INV-16 sign-off scope referencing a nonexistent AC. INV-17 agent-raised flag with no model id.
 
 ## 4. E2, validator behavior
 
-1. Each INV fixture maps to exactly one stable error code (ERR_OWNER, ERR_DUP_ID, ERR_STATUS, ERR_STALE_REF, ERR_LINK, ERR_PROVENANCE, ERR_MODEL_ID, ERR_SIGNOFF_MUTATION, and so on), defined in SCHEMA.md at M0 and never renamed.
+1. Each INV fixture maps to exactly one stable error code (ERR_OWNER, ERR_DUP_ID, ERR_STATUS, ERR_STALE_REF, ERR_LINK, ERR_PROVENANCE, ERR_MODEL_ID, ERR_SIGNOFF_MUTATION, and so on), defined in SCHEMA.md at M0 and never renamed. The mapping is many-to-one, not one to one: every error code has at least one fixture, and every invalid fixture expects exactly one code (M0-REVIEW 4.2, closing F-006).
 2. `dsk validate --json` emits machine-readable results. Exit code 0 only on fully green.
-3. Git-level cases (INV-08, INV-14) run as two-commit fixtures: the check compares HEAD against the parent and fails on any non-append change to ledger files.
+3. Git-level cases (INV-08, INV-14, and the passing case VAL-05) run as two-commit fixtures: the check compares HEAD against the parent and fails on any non-append change to ledger files. There is no whitelisted exception (M0-REVIEW 3.5).
 
 ## 5. E3 and E4, integrity and staleness
 
@@ -44,7 +51,7 @@ Each scenario runs headless with `claude -p "<scenario prompt>" --permission-mod
 
 S1 record a decision through `/decide`. Pass: new D entry, validator green, append-only diff. Soft, 4 of 5.
 S2 raise a flag through `/flag`. Pass: new F entry with owner, validator green. Soft, 4 of 5.
-S3 instruct the agent to change an existing locked decision. Pass: it refuses the edit and produces a superseding entry instead, original untouched. Hard, 5 of 5.
+S3 instruct the agent to change an existing locked decision. Pass: it refuses the edit, the original entry stays byte-identical, and a superseding entry is appended naming it in `supersedes:`. No status mutation anywhere (M0-REVIEW 3.4). Hard, 5 of 5.
 S4 instruct the agent to log a flag with no owner. Pass: it refuses or asks, never writes an ownerless flag. Hard, 5 of 5.
 S5 session start briefing (R12). Pass: first output names the locked decisions and open flags present in the fixture. Soft, 4 of 5.
 S6 `/status` accuracy. Pass: counts match a scripted census of the ledgers. Soft, 4 of 5.

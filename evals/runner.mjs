@@ -53,8 +53,8 @@ const diskValid = onDisk("fixtures/valid");
 const diskInvalid = onDisk("fixtures/invalid");
 const diskScenarios = onDisk("scenarios").filter((f) => f.endsWith(".md")).map((f) => f.replace(/\.md$/, "")).sort();
 
-check("EVALS.md declares 4 valid fixtures", specValid.length === 4, specValid.join(", "));
-check("EVALS.md declares 16 invalid fixtures", specInvalid.length === 16, `${specInvalid.length} found`);
+check("EVALS.md declares 5 valid fixtures", specValid.length === 5, specValid.join(", "));
+check("EVALS.md declares 17 invalid fixtures", specInvalid.length === 17, `${specInvalid.length} found`);
 check("EVALS.md declares 7 scenarios", specScenarios.length === 7, specScenarios.join(", "));
 check("valid fixtures on disk match EVALS.md", setEq(specValid, diskValid),
   setEq(specValid, diskValid) ? `${diskValid.length} present` : `spec=${specValid} disk=${diskValid}`);
@@ -84,10 +84,13 @@ for (const id of [...specValid, ...specInvalid]) {
       if (!existsSync(join(base, "state", f))) malformedTrees.push(`${id}/state/${f}`);
   }
 }
-check("every fixture has an expected output", missingExpected.length === 0, missingExpected.join(", ") || "20 of 20");
+check("every fixture has an expected output", missingExpected.length === 0, missingExpected.join(", ") || "22 of 22");
 check("every fixture tree carries all five state files", malformedTrees.length === 0,
   malformedTrees.join(", ") || "SCHEMA.md section 1 satisfied");
-check("git-level fixtures are two-commit (D-016)", setEq(gitFixtures, ["INV-08", "INV-14"]), gitFixtures.join(", "));
+/* gitFixtures is collected valid-first, and setEq compares positionally, so sort
+   before comparing. VAL-05 joined this set at M0-REVIEW section 5. */
+check("git-level fixtures are two-commit (D-016)", setEq(uniqSorted(gitFixtures), ["INV-08", "INV-14", "VAL-05"]),
+  uniqSorted(gitFixtures).join(", "));
 
 /* Tamper check (D-020). Existence alone let a fixture emptied to zero bytes still
    report COMPLETE, which is precisely the weakening D-014 clause 4 forbids. This
@@ -114,9 +117,9 @@ for (const id of [...specValid, ...specInvalid]) {
     if (got !== want[key]) countMismatch.push(`${id}/${l}: tree has ${got}, expected file says ${want[key]}`);
   }
 }
-check("no fixture file is empty", emptyFiles.length === 0, emptyFiles.join(", ") || "100 files non-empty");
+check("no fixture file is empty", emptyFiles.length === 0, emptyFiles.join(", ") || "110 files non-empty");
 check("fixture entry counts match their expected files", countMismatch.length === 0,
-  countMismatch.join("; ") || "20 of 20 consistent");
+  countMismatch.join("; ") || "22 of 22 consistent");
 
 /* error-code coverage: many-to-one is expected, see F-006 */
 const codeOf = {};
@@ -131,7 +134,7 @@ const covered = uniqSorted(Object.values(codeOf).flat());
 const uncovered = codesInInventory.filter((c) => !covered.includes(c));
 const unknown = covered.filter((c) => !codesInInventory.includes(c));
 
-check("each invalid fixture expects exactly one error code", multiCode.length === 0, multiCode.join(", ") || "16 of 16");
+check("each invalid fixture expects exactly one error code", multiCode.length === 0, multiCode.join(", ") || "17 of 17");
 check("every SCHEMA.md error code has a fixture", uncovered.length === 0, uncovered.join(", ") || `${covered.length} of ${codesInInventory.length} covered`);
 check("no fixture expects an unknown error code", unknown.length === 0, unknown.join(", ") || "none");
 
