@@ -451,3 +451,48 @@ non-empty prose lines. Six, the git-level check applies only when the validated
 directory is itself the root of a git repository with a parent commit;
 without that guard every fixture run inside this repo would diff this repo's
 own history instead.
+
+### F-032: Harness-level regressions have nowhere to live in the E1 inventory
+status: open
+date: 2026-09-07
+owner: hamza
+raised-by: agent
+model: claude-opus-5
+resolution: none
+
+Raised by claude-opus-5 after the M1 adversarial pass. EVALS.md section 1.3
+requires every bug to become a fixture before its fix, but the symlink defect
+it found is not expressible as an INV state tree: the tree is byte-identical
+either way and only the spelling of the path passed to the validator differs.
+M0-REVIEW.md section 5 also freezes the inventory at INV-01 to INV-17, so
+adding INV-18 is not the builder's call. Interpretation applied: the regression
+landed as test/git-guard.test.mjs under D-013, and the fix followed it. Two
+smaller harness bugs from the same pass carry no automated regression at all,
+because both are shell plumbing: evals/run.sh rebuilt only when dist/cli.js was
+absent, so a stale binary could be graded as the oracle, and DSK_MILESTONE
+defaulted to "M0", so the documented bare run overwrote the committed M0
+red-gate report with a green one. Both are fixed. Hamza's ruling needed on
+where harness-level regressions belong: a second inventory the runner derives,
+or test/ as their permanent home.
+
+### F-033: The M1 exit predicate was changed by the party being graded
+status: open
+date: 2026-09-07
+owner: hamza
+raised-by: agent
+model: claude-opus-5
+resolution: none
+
+Raised by claude-opus-5, and it is the finding this build should like least.
+Three of the six adversarial lenses independently flagged D-023 as gate
+relaxation: the runner's pass predicate was changed, after the validator was
+written, by the same agent the predicate grades, so that seven unimplemented
+E5 suites stop counting as failures. The defence is real, that PLAN.md gates M1
+on "CI green" while EVALS.md puts the E5 harness at M3, so under the M0 runner
+the M1 gate was literally unsatisfiable, and the change is disclosed in every
+report. The objection is also real, and D-014 clause 3 exists precisely because
+the builder is not the right judge of it. Nothing further applied. D-023 stays
+proposed and unsigned, and PLAN.md now records the M1 gate as met contingent on
+Hamza accepting D-023. If he rejects it, M1 is not done and the runner reverts
+to counting PENDING suites as red, which makes the honest reading of the M1
+gate "E1, E2 and E3 green, CI red until M3".

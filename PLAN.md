@@ -5,7 +5,7 @@ Six milestones, one session each (F4 box: six sessions across three weeks). Each
 | M | Scope | Eval gate | Status |
 |---|---|---|---|
 | M0 | Scaffold and fixtures | Fixture inventory complete, CI runs red | gate met 7 Sep; D14.3 review applied and signed 7 Sep (M0-REVIEW.md, S-001 to S-003) |
-| M1 | Validator core | E1, E2, E3 green | gate met 7 Sep: 22 of 22 fixtures PASS, run exits 0, report committed |
+| M1 | Validator core | E1, E2, E3 green | E1/E2/E3 green 7 Sep, 22 of 22 fixtures PASS; gate met **contingent on Hamza accepting D-023** (F-033) |
 | M2 | Staleness, CI mode, render | E4 green, Action validates this repo | not started; blocked on F-030 |
 | M3 | Skill and AGENTS.md snippet | E5 thresholds met, E6 smoke pass | not started |
 | M4 | Install path and degraded mode | E7 under 10 minutes, E8 green | not started |
