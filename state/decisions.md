@@ -1,0 +1,237 @@
+# Decisions
+
+### D-001: Ledger files over per-item files
+status: locked
+date: 2026-09-07
+owner: hamza
+author: human
+model: none
+links: [PROJECT.md#10, R1]
+supersedes: none
+
+Append-oriented markdown ledgers plus one yaml file, rather than one file per item.
+Diff-friendly, greppable, and readable with no tooling in the loop.
+Amended by D-009: four ledgers, not three.
+
+### D-002: TypeScript single package
+status: locked
+date: 2026-09-07
+owner: hamza
+author: human
+model: none
+links: [PROJECT.md#6.1, PROJECT.md#12]
+supersedes: none
+
+npx gives U2 a one-line install and the MCP SDK path is mature in TypeScript.
+Python was the stated alternative if MARSAD-stack alignment mattered more.
+Proposed in PROJECT.md section 10, locked by default on 7 Sep per section 12.
+
+### D-003: Align stance is interop, not compete
+status: locked
+date: 2026-09-07
+owner: hamza
+author: human
+model: none
+links: [PROJECT.md#1.1, PROJECT.md#10, R17]
+supersedes: none
+
+Align auto-captures engineering exhaust into a database graph; this kit is an
+authored, file-native product-decision discipline. Adjacent, not identical.
+Export mapping is documented post-v0.1. No runtime dependency. K3 governs.
+
+### D-004: Remote MCP transport deferred
+status: locked
+date: 2026-09-07
+owner: hamza
+author: human
+model: none
+links: [PROJECT.md#6.4, R16]
+supersedes: none
+
+stdio transport only in v1. Un-defer criterion: a real second-team request.
+
+### D-005: MIT, open from the first commit
+status: locked
+date: 2026-09-07
+owner: hamza
+author: human
+model: none
+links: [PROJECT.md#7.1, PROJECT.md#12]
+supersedes: none
+
+Distribution is the moat; conventions win by adoption, not by sales.
+Giving the kit away exits the tool-trap economics the research rejected.
+Proposed in section 10, locked by default on 7 Sep per section 12.
+
+### D-006: Name and package slug
+status: proposed
+date: 2026-09-07
+owner: hamza
+author: human
+model: none
+links: [PROJECT.md#12, F-012]
+supersedes: none
+
+Working slug dsk, package placeholder decision-state-kit. Rename is one command
+before publish. Carried as proposed rather than the source document's "open",
+which is not in the schema status vocabulary; see F-012.
+
+### D-007: Evaluation-first build order
+status: locked
+date: 2026-09-07
+owner: hamza
+author: human
+model: none
+links: [PROJECT.md#12, EVALS.md#1]
+supersedes: none
+
+No feature code before its fixtures exist and fail. Named by Hamza as the most
+important part of this build. EVALS.md outranks convenience.
+
+### D-008: Ledger grammar frozen in SCHEMA-DRAFT.md
+status: locked
+date: 2026-09-07
+owner: hamza
+author: human
+model: none
+links: [PROJECT.md#13, SCHEMA.md]
+supersedes: none
+
+M0 promotes the draft verbatim to SCHEMA.md. The builder transcribes, never
+invents. Gaps become F flags rather than improvisations.
+
+### D-009: Four ledgers, not three
+status: locked
+date: 2026-09-07
+owner: hamza
+author: human
+model: none
+links: [PROJECT.md#13, SCHEMA.md#1, D-001, R1]
+supersedes: none
+
+signoffs.md joins decisions.md, flags.md and criteria.md. Sign-offs are
+first-class append-only entries, not comments (P4). Amends part of R1.
+
+### D-010: Hand-rolled line-oriented parser
+status: locked
+date: 2026-09-07
+owner: hamza
+author: human
+model: none
+links: [PROJECT.md#13, SCHEMA.md#2]
+supersedes: none
+
+The strict grammar is parsed line by line. No markdown AST dependency.
+
+### D-011: Validator is a rule registry
+status: locked
+date: 2026-09-07
+owner: hamza
+author: human
+model: none
+links: [PROJECT.md#13, SCHEMA.md#6]
+supersedes: none
+
+One module per error code, and every rule ships with its fixture pair.
+
+### D-012: Git-level checks shell out to git
+status: locked
+date: 2026-09-07
+owner: hamza
+author: human
+model: none
+links: [PROJECT.md#13, EVALS.md#4]
+supersedes: none
+
+Parent-commit diff via the git binary. No git library dependency.
+
+### D-013: Node built-in test runner
+status: locked
+date: 2026-09-07
+owner: hamza
+author: human
+model: none
+links: [PROJECT.md#13]
+supersedes: none
+
+Tests run on node --test. No test framework dependency.
+
+### D-014: Build-process protocol
+status: locked
+date: 2026-09-07
+owner: hamza
+author: human
+model: none
+links: [PROJECT.md#13, CLAUDE.md, PLAN.md]
+supersedes: none
+
+Fresh session per milestone, plan-first inside each session, deterministic eval
+gates, external cross-model review after M0 and M3, fixture and threshold edits
+forbidden without a flag. Details in CLAUDE.md.
+
+### D-015: Migration collapses each source ledger item to one entry
+status: locked
+date: 2026-09-07
+owner: hamza
+author: agent
+model: claude-opus-5
+links: [PROJECT.md#10, PROJECT.md#12, PROJECT.md#13, D-008]
+supersedes: none
+
+PROJECT.md states D-002, D-005, F-002 and F-004 twice, once proposed and once
+resolved. IDs are permanent and never reused (ERR_DUP_ID), so each migrates as
+a single entry at its final state, with the earlier position named in prose.
+Append-and-supersede applies to entries made in this schema, not to the
+transcription of a document that predates it.
+
+### D-016: Git-level fixtures ship as snapshots, not nested repositories
+status: locked
+date: 2026-09-07
+owner: hamza
+author: agent
+model: claude-opus-5
+links: [EVALS.md#4, D-012, F-009]
+supersedes: none
+
+INV-08 and INV-14 ship as base/ and head/ directory snapshots plus a manifest.
+The runner materialises them into a throwaway git repository under evals/.work/
+and runs the parent-commit diff there. Committing a nested .git is not viable.
+
+### D-017: Eval runner is a Node script wrapped by evals/run.sh
+status: locked
+date: 2026-09-07
+owner: hamza
+author: agent
+model: claude-opus-5
+links: [EVALS.md#2, D-013, AC-001]
+supersedes: none
+
+EVALS.md fixes evals/run.sh as the entry point; D-013 fixes the Node built-in
+runner. run.sh is a thin wrapper over evals/runner.mjs, which uses Node
+built-ins only so the red gate never depends on an install step.
+
+### D-018: CLI exit-code convention
+status: locked
+date: 2026-09-07
+owner: hamza
+author: agent
+model: claude-opus-5
+links: [SCHEMA.md#5, R22]
+supersedes: none
+
+0 green, 1 validation errors found, 2 not implemented or internal failure.
+SCHEMA.md fixes only that 0 means ok; 1 and 2 are separated so CI can tell a
+real finding from a broken binary. No ERR_ code is minted for exit 2.
+
+### D-019: Argument parsing uses the Node built-in
+status: locked
+date: 2026-09-07
+owner: hamza
+author: agent
+model: claude-opus-5
+links: [CLAUDE.md, PROJECT.md#3]
+supersedes: none
+
+node:util parseArgs covers the CLI surface, so yaml is the only runtime
+dependency. The allowed baseline was argument parsing and yaml; taking less
+than the ceiling needs no waiver and serves P7.
