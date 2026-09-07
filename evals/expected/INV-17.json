@@ -1,0 +1,18 @@
+{
+  "ok": false,
+  "errors": [
+    {
+      "code": "ERR_MODEL_ID",
+      "file": "state/flags.md",
+      "id": "F-001",
+      "line": 3,
+      "message": "agent-raised flag has no model id"
+    }
+  ],
+  "counts": {
+    "decisions": 1,
+    "flags": 1,
+    "criteria": 1,
+    "signoffs": 0
+  }
+}

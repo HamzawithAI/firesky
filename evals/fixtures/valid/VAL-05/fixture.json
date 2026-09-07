@@ -1,0 +1,6 @@
+{
+  "kind": "git",
+  "base_commit": "seed: state tree with one locked decision",
+  "head_commit": "feat: append a second decision, nothing above it touched",
+  "target": "state/decisions.md"
+}
