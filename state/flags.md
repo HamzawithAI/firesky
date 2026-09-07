@@ -405,3 +405,49 @@ protects every line of a ledger file, preamble included, because that is the
 reading with no tamper surface left in it (D-020). The stale sentence stays as
 the honest artifact of the rule. Loosening this later costs one commit;
 tightening it later would retroactively excuse edits already made.
+
+### F-030: The amended flag grammar makes this repo's own ledger invalid
+status: open
+date: 2026-09-07
+owner: hamza
+raised-by: agent
+model: claude-opus-5
+resolution: none
+
+Raised by claude-opus-5 at M1, and it is a real validator catch rather than a
+seeded one: dsk validate on this repository reports twenty ERR_MODEL_ID errors
+and nothing else. F-005 through F-024 all carry raised-by: agent and were
+written before M0-REVIEW.md section 4.4 added model: to the flag grammar, so
+the amendment invalidated them retroactively. D-021 forbids adding the missing
+line, and flags have no supersedes field to append a correction through
+(F-025), so there is no legal in-schema fix available to the builder. Nothing
+applied. This does not block M1, whose gate is E1, E2 and E3, but it does block
+M2, whose gate is the Action validating this repository. Three exits, all
+Hamza's call: give flags a supersedes field, version the grammar so a rule
+applies only from a stated schema version, or accept a one-off documented
+exception recorded as a decision. A second, smaller M2 note: the git-level
+check needs fetch-depth 2 in CI, because actions/checkout defaults to a shallow
+clone with no HEAD~1 and the check would silently not apply.
+
+### F-031: M1 implementation choices SCHEMA.md does not fix
+status: open
+date: 2026-09-07
+owner: hamza
+raised-by: agent
+model: claude-opus-5
+resolution: none
+
+Raised by claude-opus-5 while building the validator. SCHEMA.md names each
+violation but not the exhaustive behaviour of every rule, so the following were
+decided in code and no fixture pins them. Each is one line to change if Hamza
+rules otherwise. One, a missing status fires ERR_STATUS, on the reading that
+"status is one of" makes it required. Two, ERR_DUP_ID is checked across the
+whole tree, not per ledger, and is reported on the reuse rather than the
+original, which expected/INV-02.json already pins. Three, errors are
+deduplicated by code, file, id and line, so two bad members in one links field
+report once. Four, a state.yaml that is absent or unparseable fires
+ERR_SCHEMA_VERSION, same as one missing the key. Five, ERR_RATIONALE counts
+non-empty prose lines. Six, the git-level check applies only when the validated
+directory is itself the root of a git repository with a parent commit;
+without that guard every fixture run inside this repo would diff this repo's
+own history instead.

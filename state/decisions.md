@@ -280,3 +280,18 @@ orphan flags", but the flag grammar carries no field that could make a flag an
 orphan, so the rule is unenforceable as written. No error code is minted and no
 fixture is added; the inventory stays at fifteen codes. An optional links field
 on flags is deferred, P7 governs.
+
+### D-023: The eval gate counts only suites whose harness exists
+status: proposed
+date: 2026-09-07
+owner: hamza
+author: agent
+model: claude-opus-5
+links: [PLAN.md, EVALS.md#6, D-017, F-028]
+supersedes: none
+
+PLAN.md gates M1 on E1, E2, E3 and CI green, but E5's harness is not built until
+M3, so counting seven unbuilt scenario suites as failures would make M1's own
+gate unsatisfiable. They report PENDING, sit outside the exit code, and every
+report prints their count, so nothing is hidden behind a green line. Proposed
+rather than locked: no sign-off covers it yet (F-025).

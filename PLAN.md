@@ -4,9 +4,9 @@ Six milestones, one session each (F4 box: six sessions across three weeks). Each
 
 | M | Scope | Eval gate | Status |
 |---|---|---|---|
-| M0 | Scaffold and fixtures | Fixture inventory complete, CI runs red | gate met 7 Sep, CI red by design; awaiting D14.3 review |
-| M1 | Validator core | E1, E2, E3 green | not started |
-| M2 | Staleness, CI mode, render | E4 green, Action validates this repo | not started |
+| M0 | Scaffold and fixtures | Fixture inventory complete, CI runs red | gate met 7 Sep; D14.3 review applied and signed 7 Sep (M0-REVIEW.md, S-001 to S-003) |
+| M1 | Validator core | E1, E2, E3 green | gate met 7 Sep: 22 of 22 fixtures PASS, run exits 0, report committed |
+| M2 | Staleness, CI mode, render | E4 green, Action validates this repo | not started; blocked on F-030 |
 | M3 | Skill and AGENTS.md snippet | E5 thresholds met, E6 smoke pass | not started |
 | M4 | Install path and degraded mode | E7 under 10 minutes, E8 green | not started |
 | M5 | Dogfood live on two projects | Both repos validate green, day-zero metrics logged | not started |
@@ -31,6 +31,13 @@ Six milestones, one session each (F4 box: six sessions across three weeks). Each
 2. R22 CI mode plus a GitHub Action wrapper, applied to this repo itself.
 3. Minimal `render` command producing the static read-only HTML view (PROJECT.md 6.2).
 4. Gate: E4 green, the Action gates this repo's own merges.
+
+Two things found at M1 must be settled before this gate can go green. F-030:
+`dsk validate .` reports twenty ERR_MODEL_ID errors on this repo's own ledger,
+because M0-REVIEW 4.4 added `model:` to the flag grammar after F-005 to F-024
+were written, and D-021 leaves no legal in-schema fix. F-031's sixth item: the
+git-level check needs `fetch-depth: 2` on `actions/checkout`, which defaults to
+a shallow clone with no `HEAD~1`, or the check silently will not apply.
 
 ## M3. Skill and cross-runtime snippet (session 4)
 
