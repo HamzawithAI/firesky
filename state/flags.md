@@ -311,3 +311,97 @@ empty, so the ledger asserts an approval that does not exist. Nothing applied:
 law 5 forbids rewriting the status lines. The two legal exits are to append
 sign-off entries to signoffs.md, or to supersede each with a proposed entry.
 Both are Hamza's call, and P4 says the sign-off is the state transition.
+
+### F-025: Append-only leaves no in-ledger transition for any status field
+status: open
+date: 2026-09-07
+owner: hamza
+raised-by: agent
+model: claude-opus-5
+resolution: none
+
+Raised by claude-opus-5 applying M0-REVIEW.md. D-021 clause 3.5 forbids any
+change to a committed ledger line, with no whitelist and no exception, so no
+entry's status can ever move afterwards: a decision cannot go proposed to
+locked, a flag cannot go open to resolved, a criterion cannot go open to met or
+dropped. The status word is now write-once at creation. Interpretation applied:
+the appended sign-off naming the entry in its scope is the state transition
+(P4, law 4), and current-ness is derived from sign-offs the way supersession is
+derived from pointers. Two visible consequences, both deliberate: F-005 to
+F-024 in this file stay textually open while S-003 closes them, and D-021 and
+D-022 are born locked because nothing could lock them later. Closing this may
+add a supersedes field to flags and criteria, which is a schema change, not a
+fix, and it is Hamza's call, not the builder's.
+
+### F-026: A dangling supersedes target is ungoverned
+status: open
+date: 2026-09-07
+owner: hamza
+raised-by: agent
+model: claude-opus-5
+resolution: none
+
+Raised by claude-opus-5 applying M0-REVIEW.md. Section 4.3 gives ERR_LINK the
+links field and ERR_SCOPE the scope field, and 3.2 removes supersedes from
+ERR_STALE_REF, which leaves an entry carrying supersedes: D-999 pointing at
+nothing with no code to catch it. The pre-amendment SCHEMA.md covered this with
+"a superseded-by target must exist", and that sentence is gone with the status
+word it described. Interpretation applied: no code fires on it in v0.1. Minting
+one would need a sixteenth error code and its own fixture pair (D-011), and
+M0-REVIEW.md section 5 fixes the count at fifteen codes and INV-01 to INV-17.
+
+### F-027: ERR_PROVENANCE's "on any entry" would fire on criteria and sign-offs
+status: open
+date: 2026-09-07
+owner: hamza
+raised-by: agent
+model: claude-opus-5
+resolution: none
+
+Raised by claude-opus-5 applying M0-REVIEW.md. Section 4.5 defines
+ERR_PROVENANCE as author missing or invalid, or date absent, "on any entry",
+but a criterion entry carries neither author nor date and a sign-off entry
+carries no author, so read literally every criterion and every sign-off in
+every green fixture would fail. Interpretation applied: the rule runs per entry
+type against the fields that type's grammar defines, author and date on
+decisions, raised-by and date on flags, date on sign-offs, and criteria are out
+of scope entirely. Recorded in SCHEMA.md section 2 and in
+evals/expected/README.md so the M1 validator is built against it.
+
+### F-028: Two milestones in one session, against D-014 clause 1
+status: open
+date: 2026-09-07
+owner: hamza
+raised-by: agent
+model: claude-opus-5
+resolution: none
+
+Raised by claude-opus-5 at the start of this session. D-014 clause 1 requires
+one milestone per session in a fresh session, and this session applies the M0
+review amendments and then builds M1. Hamza instructed both in a single prompt,
+so this is an authorized deviation rather than drift, and D-014 clause 2
+requires it be flagged before execution leaves the plan. Nothing else in D-014
+is relaxed: the M1 gate stays the eval runner, no fixture, expected output or
+threshold is edited to make a run pass, and no dependency is added without a D
+entry. M0-REVIEW.md section 6 also applies from M1: deterministic gates plus the
+human checklist, with internal audit capped at one adversarial pass.
+
+### F-029: Undefined whether the git check protects ledger preamble lines
+status: open
+date: 2026-09-07
+owner: hamza
+raised-by: agent
+model: claude-opus-5
+resolution: none
+
+Raised by claude-opus-5 while appending S-001 to S-003. F-010 established that
+the parser ignores everything before the first "### " heading, but D-021 clause
+3.5 protects "committed ledger lines" without saying whether the preamble is
+one. The two readings differ in practice, and this repo just produced the
+evidence: state/signoffs.md opens with "No sign-off has been appended yet",
+which three appended sign-offs have made false, and which no one may correct
+under the strict reading. Interpretation applied for M1: the git-level check
+protects every line of a ledger file, preamble included, because that is the
+reading with no tamper surface left in it (D-020). The stale sentence stays as
+the honest artifact of the rule. Loosening this later costs one commit;
+tightening it later would retroactively excuse edits already made.

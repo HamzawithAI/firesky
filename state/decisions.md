@@ -250,3 +250,33 @@ is the weakening D-014 clause 4 exists to prevent. The runner now also asserts
 every fixture file is non-empty and that each tree's entry count matches its own
 expected file. Counting headings is fixture integrity; validating ledger content
 against SCHEMA.md remains M1's work and is not done here.
+
+### D-021: Supersession by derivation
+status: locked
+date: 2026-09-07
+owner: hamza
+author: agent
+model: claude-opus-5
+links: [M0-REVIEW.md#3, SCHEMA.md#2, D-008, F-015, F-016, F-017]
+supersedes: none
+
+Ruled by the D14.3 external review in M0-REVIEW.md section 3, transcribed here.
+Status vocabulary shrinks to proposed and locked; superseded-by: is removed. An
+entry is superseded if and only if a later entry names it in supersedes:, so
+every chain is reachable by appends alone and the git check needs no whitelist.
+Rejected: one sanctioned mutation, which reopens the tamper surface D-020 closed.
+
+### D-022: R19's no-orphan-flags clause is cut for v0.1
+status: locked
+date: 2026-09-07
+owner: hamza
+author: agent
+model: claude-opus-5
+links: [M0-REVIEW.md#4.7, PROJECT.md#4, F-022]
+supersedes: none
+
+Ruled by the D14.3 external review in M0-REVIEW.md section 4.7. R19 names "no
+orphan flags", but the flag grammar carries no field that could make a flag an
+orphan, so the rule is unenforceable as written. No error code is minted and no
+fixture is added; the inventory stays at fifteen codes. An optional links field
+on flags is deferred, P7 governs.
