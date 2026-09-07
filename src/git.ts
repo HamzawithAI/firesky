@@ -12,14 +12,31 @@
  * `evals/fixtures/valid/VAL-01` live *inside* this repository, and without it
  * every fixture run would silently diff this repo's own history instead
  * (F-029 records the preamble question this same check raises).
+ *
+ * The comparison must canonicalise both sides. `git rev-parse --show-toplevel`
+ * always prints the realpath, while `path.resolve` does not follow symlinks, so
+ * comparing them directly made the guard misfire on any path with a symlinked
+ * component — on macOS, `/tmp` is one. The check then skipped itself and a
+ * rewritten ledger validated green. Caught by the M1 adversarial pass, fixed
+ * here, regression-tested in test/git-guard.test.mjs (F-032).
  */
 import { spawnSync } from "node:child_process";
+import { realpathSync } from "node:fs";
 import { resolve } from "node:path";
 import { LEDGERS } from "./load.js";
 import type { AppendViolation } from "./types.js";
 
 function git(root: string, ...args: string[]) {
   return spawnSync("git", ["-C", root, ...args], { encoding: "utf8" });
+}
+
+/** Canonical form, or the input unchanged when the path cannot be resolved. */
+function canonical(path: string): string {
+  try {
+    return realpathSync(path);
+  } catch {
+    return resolve(path);
+  }
 }
 
 /** 1-based line, in HEAD's numbering, where `base` stops matching `head`. */
@@ -40,7 +57,7 @@ export function firstDivergentLine(base: string, head: string): number {
 export function appendViolations(root: string): AppendViolation[] | null {
   const top = git(root, "rev-parse", "--show-toplevel");
   if (top.status !== 0) return null;
-  if (resolve(top.stdout.trim()) !== resolve(root)) return null;
+  if (canonical(top.stdout.trim()) !== canonical(root)) return null;
   if (git(root, "rev-parse", "--verify", "-q", "HEAD~1").status !== 0) return null;
 
   const found: AppendViolation[] = [];
