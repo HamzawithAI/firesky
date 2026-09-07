@@ -173,6 +173,31 @@ function materialiseGitFixture(id, dir) {
   return { work, ok: log === 2, detail: log === 2 ? "two commits materialised" : `${log} commit(s)` };
 }
 
+/* E2 comparison predicate (F-008, plus the exit code F-021 added). Asserts ok,
+   every error's code/file/id/line as a set, counts, and the process exit code.
+   Message text and error order are deliberately not asserted. */
+function compareToExpected(id, kind, actual, exitCode) {
+  const want = JSON.parse(readFileSync(join(expectedDir, `${id}.json`), "utf8"));
+  const problems = [];
+
+  const wantExit = kind === "valid" ? 0 : 1;
+  if (exitCode !== wantExit) problems.push(`exit ${exitCode}, expected ${wantExit}`);
+  if (actual.ok !== want.ok) problems.push(`ok=${actual.ok}, expected ${want.ok}`);
+
+  for (const k of ["decisions", "flags", "criteria", "signoffs"]) {
+    const got = actual.counts?.[k];
+    if (got !== want.counts[k]) problems.push(`counts.${k}=${got}, expected ${want.counts[k]}`);
+  }
+
+  const key = (e) => `${e.code}|${e.file}|${e.id ?? "null"}|${e.line}`;
+  const got = new Set((actual.errors ?? []).map(key));
+  const exp = new Set(want.errors.map(key));
+  for (const k of exp) if (!got.has(k)) problems.push(`missing ${k}`);
+  for (const k of got) if (!exp.has(k)) problems.push(`unexpected ${k}`);
+
+  return problems;
+}
+
 function runFixture(id, kind) {
   const dir = join(EVALS, kind === "valid" ? "fixtures/valid" : "fixtures/invalid", id);
   let target = dir;
@@ -184,23 +209,41 @@ function runFixture(id, kind) {
     prep = " (git fixture materialised)";
   }
   if (!cliBuilt) return { id, kind, status: "NOT_IMPLEMENTED", detail: "dist/cli.js not built" + prep };
+
   const r = spawnSync(process.execPath, [CLI, "validate", "--json", target], { encoding: "utf8" });
   if (r.status === 2) return { id, kind, status: "NOT_IMPLEMENTED", detail: "dsk validate exits 2" + prep };
-  return { id, kind, status: "FAIL", detail: `unexpected exit ${r.status}; M1 implements the comparison` + prep };
+
+  let actual;
+  try {
+    actual = JSON.parse(r.stdout);
+  } catch {
+    return { id, kind, status: "FAIL", detail: `stdout is not JSON: ${(r.stdout || r.stderr).trim().slice(0, 120)}` };
+  }
+
+  const problems = compareToExpected(id, kind, actual, r.status);
+  return problems.length === 0
+    ? { id, kind, status: "PASS", detail: `matches expected/${id}.json` + prep }
+    : { id, kind, status: "FAIL", detail: problems.join("; ") + prep };
 }
 
 const fixtureResults = [
   ...specValid.map((id) => runFixture(id, "valid")),
   ...specInvalid.map((id) => runFixture(id, "invalid")),
 ];
+/* E5 scenarios need the headless harness PLAN.md builds at M3. Until that file
+   exists they report PENDING and sit outside the exit code (D-023). They are
+   never hidden: the verdict line names the count every run. */
+const scenarioHarness = join(EVALS, "scenarios", "harness.mjs");
 const scenarioResults = specScenarios.map((id) => ({
-  id, kind: "scenario", status: "NOT_IMPLEMENTED",
-  detail: "skill lands at M3; spec only",
+  id, kind: "scenario", status: existsSync(scenarioHarness) ? "NOT_IMPLEMENTED" : "PENDING",
+  detail: "E5 harness lands at M3 (PLAN.md M3.3); spec only",
 }));
 
 const all = [...fixtureResults, ...scenarioResults];
 const tally = all.reduce((a, r) => ((a[r.status] = (a[r.status] ?? 0) + 1), a), {});
-const green = inventoryOk && all.every((r) => r.status === "PASS");
+const gated = all.filter((r) => r.status !== "PENDING");
+const pending = all.length - gated.length;
+const green = inventoryOk && gated.every((r) => r.status === "PASS");
 
 /* ------------------------------------------------------------------- report */
 
@@ -214,6 +257,7 @@ Runner: \`evals/run.sh\`. Oracle: the validator plus git-level assertions, no
 model judges any result (EVALS.md section 1.2).
 
 **Overall: ${green ? "GREEN" : "RED"}** — ${Object.entries(tally).map(([k, v]) => `${v} ${k}`).join(", ")}.
+${pending > 0 ? `\n${pending} suite(s) report PENDING and are outside this exit code: their harness is not built yet (D-023). They are listed below, unhidden.\n` : ""}
 
 ## Inventory
 
