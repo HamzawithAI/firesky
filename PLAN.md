@@ -4,7 +4,7 @@ Six milestones, one session each (F4 box: six sessions across three weeks). Each
 
 | M | Scope | Eval gate | Status |
 |---|---|---|---|
-| M0 | Scaffold and fixtures | Fixture inventory complete, CI runs red | not started |
+| M0 | Scaffold and fixtures | Fixture inventory complete, CI runs red | gate met 7 Sep, CI red by design; awaiting D14.3 review |
 | M1 | Validator core | E1, E2, E3 green | not started |
 | M2 | Staleness, CI mode, render | E4 green, Action validates this repo | not started |
 | M3 | Skill and AGENTS.md snippet | E5 thresholds met, E6 smoke pass | not started |

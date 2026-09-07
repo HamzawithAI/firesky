@@ -235,3 +235,18 @@ supersedes: none
 node:util parseArgs covers the CLI surface, so yaml is the only runtime
 dependency. The allowed baseline was argument parsing and yaml; taking less
 than the ceiling needs no waiver and serves P7.
+
+### D-020: The inventory check is a tamper check, not just an existence check
+status: locked
+date: 2026-09-07
+owner: hamza
+author: agent
+model: claude-opus-5
+links: [EVALS.md#2, D-017, F-024]
+supersedes: none
+
+Existence alone let a fixture emptied to zero bytes still report COMPLETE, which
+is the weakening D-014 clause 4 exists to prevent. The runner now also asserts
+every fixture file is non-empty and that each tree's entry count matches its own
+expected file. Counting headings is fixture integrity; validating ledger content
+against SCHEMA.md remains M1's work and is not done here.

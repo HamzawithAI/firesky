@@ -89,6 +89,35 @@ check("every fixture tree carries all five state files", malformedTrees.length =
   malformedTrees.join(", ") || "SCHEMA.md section 1 satisfied");
 check("git-level fixtures are two-commit (D-016)", setEq(gitFixtures, ["INV-08", "INV-14"]), gitFixtures.join(", "));
 
+/* Tamper check (D-020). Existence alone let a fixture emptied to zero bytes still
+   report COMPLETE, which is precisely the weakening D-014 clause 4 forbids. This
+   compares each fixture tree against its own expected file. It counts headings; it
+   does not validate ledger content against SCHEMA.md, which is M1's work. */
+const emptyFiles = [];
+const countMismatch = [];
+for (const id of [...specValid, ...specInvalid]) {
+  const dir = join(EVALS, specValid.includes(id) ? "fixtures/valid" : "fixtures/invalid", id);
+  const stateDir = existsSync(join(dir, "fixture.json")) ? join(dir, "head", "state") : join(dir, "state");
+  for (const fname of REQUIRED_STATE_FILES) {
+    const fp = join(stateDir, fname);
+    if (!existsSync(fp)) continue;
+    if (readFileSync(fp, "utf8").trim().length === 0) emptyFiles.push(`${id}/${fname}`);
+  }
+  const expPath = join(expectedDir, `${id}.json`);
+  if (!existsSync(expPath)) continue;
+  const want = JSON.parse(readFileSync(expPath, "utf8")).counts;
+  for (const l of LEDGERS) {
+    const fp = join(stateDir, l);
+    if (!existsSync(fp)) continue;
+    const got = (readFileSync(fp, "utf8").match(/^### /gm) ?? []).length;
+    const key = l.replace(/\.md$/, "");
+    if (got !== want[key]) countMismatch.push(`${id}/${l}: tree has ${got}, expected file says ${want[key]}`);
+  }
+}
+check("no fixture file is empty", emptyFiles.length === 0, emptyFiles.join(", ") || "100 files non-empty");
+check("fixture entry counts match their expected files", countMismatch.length === 0,
+  countMismatch.join("; ") || "20 of 20 consistent");
+
 /* error-code coverage: many-to-one is expected, see F-006 */
 const codeOf = {};
 for (const id of specInvalid) {

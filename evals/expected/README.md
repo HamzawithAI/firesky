@@ -23,6 +23,7 @@ asserted. Until F-008 closes, the runner compares:
 | `errors[].line` | yes | The entry's `### ` heading line. `1` for whole-file errors such as ERR_SCHEMA_VERSION |
 | `errors[].message` | no | Human-facing prose, free to improve without touching fixtures |
 | `counts` | yes | Entries parsed per ledger, counted even when the entry is malformed |
+| process exit code | yes | 0 for VAL, 1 for INV (D-018). SCHEMA.md section 5 ties exit 0 to `ok`; without it a validator that always exits 0 passes E2. Added by F-021 |
 | error order | no | Compared as a set |
 
 ## Derived rules the fixtures depend on
@@ -32,15 +33,24 @@ asserted. Until F-008 closes, the runner compares:
    Without this, VAL-02 could not exist.
 2. **ERR_OWNER serves two fixtures** (F-006): INV-01 for decisions, INV-09 for
    flags. The INV-to-code map is many-to-one, not one-to-one.
-3. **The two git rules are disjoint by file** (D-016): ERR_SIGNOFF_MUTATION for
-   `state/signoffs.md`, ERR_INPLACE_EDIT for the other ledgers. A modified
-   sign-off yields exactly one code, not both.
+3. **The two git rules are disjoint by file** (F-020): ERR_SIGNOFF_MUTATION for
+   `state/signoffs.md`, ERR_INPLACE_EDIT for the other three ledgers. A modified
+   sign-off yields exactly one code, not both. SCHEMA.md does not say this; the
+   rule is an interpretation carried by F-020, not by D-016, which covers only
+   how the two-commit fixtures are stored.
 4. **Non-ID link members do not resolve** (SCHEMA.md section 3): only members
    matching the `D-`, `F-`, `S-`, `AC-` plus three digits grammar are checked,
    so `links: [PROJECT.md#3]` is valid everywhere.
 5. **Ledger preamble is ignored** (F-010): everything before the first `### `
    heading, which is how an empty ledger such as VAL-01's `criteria.md` stays
    legal.
+6. **ERR_PROVENANCE is defined only by INV-06** (F-019): SCHEMA.md lists the code
+   but states no rule for it anywhere. A decision missing `author`, or missing
+   `model` entirely, has no provenance block. ERR_MODEL_ID cannot fire on the
+   same entry, being conditioned on `author: agent`.
+7. **A supersede transition is the one permitted in-place change** (F-016), and
+   only on a decision's `status` line. Everything else in a committed entry is
+   frozen. VAL-02's end state depends on this reading.
 
 ## Git-level fixtures
 

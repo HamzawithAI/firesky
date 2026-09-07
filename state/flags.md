@@ -180,3 +180,134 @@ referenced by any current entry must not itself be superseded, but a chain
 requires the current decision to name its predecessor in supersedes, so VAL-02
 could never validate. Interpretation applied: supersedes and superseded-by
 targets are exempt; ERR_STALE_REF governs links and scope members only.
+
+### F-016: A supersede transition is an in-place edit the append-only law forbids
+status: open
+date: 2026-09-07
+owner: hamza
+raised-by: agent
+resolution: none
+
+Raised by claude-opus-5 during the M0 review. SCHEMA.md section 2 puts the
+supersede pointer on the superseded entry as status: superseded-by:D-###, but
+reaching that state rewrites a line inside a committed entry, which law 5 and
+EVALS.md section 4.3 ("fails on any non-append change") forbid. VAL-02 ships an
+end state no append-only history can produce. Interpretation applied: the git
+rule permits exactly one change to an existing decision, status: locked to
+status: superseded-by:D-###, and nothing else. Closing this may instead move the
+pointer onto the superseding entry, which is a schema change, not a fix.
+
+### F-017: S3's pass criteria were mutually exclusive
+status: open
+date: 2026-09-07
+owner: hamza
+raised-by: agent
+resolution: none
+
+Raised by claude-opus-5 during the M0 review. S3 required D-001 to be
+byte-identical after the run and also required its status line to transition,
+so the hard 5-of-5 M3 gate could never pass. Fix applied in the same commit:
+criterion 1 now excludes the status line. This is downstream of F-016 and must
+be re-checked when F-016 closes. EVALS.md section 6's wording "original
+untouched" is what generated the contradiction and is itself the ambiguity.
+
+### F-018: VAL-03 carried an agent-raised flag with no model id
+status: open
+date: 2026-09-07
+owner: hamza
+raised-by: agent
+resolution: none
+
+Raised by claude-opus-5 during the M0 review. VAL-03 exists to demonstrate mixed
+human and agent authorship, but its F-002 had raised-by: agent and no model
+identifier anywhere, breaking P3 and R25 and contradicting the interpretation
+already applied in F-013. Fix applied in the same commit: the model id is stated
+in the entry prose, which is where F-013 puts it until the flag grammar gains a
+field. The fixture stays schema-valid either way, which is the point: the gap is
+invisible to the validator.
+
+### F-019: ERR_PROVENANCE has no rule anywhere in SCHEMA.md
+status: open
+date: 2026-09-07
+owner: hamza
+raised-by: agent
+resolution: none
+
+Raised by claude-opus-5 during the M0 review. ERR_PROVENANCE appears only in the
+section 6 code list; no field rule in section 2 says what a provenance block is
+or when it is missing. INV-06 defines it by implication, by removing author and
+model together. Interpretation applied: a decision entry missing author, or
+missing model entirely, has no provenance block. Note that ERR_MODEL_ID cannot
+also fire there, since it is conditioned on author being agent.
+
+### F-020: Undefined which code fires when signoffs.md is edited in place
+status: open
+date: 2026-09-07
+owner: hamza
+raised-by: agent
+resolution: none
+
+Raised by claude-opus-5 during the M0 review. ERR_SIGNOFF_MUTATION and
+ERR_INPLACE_EDIT both describe a non-append change to a ledger, and nothing
+says which wins on state/signoffs.md. evals/expected/README.md asserted a
+file-based split and attributed it to D-016, which contains no such rule; the
+misattribution is corrected in the same commit. Interpretation applied and now
+attributed to this flag: ERR_SIGNOFF_MUTATION owns signoffs.md,
+ERR_INPLACE_EDIT owns the other three ledgers, so exactly one code fires.
+
+### F-021: The expected-output predicate omitted the process exit code
+status: open
+date: 2026-09-07
+owner: hamza
+raised-by: agent
+resolution: none
+
+Raised by claude-opus-5 during the M0 review. SCHEMA.md section 5 says exit 0
+only when ok is true, but the F-008 comparison predicate asserted only the JSON
+body, so a validator that always exited 0 would pass E2. Interpretation applied:
+the predicate now also asserts the process exit code, 0 for VAL and 1 for INV
+per D-018. No fixture or expected output changed; the assertion was added.
+
+### F-022: Coverage gaps the EVALS.md inventory forbids closing at M0
+status: open
+date: 2026-09-07
+owner: hamza
+raised-by: agent
+resolution: none
+
+Raised by claude-opus-5 during the M0 review. Four rules have no fixture and
+cannot get one without changing the EVALS.md section 3 inventory, which D-014
+clause 4 forbids the builder from doing unilaterally: no valid two-commit
+fixture exercises the append-only pass case; no fixture sits at the five-line
+ERR_RATIONALE boundary; the dropped criterion status appears nowhere; and
+R19's "no orphan flags" rule has no code, no fixture and no mention in SCHEMA.md.
+Nothing applied. These need Hamza's ruling before M1 builds against them.
+
+### F-023: Transcription losses recorded rather than edited in place
+status: open
+date: 2026-09-07
+owner: hamza
+raised-by: agent
+resolution: none
+
+Raised by claude-opus-5 during the M0 review. Three details were dropped when
+PROJECT.md was migrated: F-001's precondition "Report status before the build
+starts"; D-002's reversal window "Override costs nothing if said before M0
+ends"; and D-005's "License is trivially changeable any time before publish".
+Law 5 forbids editing those committed entries in place, so the content is
+restored here instead of there. D-002's window closes as this milestone ends,
+which is the reason this flag is not cosmetic.
+
+### F-024: Agent-authored decisions were recorded as locked without a sign-off
+status: open
+date: 2026-09-07
+owner: hamza
+raised-by: agent
+resolution: none
+
+Raised by claude-opus-5 during the M0 review. D-015 through D-020 are owned by
+hamza and marked locked, but no human signed off on them and signoffs.md is
+empty, so the ledger asserts an approval that does not exist. Nothing applied:
+law 5 forbids rewriting the status lines. The two legal exits are to append
+sign-off entries to signoffs.md, or to supersede each with a proposed entry.
+Both are Hamza's call, and P4 says the sign-off is the state transition.
