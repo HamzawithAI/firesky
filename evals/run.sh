@@ -5,8 +5,15 @@
 set -uo pipefail
 cd "$(dirname "$0")/.."
 
-if [ ! -f dist/cli.js ] && [ -d node_modules/typescript ]; then
+# Always rebuild when the compiler is available. The previous form built only
+# when dist/cli.js was absent, so an edit to src/ that was never compiled would
+# be graded against the old binary — the eval oracle silently testing stale
+# code. Found by the M1 adversarial pass.
+if [ -d node_modules/typescript ]; then
   npm run --silent build || echo "build failed; fixtures will report NOT_IMPLEMENTED" >&2
 fi
+
+# DSK_MILESTONE names the report file. It has no default milestone on purpose:
+# see the runner. DSK_NOW pins the date for deterministic reports.
 
 node evals/runner.mjs

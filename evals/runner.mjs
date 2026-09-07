@@ -248,7 +248,12 @@ const green = inventoryOk && gated.every((r) => r.status === "PASS");
 /* ------------------------------------------------------------------- report */
 
 const now = (process.env.DSK_NOW ?? new Date().toISOString()).slice(0, 10);
-const milestone = process.env.DSK_MILESTONE ?? "M0";
+/* Defaults to "adhoc", never to a milestone name. It used to default to "M0",
+   which meant the documented `bash evals/run.sh` overwrote the committed M0
+   red-gate report with whatever the current tree produces — silently destroying
+   the evidence that D-007's eval-first order was honoured. Naming a milestone
+   report is now a deliberate act. Found by the M1 adversarial pass. */
+const milestone = process.env.DSK_MILESTONE ?? "adhoc";
 const row = (r) => `| ${r.id} | ${r.kind} | ${r.status} | ${r.detail} |`;
 
 const report = `# Eval report ${now} (${milestone})
