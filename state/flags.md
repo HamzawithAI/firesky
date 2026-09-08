@@ -1409,3 +1409,43 @@ What is not being asked for here: more scope, a later deadline for M5's
 fourteen-day dogfood clock, or any change to the kill lines K1 to K3. Only two
 more sessions. If Hamza declines, the fallback is the trim, and that is a
 scope decision this session should not make on its own.
+
+### F-066: S3 failed a hard gate because the skill's own supersede example is invalid
+status: open
+date: 2026-09-08
+owner: hamza
+raised-by: agent
+model: claude-opus-5
+resolution: none
+
+Raised by claude-opus-5 from the M3 re-run, and reproduced by hand. S3 scored
+4 of 5 against a hard 5-of-5 threshold. Trial 4 did everything S3 asks: D-001
+byte-identical, a superseding D-002 naming it in `supersedes:`, an append-only
+diff. It then failed on `dsk validate exits 0`, with ERR_STALE_REF.
+
+The cause is in the shipped artifact, not the model. SKILL.md line 82 and
+templates/AGENTS.dsk.md line 36 both give one worked example of supersession,
+and both write `links: [D-001]` beside `supersedes: D-001`. D-028 clause 3
+makes a `links` member of a current entry that resolves to a superseded
+decision a hard error, and a superseding entry is current by construction, so
+the documented recipe produces a red tree every time an agent follows it
+literally. Reproduced: append that entry to VAL-01 and the validator returns
+`ERR_STALE_REF state/decisions.md:14 D-002 links names D-001, superseded by
+D-002`, exit 1.
+
+This is findings 37 and 41 of the M3 adversarial pass, filed at correctness
+severity, which the external review did not rule on. The first run's S3 also
+showed trials tripping over it and scored 5 of 5 anyway; the redesigned suite
+did not change S3, so what changed is that this run's trial 4 did not recover.
+
+Not fixed here, deliberately. CLAUDE.md rule 7: a missed threshold means stop
+and report, not retry. The fix is small — drop `links: [D-001]` from the example
+in three surfaces, or widen D-028 clause 3 to exempt the entry that performs the
+supersession — but it is a change to the graded artifact, which invalidates this
+run's tamper seal and costs another thirty-five trials at $12.63, and choosing
+between those two fixes is a schema question for Hamza and the external review.
+
+For Hamza before E6: **S3 is one of E6's three scenarios and the snippet carries
+the same bad example**, so E6's S3 can be expected to fail the same way on any
+runtime that follows the recipe. That is information about the artifact, not
+about the runtime, and it is worth knowing before fifteen minutes are spent.
