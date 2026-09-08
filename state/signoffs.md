@@ -68,3 +68,48 @@ and nothing else: the flags the review resolved rather than this sign-off, which
 are F-025, F-029, F-030, F-032 and F-033, and every flag raised after it, F-034
 to F-043. Under D-025 they therefore derive as open. Closing them is one further
 sign-off and it is Hamza's to give, not this session's to assume (F-043).
+
+### S-005
+actor: hamza
+role: reviewer
+date: 2026-09-08
+scope: [F-025, F-029, F-030, F-032, F-033, F-036, F-043]
+
+The closure sign-off M2-REVIEW.md section 5 authorizes, on Hamza's explicit
+instruction of 8 Sep, with the scope enumerated from the review files themselves
+and printed in full before this entry was appended. Closes every flag whose
+ruling in M0-REVIEW.md, M1-REVIEW.md or M2-REVIEW.md disposes of it and which no
+earlier sign-off already names: F-025 by M1-REVIEW 2.3, F-030 by 2.2, F-032 by
+2.5, F-033 by 2.1, F-029 by 2.4, and F-036 by M2-REVIEW section 2, which this
+commit series applied in full before this entry existed, as section 5 requires.
+F-043 is closed by this entry being the remedy it asked for.
+
+Not covered, deliberately, each recorded in F-051: F-037, whose sixteenth-code
+question section 3 does not answer; F-047, deferred with a trigger until M5;
+F-040 and F-042, held by section 6 as M3 review inputs; F-002 and F-004, closed
+by Hamza in PROJECT.md section 12 and by no review file; and the builder-raised
+flags no external party has ruled on. Every flag here keeps its textual
+status: open, because D-021 forbids editing a committed ledger line and this
+scope is the closure (D-025).
+
+### S-006
+actor: hamza
+role: owner
+date: 2026-09-08
+scope: [D-026, D-027, D-028, D-029]
+
+Hamza's explicit authorization of 8 Sep, in the prompt instructing this session
+to apply M2-REVIEW.md, which names D-026 through D-029. It locks the four
+decisions the M2 external review left proposed: D-026, the committer reset
+alongside the authorized author reset, accepted in M2-REVIEW section 1; D-027,
+criteria resolution by derivation, from section 2.4; D-028, sign-offs are
+attestations of a moment, from section 2, which resolves F-036; and D-029, the
+fifteen-agent cap on the internal adversarial pass, from section 7.
+
+All four keep the textual status proposed, because D-021 forbids editing a
+committed ledger line, and this entry is the state transition that locks them
+(P4, law 4, F-025). It also approves the amendments made under them in this
+commit series: SCHEMA.md sections 0, 2 and 3, EVALS.md sections 1, 2, 3 and 4.3,
+the INV-18 fixture and the three E4 expected outputs recorded in F-048 and
+F-049, PLAN.md's M2 row and review-gates section, and the narrowed
+ERR_STALE_REF with the dsk status surface section 2.2 requires.

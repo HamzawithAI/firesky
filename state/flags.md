@@ -949,3 +949,37 @@ inside the same field, which is the inconsistency the v0.2 grammar cleanup
 exists to remove. Consequence to accept until then: a criterion deliberately
 dropped reads as open in `status` and `render`, with `written status: dropped`
 beside it. VAL-04's AC-003 is exactly that case and shows it.
+
+### F-051: S-005's scope needed two judgment calls the enumeration rule does not make
+status: open
+date: 2026-09-08
+owner: hamza
+raised-by: agent
+model: claude-opus-5
+resolution: none
+
+Raised by claude-opus-5 deriving S-005 under M2-REVIEW.md section 5, which says
+the scope is every flag whose ruling "reads accepted, resolved, or closed" and
+that the session "signs nothing that lacks a written ruling". A mechanical scan
+of the three review files answers most of it: 24 flag ids sit in a paragraph
+carrying one of those words, 19 of them are already closed by S-003, leaving
+F-025, F-030, F-032, F-033 and F-036. Two flags then sit on the boundary, and
+both are included on the substance rather than the letter.
+
+F-029 has a real ruling, M1-REVIEW section 2.4, which names no flag id and uses
+none of the three words. SCHEMA.md section 0 amendment 12 cites that section as
+being on F-029, and S-004's own prose already lists F-029 among the flags the
+review resolved. F-043's ruling is M2-REVIEW section 5 itself, whose word is
+"authorized", and S-005 is the very remedy it authorizes: the flag says the
+resolved flags carry no sign-off, and this is that sign-off. Excluding either
+would leave a flag deriving open that three documents already treat as ruled.
+
+Deliberately excluded, each for a stated reason: F-037, whose own question about
+a sixteenth error code section 3 does not answer; F-047, deferred with a trigger
+and live until M5; F-040 and F-042, held by section 6 for the M3 review; F-002
+and F-004, closed by Hamza in PROJECT.md section 12 and by no review file, which
+is F-042's subject; and the eleven builder-raised flags no external party has
+ruled on, F-034, F-035, F-038, F-039, F-041, F-044, F-045, F-046, F-048, F-049
+and F-050. Signing those would be the graded party closing its own findings,
+which is the defect F-024 recorded and F-043 restated. The full enumeration with
+per-flag evidence was printed before either sign-off was appended.
