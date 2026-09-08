@@ -19,6 +19,7 @@ import { readFileSync, existsSync, readdirSync, mkdirSync, writeFileSync, rmSync
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { spawnSync } from "node:child_process";
+import { createHash } from "node:crypto";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const EVALS = join(ROOT, "evals");
@@ -395,14 +396,91 @@ const e5Legs = [
 ];
 const e5Gated = e5Legs.some((l) => l.on);
 
-const scenarioResults = specScenarios.map((id) => ({
-  id,
-  kind: "scenario",
-  status: harnessExists ? "NOT_IMPLEMENTED" : "PENDING",
-  detail: harnessExists
-    ? "harness present but this suite is not wired to it"
-    : "E5 harness lands at M3 (PLAN.md M3.3); spec only",
-}));
+/* ------------------------------------------------------ E5, from results.json */
+/*
+ * The runner NEVER invokes an LLM. E8 (AC4) requires this suite to run with no
+ * network and no API keys, and CI runs on every push with neither, so the
+ * harness is run deliberately and writes its verdicts to
+ * evals/scenarios/results.json. This grades that file.
+ *
+ * It grades it adversarially, because the file is written by the party being
+ * graded:
+ *   - the threshold and trial count come from the scenario SPEC, never from
+ *     results.json, so the harness cannot lower its own bar;
+ *   - `met` is recomputed here from passed vs the spec's threshold, so the
+ *     harness's own verdict is advisory;
+ *   - the sha-256 of every scenario spec, of the fixture tree, of SKILL.md and
+ *     of the harness itself are recorded at run time and compared here, so
+ *     editing a spec, a fixture, the skill or a grader after a green run
+ *     invalidates the results instead of silently keeping them green (D-020);
+ *   - a partial run (--only or --trials) is marked full_run:false and refused.
+ */
+const RESULTS_PATH = join(EVALS, "scenarios", "results.json");
+const sha16 = (text) => createHash("sha256").update(text).digest("hex").slice(0, 16);
+
+/** Threshold, kind and trial count, read from the spec and never from results. */
+function specGate(id) {
+  const text = readFileSync(join(EVALS, "scenarios", `${id}.md`), "utf8");
+  const fieldOf = (key) => (new RegExp(`^${key}:\\s*(.+)$`, "m").exec(text) ?? [])[1]?.trim();
+  const threshold = fieldOf("threshold") ?? "";
+  const need = Number((/^(\d+) of (\d+)$/.exec(threshold) ?? [])[1]);
+  return { need, trials: Number(fieldOf("trials")), kind: fieldOf("kind"), threshold, hash: sha16(text) };
+}
+
+const LEDGER_PATHS = LEDGERS.map((l) => `state/${l}`).concat(["state/state.yaml"]);
+const fixtureHash = (fixture) =>
+  sha16(LEDGER_PATHS.map((f) => readFileSync(join(ROOT, fixture, f), "utf8")).join("\0"));
+
+function gradeScenarios() {
+  if (!harnessExists)
+    return specScenarios.map((id) => ({
+      id, kind: "scenario", status: "PENDING",
+      detail: "E5 harness lands at M3 (PLAN.md M3.3); spec only",
+    }));
+
+  if (!existsSync(RESULTS_PATH))
+    return specScenarios.map((id) => ({
+      id, kind: "scenario", status: "FAIL",
+      detail: "no evals/scenarios/results.json; run `node evals/scenarios/harness.mjs`",
+    }));
+
+  let doc;
+  try {
+    doc = JSON.parse(readFileSync(RESULTS_PATH, "utf8"));
+  } catch (e) {
+    return specScenarios.map((id) => ({ id, kind: "scenario", status: "FAIL", detail: `results.json unreadable: ${e.message}` }));
+  }
+
+  const harnessHash = sha16(readFileSync(join(EVALS, "scenarios", "harness.mjs"), "utf8"));
+  const skillPath = join(ROOT, "templates", "claude", "skills", "dsk", "SKILL.md");
+  const skillHash = existsSync(skillPath) ? sha16(readFileSync(skillPath, "utf8")) : "absent";
+  const global = [];
+  if (doc.full_run !== true) global.push("results came from a partial run (--only or --trials)");
+  if (doc.harness_sha256 !== harnessHash) global.push("results predate the current harness.mjs; rerun it");
+  if (doc.skill_sha256 !== skillHash) global.push("results graded a different SKILL.md; rerun the harness");
+  for (const [fixture, want] of Object.entries(doc.fixtures ?? {})) {
+    if (fixtureHash(fixture) !== want) global.push(`${fixture} changed since the run; rerun the harness`);
+  }
+
+  return specScenarios.map((id) => {
+    const gate = specGate(id);
+    const row = (doc.scenarios ?? []).find((s) => s.id === id);
+    if (row === undefined)
+      return { id, kind: "scenario", status: "FAIL", detail: "no result recorded for this scenario" };
+    const problems = [...global];
+    if (row.spec_sha256 !== gate.hash) problems.push(`${id}.md changed since the run; rerun the harness`);
+    if (row.trials !== gate.trials) problems.push(`ran ${row.trials} trials, the spec requires ${gate.trials}`);
+    // The gate, recomputed here from the spec. results.json's own `met` is not read.
+    const met = Number.isInteger(gate.need) && row.passed >= gate.need && row.trials === gate.trials;
+    const detail = `${row.passed}/${row.trials}, needs ${gate.threshold} (${gate.kind}), ` +
+      `${row.output_tokens} output tokens, $${(row.cost_usd ?? 0).toFixed(2)}`;
+    if (problems.length > 0)
+      return { id, kind: "scenario", status: "FAIL", detail: `${detail}; ${problems.join("; ")}` };
+    return { id, kind: "scenario", status: met ? "PASS" : "FAIL", detail };
+  });
+}
+
+const scenarioResults = gradeScenarios();
 
 const all = [...fixtureResults, ...e4Results, ...scenarioResults];
 const tally = all.reduce((a, r) => ((a[r.status] = (a[r.status] ?? 0) + 1), a), {});

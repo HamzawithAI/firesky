@@ -1021,3 +1021,27 @@ when the stop does not fire.
 Standing question for Hamza, and the reason this flag exists: if you read item
 three as law-level, this session's judgment was wrong and the M3 work built on
 top of it should be reviewed on that basis. One sentence from you settles it.
+
+### F-053: An ad-hoc eval report reached the committed evidence trail
+status: open
+date: 2026-09-08
+owner: hamza
+raised-by: agent
+model: claude-opus-5
+resolution: none
+
+Raised by claude-opus-5 at M3, against its own work in this series. Every bare
+`node evals/runner.mjs` writes evals/reports/<date>-adhoc.md, because the
+milestone name has no default and naming one is deliberate. During the pre-M3
+series a `git add -A` swept one of those scratch files into commit c43f9bf, and
+it was pushed. Nothing it says is false, but evals/reports/ is the committed
+evidence that D-007's eval-first order was honoured, and a file nobody meant to
+put there is noise in exactly the place that must stay legible.
+
+Applied: the file is removed from tracking, and .gitignore now excludes
+evals/reports/*-adhoc.md so the class cannot recur. Milestone reports are
+unaffected, since they carry a milestone name rather than "adhoc". This is the
+same family as F-039's third item, where the runner printed asserted rather than
+measured numbers into a committed report: the report directory is evidence, and
+evidence with stray contents is weaker evidence. Recorded rather than quietly
+deleted, because the commit that introduced it is already pushed.

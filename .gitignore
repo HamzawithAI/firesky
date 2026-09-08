@@ -3,3 +3,8 @@ dist/
 *.tsbuildinfo
 .DS_Store
 evals/.work/
+
+# Ad-hoc runs write evals/reports/<date>-adhoc.md. Reports are committed
+# evidence and a milestone report is a deliberate act (DSK_MILESTONE); an
+# ad-hoc one is scratch and must never enter the record (F-053).
+evals/reports/*-adhoc.md
