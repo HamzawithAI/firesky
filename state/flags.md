@@ -983,3 +983,41 @@ ruled on, F-034, F-035, F-038, F-039, F-041, F-044, F-045, F-046, F-048, F-049
 and F-050. Signing those would be the graded party closing its own findings,
 which is the defect F-024 recorded and F-043 restated. The full enumeration with
 per-flag evidence was printed before either sign-off was appended.
+
+### F-052: This session ruled F-040 not law-level, and the call is close
+status: open
+date: 2026-09-08
+owner: hamza
+raised-by: agent
+model: claude-opus-5
+resolution: none
+
+Raised by claude-opus-5 discharging M2-REVIEW.md section 6, which orders F-040
+and F-042 printed verbatim and says to stop and report if either is law-level or
+would change a gate already claimed. Both were printed. Neither triggered the
+stop, and the reasoning belongs in the record because one item is close.
+
+Gates already claimed: unaffected, and this was tested rather than assumed. The
+M1 gate is E1, E2 and E3 over the fixtures, the M2 gate is E4 plus the Action
+validating this repository, and every one of F-040's seven items was run against
+both. This repo has all five state files, zero CR bytes, no duplicate field key
+in any entry, no foreign id prefix in any ledger, every supersedes either none
+or exactly one D id, every date a real calendar date, and no prose glued to a
+field block. The fixtures carry no CR bytes and no foreign id prefixes. F-042
+mints no code and cannot turn a tree red.
+
+Law-level: ruled no, with the closest call named rather than buried. F-040's
+third item, duplicate field keys being last-write-wins so a second raised-by
+line suppresses ERR_MODEL_ID, is a hole in the enforcement of law 3, and it is
+the same class as F-037, which was law-level. What separates them: F-037 was a
+live breach of the append-only check whose fix was pure transcription of an
+existing rule, and it was fixed in the session that found it. Every F-040 item
+instead needs a sixteenth error code, which M0-REVIEW section 5 freezes out
+under D-011, or a SCHEMA.md sentence that does not exist. Neither is the
+builder's to write. No committed tree is exposed to any of them. Both flags are
+therefore carried as M3 external-review inputs, which is what section 6 directs
+when the stop does not fire.
+
+Standing question for Hamza, and the reason this flag exists: if you read item
+three as law-level, this session's judgment was wrong and the M3 work built on
+top of it should be reviewed on that basis. One sentence from you settles it.
