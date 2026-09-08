@@ -65,7 +65,7 @@ const diskInvalid = onDisk("fixtures/invalid");
 const diskScenarios = onDisk("scenarios").filter((f) => f.endsWith(".md")).map((f) => f.replace(/\.md$/, "")).sort();
 
 check("EVALS.md declares 5 valid fixtures", specValid.length === 5, specValid.join(", "));
-check("EVALS.md declares 17 invalid fixtures", specInvalid.length === 17, `${specInvalid.length} found`);
+check("EVALS.md declares 18 invalid fixtures", specInvalid.length === 18, `${specInvalid.length} found`);
 check("EVALS.md declares 7 scenarios", specScenarios.length === 7, specScenarios.join(", "));
 check("valid fixtures on disk match EVALS.md", setEq(specValid, diskValid),
   setEq(specValid, diskValid) ? `${diskValid.length} present` : `spec=${specValid} disk=${diskValid}`);
@@ -99,8 +99,9 @@ check("every fixture has an expected output", missingExpected.length === 0, miss
 check("every fixture tree carries all five state files", malformedTrees.length === 0,
   malformedTrees.join(", ") || "SCHEMA.md section 1 satisfied");
 /* gitFixtures is collected valid-first, and setEq compares positionally, so sort
-   before comparing. VAL-05 joined this set at M0-REVIEW section 5. */
-check("git-level fixtures are two-commit (D-016)", setEq(uniqSorted(gitFixtures), ["INV-08", "INV-14", "VAL-05"]),
+   before comparing. VAL-05 joined this set at M0-REVIEW section 5, INV-18 at
+   M2-REVIEW section 3. */
+check("git-level fixtures are two-commit (D-016)", setEq(uniqSorted(gitFixtures), ["INV-08", "INV-14", "INV-18", "VAL-05"]),
   uniqSorted(gitFixtures).join(", "));
 
 /* Tamper check (D-020). Existence alone let a fixture emptied to zero bytes still

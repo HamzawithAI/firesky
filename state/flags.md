@@ -863,3 +863,56 @@ and "unit tests". Recorded rather than glossed, because the difference between
 a check that runs and a check that blocks a merge is the whole of R22, and
 reporting the milestone as fully met would be the overstatement D-014 clause 3
 exists to catch.
+
+### F-048: INV-18 enters the frozen inventory, and it was green on arrival
+status: open
+date: 2026-09-08
+owner: hamza
+raised-by: agent
+model: claude-opus-5
+resolution: none
+
+Raised by claude-opus-5 applying M2-REVIEW.md section 3, and recorded under
+CLAUDE.md mistake-avoidance rule 4, which requires an F flag with rationale in
+the same commit as any fixture change. The change: EVALS.md sections 2, 3 and
+4.3 grow the invalid set from INV-01..INV-17 to INV-01..INV-18, and the runner's
+two hardcoded counts follow, the declared total and the git-level fixture list.
+INV-18 is a two-commit fixture whose base ledger ends without a trailing newline
+and whose head rewrites that final line in place, expecting ERR_INPLACE_EDIT.
+
+INV-18 passed the moment it existed, because the F-037 fix that makes it fail
+landed at M1 and this fixture only now enters the record. That is a fixture with
+no proven teeth unless it is shown to have them, so it was shown: reverting
+isAppendOf to the byte-prefix test it had before F-037 turns INV-18 FAIL and
+leaves INV-14 and VAL-05 both PASS. It is the only fixture in the set that
+catches the breach, which is the whole of M2-REVIEW section 3's argument that
+law-level breaches get fixtures and not only unit tests.
+
+### F-049: the F-036 ruling's own cases have no fixture home
+status: open
+date: 2026-09-08
+owner: hamza
+raised-by: agent
+model: claude-opus-5
+resolution: none
+
+Raised by claude-opus-5 applying M2-REVIEW.md section 2, recorded in the same
+commit as the expected-output change it describes. Two related gaps.
+
+One, every case the ruling turns from red to green is a VALID tree: a signed
+decision that is later superseded, a criterion scoping a superseded decision, a
+superseded entry whose links are stale. An INV fixture must be invalid, so none
+of them can live there, and adding them to a VAL fixture moves that fixture's
+counts and its expected output. They are pinned in test/f036-ruling.test.mjs
+instead, red before the narrowing and green after, under M1-REVIEW section 2.5
+and EVALS.md section 1.3. This is F-034's complaint from a third side.
+
+Two, the criteria stale-scope warning is added to the staleness report, so
+E4-06, E4-08 and E4-30 change: each gains an empty `stale_scope` array and a
+`counts.stale_scope` of zero. VAL-04 has no superseded decision, so E4 cannot
+exercise the warning in the direction that matters and the unit tests are its
+only coverage. Authorized by M2-REVIEW section 2's closing line, which says the
+E4 expected outputs update under the ruling with each commit referencing the
+file and a flag. Recorded rather than glossed, because "three expected outputs
+changed and the suite stayed green" is exactly the sentence a weakened eval
+would also produce.

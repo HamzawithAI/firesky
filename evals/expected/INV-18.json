@@ -1,0 +1,18 @@
+{
+  "ok": false,
+  "errors": [
+    {
+      "code": "ERR_INPLACE_EDIT",
+      "file": "state/flags.md",
+      "id": "F-001",
+      "line": 3,
+      "message": "F-001 was edited in place instead of superseded by an appended entry"
+    }
+  ],
+  "counts": {
+    "decisions": 1,
+    "flags": 1,
+    "criteria": 1,
+    "signoffs": 0
+  }
+}

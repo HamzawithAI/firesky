@@ -1,0 +1,6 @@
+{
+  "kind": "git",
+  "base_commit": "seed: state tree whose flag ledger ends without a newline",
+  "head_commit": "chore: extend the final committed line in place",
+  "target": "state/flags.md"
+}

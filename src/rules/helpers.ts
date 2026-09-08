@@ -87,6 +87,14 @@ export function resolvedFlags(tree: Tree): Set<string> {
   return resolved;
 }
 
+/**
+ * D-027, criteria met by derivation. NOT IMPLEMENTED YET — stub so the ruling's
+ * tests report red by name rather than by module resolution (D-007).
+ */
+export function metCriteria(_tree: Tree): Set<string> {
+  throw new Error("metCriteria is not implemented yet (M2-REVIEW section 2.4, D-027)");
+}
+
 /** ID-shaped members of a bracketed list field. Non-ID members are not links. */
 export function idMembers(entry: Entry, key: string): string[] {
   const raw = field(entry, key);

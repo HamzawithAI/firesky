@@ -17,6 +17,13 @@ written into section 6 and enforced by evals/runner.mjs; and section 1 states
 where implementation-level regressions live, which the frozen fixture inventory
 has no room for.
 
+Amended a third time after the M2 external review (M2-REVIEW.md, committed in
+this repository, locked by sign-offs S-005 and S-006). The amendments are:
+the inventory grows by one to INV-01..INV-18, INV-18 carrying the F-037 breach
+class that M2-REVIEW.md section 3 authorized into the frozen set; and the E4
+expected outputs gain the criteria stale-scope warning that M2-REVIEW.md
+section 2.2 downgraded out of the validator (D-028).
+
 ## 1. Philosophy
 
 1. Eval-first: fixtures and expected outputs exist and fail before feature code exists.
@@ -33,7 +40,7 @@ has no room for.
 ```
 evals/
   fixtures/valid/        VAL-01 .. VAL-05, complete state/ trees
-  fixtures/invalid/      INV-01 .. INV-17, one violation each
+  fixtures/invalid/      INV-01 .. INV-18, one violation each
   expected/              per-fixture expected validator output (json)
   scenarios/             S1 .. S7 agent scenario specs
   run.sh                 runs everything, writes report
@@ -45,13 +52,13 @@ evals/
 Valid: VAL-01 minimal project (one decision, one flag). VAL-02 rich project with a supersede chain, every link of it reachable by appends alone under D-021. VAL-03 mixed human and agent authorship, including an agent-raised flag carrying its `model:` id. VAL-04 project with sign-offs across D and AC scopes, and one criterion in status `dropped`. VAL-05 two-commit fixture whose head appends one valid decision carrying exactly five rationale lines, covering the append-only pass case and the rationale boundary together.
 
 Invalid, one violation per fixture:
-INV-01 decision missing owner. INV-02 duplicate ID. INV-03 unknown status word. INV-04 decision whose `links` names a decision that a later entry supersedes, so it is stale by derivation. INV-05 link to a nonexistent ID. INV-06 missing provenance block. INV-07 agent-authored decision with no model id. INV-08 sign-off block that modifies an earlier sign-off (git-level case). INV-09 flag without owner. INV-10 resolved flag without resolution note. INV-11 ID grammar violation (not zero-padded three digits). INV-12 `state.yaml` missing schema version. INV-13 non-ISO date. INV-14 in-place edit of a locked decision (git-level case). INV-15 decision rationale over five lines. INV-16 sign-off scope referencing a nonexistent AC. INV-17 agent-raised flag with no model id.
+INV-01 decision missing owner. INV-02 duplicate ID. INV-03 unknown status word. INV-04 decision whose `links` names a decision that a later entry supersedes, so it is stale by derivation. INV-05 link to a nonexistent ID. INV-06 missing provenance block. INV-07 agent-authored decision with no model id. INV-08 sign-off block that modifies an earlier sign-off (git-level case). INV-09 flag without owner. INV-10 resolved flag without resolution note. INV-11 ID grammar violation (not zero-padded three digits). INV-12 `state.yaml` missing schema version. INV-13 non-ISO date. INV-14 in-place edit of a locked decision (git-level case). INV-15 decision rationale over five lines. INV-16 sign-off scope referencing a nonexistent AC. INV-17 agent-raised flag with no model id. INV-18 two-commit fixture whose head extends a committed ledger line that ends without a newline, rewriting it in place (git-level case, the F-037 breach class).
 
 ## 4. E2, validator behavior
 
 1. Each INV fixture maps to exactly one stable error code (ERR_OWNER, ERR_DUP_ID, ERR_STATUS, ERR_STALE_REF, ERR_LINK, ERR_PROVENANCE, ERR_MODEL_ID, ERR_SIGNOFF_MUTATION, and so on), defined in SCHEMA.md at M0 and never renamed. The mapping is many-to-one, not one to one: every error code has at least one fixture, and every invalid fixture expects exactly one code (M0-REVIEW 4.2, closing F-006).
 2. `dsk validate --json` emits machine-readable results. Exit code 0 only on fully green.
-3. Git-level cases (INV-08, INV-14, and the passing case VAL-05) run as two-commit fixtures: the check compares HEAD against the parent and fails on any non-append change to ledger files. There is no whitelisted exception (M0-REVIEW 3.5).
+3. Git-level cases (INV-08, INV-14, INV-18, and the passing case VAL-05) run as two-commit fixtures: the check compares HEAD against the parent and fails on any non-append change to ledger files. There is no whitelisted exception (M0-REVIEW 3.5).
 
 ## 5. E3 and E4, integrity and staleness
 

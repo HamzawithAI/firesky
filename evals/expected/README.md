@@ -81,12 +81,23 @@ fixture.
 
 ## Git-level fixtures
 
-INV-08, INV-14 and VAL-05 hold `base/` and `head/` snapshots plus
+INV-08, INV-14, INV-18 and VAL-05 hold `base/` and `head/` snapshots plus
 `fixture.json` instead of a `state/` tree (D-016, F-009). The runner
 materialises them into a throwaway repository under `evals/.work/`, commits
 `base/` then `head/`, and runs the parent-commit diff there. `counts` describes
 the `head/` tree. VAL-05 is the passing case: its head is a byte-for-byte
 prefix-preserving append, so the git check must stay silent.
+
+INV-18 is the F-037 breach class, authorized into the frozen set by M2-REVIEW.md
+section 3 (F-048). Its base `state/flags.md` ends **without a trailing
+newline**, so that file's last committed line is a proper byte prefix of the
+longer line its head rewrites it into. Under the byte-prefix test the check had
+before F-037 this reads as an append and the tree validates green with exit 0,
+defeating law 5 in the one check that enforces it; under the line-aware test it
+is ERR_INPLACE_EDIT. Reverting that one predicate turns INV-18 FAIL while
+INV-14 and VAL-05 both stay PASS, which is why the class needed its own fixture.
+Do not add a trailing newline to `INV-18/base/state/flags.md`: the missing
+newline **is** the fixture.
 
 ## E4 staleness expectations
 
