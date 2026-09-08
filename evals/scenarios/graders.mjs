@@ -14,7 +14,7 @@
  * assertions (EVALS.md section 1.2).
  */
 import { spawnSync } from "node:child_process";
-import { existsSync, readFileSync } from "node:fs";
+import { cpSync, existsSync, mkdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 
 export const LEDGERS = ["state/decisions.md", "state/flags.md", "state/criteria.md", "state/signoffs.md"];
@@ -83,6 +83,41 @@ export function snippet(text, needle) {
   const i = text.toLowerCase().indexOf(needle.toLowerCase());
   if (i === -1) return "not found in output";
   return JSON.stringify(text.slice(Math.max(0, i - 40), i + 60).replace(/\s+/g, " "));
+}
+
+/* ------------------------------------------------------- trial materialisation */
+
+/**
+ * Build one trial tree: the fixture's `state/`, the kit's skill and slash
+ * commands installed the way a user installs them, git-initialised and
+ * committed as the parent commit.
+ *
+ * Shared by the harness and by the runner's grade-from-artifacts mode (D-032
+ * section 4.3). The runner reconstructs the post-run tree by seeding an
+ * identical trial here and applying the committed diff to it, so the seed has to
+ * be produced by one function or the reconstruction is approximate.
+ *
+ * Deliberately NOT installed: templates/AGENTS.dsk.md. That snippet is E6's
+ * door, for runtimes with no skill system, and installing it here would mean E5
+ * could pass on the snippet while the skill did nothing.
+ */
+export function seedTrial(root, fixture, dir) {
+  cpSync(join(root, fixture, "state"), join(dir, "state"), { recursive: true });
+  mkdirSync(join(dir, ".claude"), { recursive: true });
+  cpSync(join(root, "templates", "claude", "skills"), join(dir, ".claude", "skills"), { recursive: true });
+  cpSync(join(root, "templates", "claude", "commands"), join(dir, ".claude", "commands"), { recursive: true });
+  const git = (...args) => spawnSync("git", ["-C", dir, ...args], { encoding: "utf8" });
+  git("init", "-q");
+  git("config", "user.email", "evals@dsk.local");
+  git("config", "user.name", "dsk evals");
+  git("add", "-A");
+  git("commit", "-q", "-m", "seed: fixture tree plus the dsk skill");
+  return dir;
+}
+
+/** The four ledgers as they stand, for the `before` half of an observation. */
+export function readLedgers(dir) {
+  return Object.fromEntries(LEDGERS.map((l) => [l, existsSync(join(dir, l)) ? read(join(dir, l)) : ""]));
 }
 
 /* ----------------------------------------------------------------- observe */

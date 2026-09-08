@@ -220,6 +220,23 @@ agent-authored entry with no `date` has no provenance block by the clause above,
 and the implementation checked only the author half of the definition until
 F-035. The two rules now read one shared predicate.
 
+Duplicate keys (ERR_DUP_KEY, D-033, ruled by M3-REVIEW.md section 5). **An entry
+that carries the same key twice is malformed.** The grammar of this section is
+one `key: value` line per key; a line-oriented parser reading a repeated key has
+to choose, and whichever it chooses is a rule silently disabled. The concrete
+case is the one F-052 recorded as a close call: a flag written
+
+```
+raised-by: agent
+raised-by: human
+model: none
+```
+
+reads as human-raised under last-writer-wins, so ERR_MODEL_ID never fires and a
+provenance claim the ledger cannot support validates green. The rule is stated
+for every entry type and every key, not for `raised-by` alone, because the
+defect is the parser's ambiguity rather than one field's. Fixture: INV-19.
+
 ## 3. IDs, dates, links
 
 IDs match `D-`, `F-`, `S-`, or `AC-` plus exactly three digits, zero-padded, permanent, never reused (violation: ERR_ID_GRAMMAR, duplicates: ERR_DUP_ID). Dates are ISO `YYYY-MM-DD` (ERR_DATE). `links` and `scope` are bracketed comma lists whose ID members must resolve within `state/`: an unresolved member of a `links` field is ERR_LINK, and of a `scope` field is ERR_SCOPE (M0-REVIEW 4.3, closing F-007).
@@ -278,8 +295,17 @@ Exit code 0 only when `ok` is true. Error codes are frozen at M0 and never renam
 
 ## 6. Error code inventory
 
-ERR_OWNER, ERR_DUP_ID, ERR_STATUS, ERR_STALE_REF, ERR_LINK, ERR_PROVENANCE, ERR_MODEL_ID, ERR_SIGNOFF_MUTATION, ERR_RESOLUTION, ERR_ID_GRAMMAR, ERR_SCHEMA_VERSION, ERR_DATE, ERR_INPLACE_EDIT, ERR_RATIONALE, ERR_SCOPE. Each code is one rule module with its own fixture pair (D11). The mapping between INV fixtures in EVALS.md section 3 and these codes is many-to-one (M0-REVIEW 4.2, closing F-006): every code has at least one fixture, and every invalid fixture expects exactly one code. ERR_OWNER and ERR_MODEL_ID each carry two fixtures.
+ERR_OWNER, ERR_DUP_ID, ERR_STATUS, ERR_STALE_REF, ERR_LINK, ERR_PROVENANCE, ERR_MODEL_ID, ERR_SIGNOFF_MUTATION, ERR_RESOLUTION, ERR_ID_GRAMMAR, ERR_SCHEMA_VERSION, ERR_DATE, ERR_INPLACE_EDIT, ERR_RATIONALE, ERR_SCOPE, ERR_DUP_KEY. Each code is one rule module with its own fixture pair (D11). The mapping between INV fixtures in EVALS.md section 3 and these codes is many-to-one (M0-REVIEW 4.2, closing F-006): every code has at least one fixture, and every invalid fixture expects exactly one code. ERR_OWNER and ERR_MODEL_ID each carry two fixtures.
 
-Fifteen codes, and the count is frozen. R19's "no orphan flags" clause carries no
-code and is cut for v0.1 as unenforceable under this grammar (D-022, M0-REVIEW
-4.7). An optional `links` field on flags is deferred; P7 governs.
+Sixteen codes. The count was frozen at fifteen from M0 until D-033 (M3-REVIEW.md
+section 5) added ERR_DUP_KEY, and the freeze it replaces is stated precisely
+rather than dropped: **a code may be added, by a ruling, with its fixture in the
+same commit. A code is never renamed and never removed**, because E2 asserts the
+names and a rename silently invalidates every expected output that carries it.
+Adding is safe in the direction that matters — an added code can only turn a
+green tree red, never a red one green — which is why the review permits it and
+still forbids the rename. Every addition is listed in section 0.
+
+R19's "no orphan flags" clause carries no code and is cut for v0.1 as
+unenforceable under this grammar (D-022, M0-REVIEW 4.7). An optional `links`
+field on flags is deferred; P7 governs.

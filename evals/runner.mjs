@@ -15,11 +15,15 @@
  *
  * Exit 0 only when the inventory passes AND every fixture and scenario passes.
  */
-import { readFileSync, existsSync, readdirSync, mkdirSync, writeFileSync, rmSync, cpSync } from "node:fs";
+import {
+  readFileSync, existsSync, readdirSync, mkdirSync, mkdtempSync, writeFileSync, rmSync, cpSync,
+} from "node:fs";
+import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
+import { gradeTrial, observe, readLedgers, seedTrial } from "./scenarios/graders.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const EVALS = join(ROOT, "evals");
@@ -66,7 +70,7 @@ const diskInvalid = onDisk("fixtures/invalid");
 const diskScenarios = onDisk("scenarios").filter((f) => f.endsWith(".md")).map((f) => f.replace(/\.md$/, "")).sort();
 
 check("EVALS.md declares 5 valid fixtures", specValid.length === 5, specValid.join(", "));
-check("EVALS.md declares 18 invalid fixtures", specInvalid.length === 18, `${specInvalid.length} found`);
+check("EVALS.md declares 19 invalid fixtures", specInvalid.length === 19, `${specInvalid.length} found`);
 check("EVALS.md declares 7 scenarios", specScenarios.length === 7, specScenarios.join(", "));
 check("valid fixtures on disk match EVALS.md", setEq(specValid, diskValid),
   setEq(specValid, diskValid) ? `${diskValid.length} present` : `spec=${specValid} disk=${diskValid}`);
@@ -76,6 +80,35 @@ check("scenario specs on disk match EVALS.md", setEq(specScenarios, diskScenario
   setEq(specScenarios, diskScenarios) ? `${diskScenarios.length} present` : `spec=${specScenarios} disk=${diskScenarios}`);
 check("SCHEMA.md error codes are consistent between sections", setEq(codesInInventory, codesAnywhere),
   `${codesInInventory.length} codes in the section 6 inventory`);
+
+/* E5 thresholds are stated in EVALS.md section 6 and restated in each scenario
+   spec, and until now nothing compared the two — so editing one line of one
+   S<n>.md turned a hard 5 of 5 into a green 1 of 5 with nothing anywhere
+   objecting (finding 9). This is the same discipline F-045 forced onto E4: the
+   spec document is the source, never a value hand-copied beside it. */
+const evalsThresholds = Object.fromEntries(
+  [...evalsDoc.matchAll(/^S(\d) .*?\b(Soft|Hard), (\d+) of (\d+)\.\s*$/gm)]
+    .map((m) => [`S${m[1]}`, { kind: m[2].toLowerCase(), need: Number(m[3]), trials: Number(m[4]) }]),
+);
+const thresholdDrift = [];
+for (const id of specScenarios) {
+  const want = evalsThresholds[id];
+  if (want === undefined) { thresholdDrift.push(`${id}: EVALS.md section 6 states no threshold`); continue; }
+  const specPath = join(EVALS, "scenarios", `${id}.md`);
+  if (!existsSync(specPath)) { thresholdDrift.push(`${id}.md is missing`); continue; }
+  const text = readFileSync(specPath, "utf8");
+  const fieldOf = (key) => (new RegExp(`^${key}:\\s*(.+)$`, "m").exec(text) ?? [])[1]?.trim();
+  const m = /^(\d+) of (\d+)$/.exec(fieldOf("threshold") ?? "");
+  const kind = fieldOf("kind");
+  const trials = Number(fieldOf("trials"));
+  if (m === null) { thresholdDrift.push(`${id}.md: unreadable threshold '${fieldOf("threshold")}'`); continue; }
+  if (Number(m[1]) !== want.need || Number(m[2]) !== want.trials)
+    thresholdDrift.push(`${id}.md says ${m[1]} of ${m[2]}, EVALS.md section 6 says ${want.need} of ${want.trials}`);
+  if (kind !== want.kind) thresholdDrift.push(`${id}.md is '${kind}', EVALS.md section 6 says '${want.kind}'`);
+  if (trials !== want.trials) thresholdDrift.push(`${id}.md runs ${trials} trials against a ${want.trials}-trial threshold`);
+}
+check("scenario thresholds match EVALS.md section 6", thresholdDrift.length === 0,
+  thresholdDrift.join("; ") || `${specScenarios.length} of ${specScenarios.length} agree`);
 
 /* every fixture has an expected output, and the trees are well formed */
 const expectedDir = join(EVALS, "expected");
