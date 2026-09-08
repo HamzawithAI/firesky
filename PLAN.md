@@ -6,7 +6,7 @@ Six milestones, one session each (F4 box: six sessions across three weeks). Each
 |---|---|---|---|
 | M0 | Scaffold and fixtures | Fixture inventory complete, CI runs red | gate met 7 Sep; D14.3 review applied and signed 7 Sep (M0-REVIEW.md, S-001 to S-003) |
 | M1 | Validator core | E1, E2, E3 green | E1/E2/E3 green 7 Sep, 22 of 22 fixtures PASS; gate met **contingent on Hamza accepting D-023** (F-033) |
-| M2 | Staleness, CI mode, render | E4 green, Action validates this repo | not started; blocked on F-030 |
+| M2 | Staleness, CI mode, render | E4 green, Action validates this repo | E4 green 8 Sep, 25 of 25 gated suites PASS, 34 unit tests; the shipped action validates this repo in CI. **Merge gating still needs admin** (F-047) |
 | M3 | Skill and AGENTS.md snippet | E5 thresholds met, E6 smoke pass | not started |
 | M4 | Install path and degraded mode | E7 under 10 minutes, E8 green | not started |
 | M5 | Dogfood live on two projects | Both repos validate green, day-zero metrics logged | not started |
@@ -32,12 +32,24 @@ Six milestones, one session each (F4 box: six sessions across three weeks). Each
 3. Minimal `render` command producing the static read-only HTML view (PROJECT.md 6.2).
 4. Gate: E4 green, the Action gates this repo's own merges.
 
-Two things found at M1 must be settled before this gate can go green. F-030:
-`dsk validate .` reports twenty ERR_MODEL_ID errors on this repo's own ledger,
-because M0-REVIEW 4.4 added `model:` to the flag grammar after F-005 to F-024
-were written, and D-021 leaves no legal in-schema fix. F-031's sixth item: the
-git-level check needs `fetch-depth: 2` on `actions/checkout`, which defaults to
-a shallow clone with no `HEAD~1`, or the check silently will not apply.
+Both M1 blockers are cleared. F-030, the twenty ERR_MODEL_ID errors on this
+repo's own ledger, is resolved by D-024's dated grandfather rule, and
+`dsk validate .` is green. F-031's sixth item, `fetch-depth: 2` on
+`actions/checkout`, is applied on every job that can run the git check, and the
+dogfood job now asserts `HEAD~1` exists rather than trusting it, so a shallow
+clone fails instead of skipping the check in silence.
+
+Delivered at M2: `dsk staleness` (R20), pure and clock-injected through
+`DSK_NOW`, graded by E4 against three window configurations on VAL-04;
+`dsk render` (PROJECT.md 6.2), one self-contained HTML file with no script and
+no external asset, showing every status as derived; `action.yml`, the reusable
+composite action; and a CI workflow that finally runs the unit suite, which
+nothing did before (F-039). `evals/run.sh` now treats a failed build as fatal.
+
+Not delivered, and outside what this session can do: making the checks
+*required* on `main`, which needs admin (F-047). The M2 section's phrasing,
+"gates this repo's own merges", is stricter than the table's "Action validates
+this repo", and only the table's version is met.
 
 ## M3. Skill and cross-runtime snippet (session 4)
 

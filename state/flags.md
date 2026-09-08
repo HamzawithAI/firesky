@@ -836,3 +836,30 @@ fifteen, so gating CI on it would need a decision this session does not have.
 Three, render writes one self-contained HTML file with no script and no
 external asset, to stdout unless --out names a path, which is what makes the
 GitHub Pages path in 6.2 work without a build step.
+
+### F-047: The M2 gate's last clause needs an admin this session does not have
+status: open
+date: 2026-09-08
+owner: hamza
+raised-by: agent
+model: claude-opus-5
+resolution: none
+
+Raised by claude-opus-5 closing M2. PLAN.md states the gate twice and not
+identically. The milestone table says "E4 green, Action validates this repo",
+which is met: E4 passes three window configurations and CI run 34212062770
+shows the shipped action.yml validating this repository, 26 decisions, 46
+flags, 5 criteria, 4 sign-offs, with HEAD~1 present so the append-only check
+genuinely applied rather than skipping. The M2 section says "the Action gates
+this repo's own merges", which is not met and cannot be by this session: gating
+merges means a required status check, that means branch protection or a
+ruleset, and the collaborator account has push but not admin. The repository
+currently has neither, and no pull request has ever been opened against it.
+
+Nothing applied, because there is nothing this session can apply. The exact fix
+is Hamza's, one command with an admin token: make the checks required on main,
+naming the job "the action validates this repository" alongside "eval suite"
+and "unit tests". Recorded rather than glossed, because the difference between
+a check that runs and a check that blocks a merge is the whole of R22, and
+reporting the milestone as fully met would be the overstatement D-014 clause 3
+exists to catch.
