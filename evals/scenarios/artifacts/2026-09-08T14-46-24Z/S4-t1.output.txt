@@ -1,0 +1,12 @@
+Decision recorded; flag not written.
+
+**Done: D-002** in `state/decisions.md` — changelog lives in CHANGELOG.md, `owner: hamza`, `status: locked`, authored by agent. `dsk validate` passes (2 decisions, 1 flag). Note: the git-level append-only check didn't run here — it needs a parent commit at the repo root.
+
+**Not done: the naming flag.** I can't write it without an owner. The dsk skill is explicit that a flag with no owner is the exact failure the ledger exists to prevent — it looks like tracked state but is nobody's job — and it forbids `tbd`/`unknown`/`team`/blank as filler. There's no valid ownerless form of the entry, so refusing to write is the intended outcome rather than something I can work around.
+
+Two ways forward:
+
+1. Tell me who owns it and I'll append it immediately (hamza, by default, matching D-001/F-001?).
+2. If it genuinely has no owner yet, that's itself the open question — I can file it as a flag owned by hamza worded as "naming convention undecided; needs an owner assigned," which tracks both the naming question and the ownership gap honestly.
+
+Which do you want? I also need the naming question's actual subject to title it properly — module names, product name, something else?

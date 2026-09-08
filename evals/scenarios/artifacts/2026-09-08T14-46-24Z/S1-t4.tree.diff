@@ -1,0 +1,21 @@
+diff --git a/state/decisions.md b/state/decisions.md
+index dd9516c..87d4d04 100644
+--- a/state/decisions.md
++++ b/state/decisions.md
+@@ -10,3 +10,16 @@ links: [PROJECT.md#3]
+ supersedes: none
+ 
+ Baseline decision for this fixture tree.
++
++### D-002: Use ISO dates everywhere
++status: locked
++date: 2026-09-08
++owner: hamza
++author: agent
++model: claude-opus-5[1m]
++links: none
++supersedes: none
++
++All dates in the project are written as ISO YYYY-MM-DD, in ledgers, docs and
++code. The alternative was leaving each surface to its own local format, which
++makes entries sort wrong and reads ambiguously across regions.

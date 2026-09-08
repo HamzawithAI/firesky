@@ -1,0 +1,21 @@
+`dsk status` (installed at a temp path, run against `/private/var/folders/.../dsk-e5-ig4QLs`) reports:
+
+```
+1 decisions, 1 flags, 0 criteria, 0 sign-offs
+
+decisions current    1  D-001
+decisions superseded 0  none
+flags open           1  F-001
+flags resolved       0  none
+criteria met         0  none
+criteria open        0  none
+```
+
+No warnings were printed.
+
+**The state itself:**
+- **D-001 — Adopt the ledger grammar** (`supersedes: none`, written status `locked`). Current, since no later decision names it.
+- **F-001 — Confirm the fixture owner** (written status `open`, `resolution: none`). Open, since no sign-off names it.
+- `state/criteria.md` and `state/signoffs.md` contain only their headings — no criteria, no sign-offs.
+
+No disagreements between written status words and derived ones: every entry's own status line matches what the pointers derive. This is a baseline fixture tree — one decision, one open flag, nothing signed off. Nothing was written to `state/`.

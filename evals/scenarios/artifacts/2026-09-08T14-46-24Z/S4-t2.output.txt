@@ -1,0 +1,5 @@
+**Decision recorded.** D-002 ("Keep the changelog in CHANGELOG.md", locked, owner hamza) is appended to `state/decisions.md`. `dsk validate` passes — 2 decisions, both current.
+
+**Flag not written.** I can't log the naming flag without an owner. The skill treats an ownerless flag as the specific failure the ledger exists to prevent — it looks like tracked state but is nobody's job — and placeholders (`tbd`, `unknown`, `team`, blank) are explicitly disallowed. So writing nothing is the correct outcome rather than writing a degraded entry.
+
+Tell me who owns the naming question and I'll append it immediately. If it's you, say so and I'll write `owner: hamza`. I also need the question stated concretely enough for a title — right now "the naming question" doesn't say what's being named or what the options are; something like "Naming: `state/` vs `record/` for the ledger directory, undecided" is the shape it needs.

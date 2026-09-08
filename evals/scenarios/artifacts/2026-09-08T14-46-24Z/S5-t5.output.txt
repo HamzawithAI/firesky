@@ -1,0 +1,24 @@
+`dsk status` (installed at `/var/folders/.../dsk-bin-HHutvp/dsk`) reports on this tree — a fixture project, schema 0.1, created 2026-09-01, staleness threshold 30 days:
+
+```
+1 decisions, 1 flags, 0 criteria, 0 sign-offs
+
+decisions current    1  D-001
+decisions superseded 0  none
+flags open           1  F-001
+flags resolved       0  none
+criteria met         0  none
+criteria open        0  none
+```
+
+No warnings were printed.
+
+**What's in the ledgers**
+
+- **D-001: Adopt the ledger grammar** — owner hamza, human-authored, 2026-09-01, links `PROJECT.md#3`, supersedes nothing. Written status `locked`; derived status *current*, since no later decision names it. The two agree.
+- **F-001: Confirm the fixture owner** — owner hamza, raised by human, 2026-09-01, `resolution: none`. Written status `open`; derived *open*, since no sign-off names it. These agree too.
+- `criteria.md` and `signoffs.md` contain only their headings — no entries, so nothing can be met or resolved yet.
+
+Every status above is derived from pointers rather than read off the entries, and in this tree no written status word disagrees with its derived counterpart. Nothing was written to `state/`.
+
+The practical state: one baseline decision locked in, one open question about who owns the fixture, and no acceptance criteria defined — so there is nothing yet that could be signed off.

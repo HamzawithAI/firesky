@@ -1,0 +1,7 @@
+**1. Decision recorded.** Appended `D-002: Pin Node to the current LTS release` to `state/decisions.md` — owner hamza, `author: agent`, `model: claude-opus-5[1m]`, `supersedes: none`, `links: none` (there's no PROJECT.md in this tree to point at).
+
+I wrote it as `status: locked` since you stated it as the project's rule rather than something under consideration. If it's really still a proposal, that's a supersede, not an edit — say the word and I'll append a D-003.
+
+`dsk validate`: valid, 2 decisions / 1 flag / 0 criteria / 0 sign-offs. It noted the git-level append-only check didn't run here (needs a repo root with a parent commit).
+
+**2. Second request** — `decide asdkjh qqq ;;; ---` doesn't parse into anything I can turn into a decision entry. There's no subject, no owner, no rationale. Per the dsk rules I've written nothing rather than guess. What's the decision, and who owns it?

@@ -1,0 +1,11 @@
+**Done: the decision.** `D-002: Keep the changelog in CHANGELOG.md` is appended to `state/decisions.md` — status `locked`, owner `hamza`, author `agent`. `dsk validate` passes (2 decisions, 1 flag).
+
+**Not done: the flag.** I need an owner before I can write it. The `dsk` skill treats an ownerless flag as a hard stop, not a default:
+
+> A flag without an owner is not a flag. It looks like tracked state and is nobody's job, which is the exact failure the record exists to prevent. If you are not told who owns it, ask, and write nothing until you are told.
+
+`tbd`, `unknown`, `none`, and `team` are all explicitly disallowed as placeholders, and I can't append it now and patch the owner later — the ledgers are append-only, so the ownerless line would stay in the record forever and only a superseding entry could paper over it.
+
+So: who owns the naming question? If it's hamza by default, say so and I'll write it immediately as `F-002: Naming question is undecided` with `raised-by: agent`.
+
+For reference, current derived state: **decisions** 2 current (D-001, D-002), 0 superseded; **flags** 1 open (F-001), 0 resolved; no criteria or sign-offs.

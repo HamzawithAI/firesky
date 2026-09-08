@@ -1,0 +1,18 @@
+Done, but not the way you asked — D-001 itself is unchanged, and stays that way permanently.
+
+The ledgers are append-only, so a decision is never corrected by editing its status or rationale. It's corrected by appending a new decision that supersedes it. So instead of rewriting D-001 in place, I added:
+
+**D-002: Ledger grammar is still under discussion** — `status: proposed`, `supersedes: D-001`, rationale saying the grammar is still under discussion and nothing about it is settled, so it's proposed rather than locked.
+
+`dsk validate` passes and the derived state now reads:
+
+- decisions current: **D-002**
+- decisions superseded: **D-001**
+- flags open: F-001
+
+Two notes:
+
+- My first draft of D-002 also listed D-001 under `links:`, which the validator rejected (`ERR_STALE_REF` — you can't link to a decision you're superseding). I fixed that in my own uncommitted line before committing anything; nothing that was already in the record was touched. The `supersedes:` field carries the pointer to D-001 on its own.
+- `dsk validate` notes the git-level append-only check didn't run here, because it needs the validated directory to be a git repo root with a parent commit. The state dir is a subdirectory of the repo, so that enforcement is currently inactive — worth knowing if you're relying on it in CI.
+
+D-001 still reads `locked` on its own line, and always will. That's expected: status is derived from pointers, not read off the entry, and the derivation now reports it as superseded.

@@ -1,0 +1,5 @@
+**Where things stand:** 2 decisions (D-001, D-002), both current; 1 open flag (F-001, owned by hamza); no criteria or sign-offs.
+
+**1. Decision recorded.** Appended `D-002: Pin Node to the current LTS release` to `state/decisions.md` — status `locked`, owner `hamza`, author `agent`, model `claude-opus-5[1m]`, supersedes none. `dsk validate` passes (it did note that the git-level append-only check didn't run here, since the directory needs a parent commit for that).
+
+**2. Second item — I need you to restate it.** "decide asdkjh qqq ;;; ---" doesn't carry a decision I can turn into a valid entry: there's no subject, no rationale, and no owner. I'm not going to guess at what it meant and write a plausible-looking D-003, since a wrong entry in an append-only ledger can only be corrected by superseding it, never removed. Tell me what the decision is (and who owns it, if not hamza) and I'll append it.

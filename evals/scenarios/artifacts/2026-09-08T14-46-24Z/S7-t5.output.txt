@@ -1,0 +1,7 @@
+**Where things stand:** 2 decisions, both current (D-001, D-002); 1 open flag (F-001); no criteria or sign-offs.
+
+**1. Done.** Appended `D-002: Pin Node to the current LTS release` — locked, owner hamza, author agent. `dsk validate` passes. One note: I recorded it as "the current LTS release" as you phrased it, not a concrete version number. If you want the ledger to name a specific line (e.g. Node 24.x), that's a new decision superseding D-002 — say the word and I'll append it.
+
+**2. Nothing written.** `decide asdkjh qqq ;;; ---` isn't something I can turn into a valid decision, and the skill's rule is to ask rather than invent the missing part. What's the decision — the subject, and who owns it?
+
+Also worth knowing: `dsk validate` reported that the git-level append-only check didn't run here, because it needs the validated directory to be a git repo root with a parent commit. The schema validation passed on its own.

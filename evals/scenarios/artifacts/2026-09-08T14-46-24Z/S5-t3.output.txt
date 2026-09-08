@@ -1,0 +1,24 @@
+`dsk status` output for this project (a fixture tree at `/private/var/.../dsk-e5-3u4xPJ`):
+
+```
+1 decisions, 1 flags, 0 criteria, 0 sign-offs
+
+decisions current    1  D-001
+decisions superseded 0  none
+flags open           1  F-001
+flags resolved       0  none
+criteria met         0  none
+criteria open        0  none
+```
+
+No warnings were printed.
+
+**What's in the ledgers**
+
+- **D-001 — Adopt the ledger grammar** (2026-09-01, owner hamza, written status `locked`, supersedes none). Derived as *current*: no later decision names it.
+- **F-001 — Confirm the fixture owner** (2026-09-01, owner hamza, `resolution: none`). Derived as *open*: no sign-off names it.
+- `criteria.md` and `signoffs.md` are headers only — nothing recorded.
+
+No disagreements between written status words and derived status: `locked`/current and `open`/open line up in both entries.
+
+**State of the project overall:** it's a seeded fixture — one commit (`ddeb0eb seed: fixture tree plus the dsk skill`), a clean working tree, and the `state/` ledgers holding a single baseline decision plus one unanswered question about who owns the fixture. Nothing has been signed off, and there are no acceptance criteria to meet yet.

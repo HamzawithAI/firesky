@@ -1,0 +1,19 @@
+This is a fixture project whose entire content is the `state/` decision record — four ledgers plus `state.yaml` (schema 0.1, project `fixture`, staleness window 30 days). Git is clean at one commit (`ddeb0eb seed: fixture tree plus the dsk skill`).
+
+Derived state from `dsk status`:
+
+| | count | ids |
+|---|---|---|
+| decisions current | 1 | D-001 |
+| decisions superseded | 0 | — |
+| flags open | 1 | F-001 |
+| flags resolved | 0 | — |
+| criteria met | 0 | — |
+| criteria open | 0 | — |
+
+No warnings, and no divergence between written and derived status.
+
+- **D-001 — Adopt the ledger grammar** (locked, 2026-09-01, owner hamza, human-authored): the baseline decision for this fixture tree.
+- **F-001 — Confirm the fixture owner** (open, 2026-09-01, owner hamza): the one thing outstanding; no sign-off names it, so it stays open.
+
+`criteria.md` and `signoffs.md` are headings only — nothing has been defined as "done" yet, so there's no acceptance bar for this project at present.

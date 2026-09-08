@@ -1,0 +1,9 @@
+Decision recorded, flag not written.
+
+**D-002 — "Keep the changelog in CHANGELOG.md"** is appended to `state/decisions.md`: locked, owned by hamza, `author: agent` / `model: claude-opus-5[1m]`. `dsk validate` passes (2 decisions, 1 flag).
+
+**The naming flag I did not write.** The dsk skill is explicit that a flag without an owner is not a flag — an unowned entry looks like tracked state while being nobody's job, which is the failure the ledger exists to prevent. The rule says to ask and write nothing until an owner is named, and forbids placeholders like `tbd`, `team`, or blank. Since flags are append-only, an unowned F-002 couldn't be fixed later either — it would sit there permanently, and the correction would be a second flag rather than an edit.
+
+So: who owns the naming question? Give me a name and I'll append it immediately. If hamza is the fallback owner for anything unassigned, say so and I'll use that.
+
+Current derived state: 1 decision current before this write (now 2), F-001 still open.

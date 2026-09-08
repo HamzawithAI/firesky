@@ -1,0 +1,21 @@
+diff --git a/state/decisions.md b/state/decisions.md
+index dd9516c..91e03c4 100644
+--- a/state/decisions.md
++++ b/state/decisions.md
+@@ -10,3 +10,16 @@ links: [PROJECT.md#3]
+ supersedes: none
+ 
+ Baseline decision for this fixture tree.
++
++### D-002: Keep the changelog in CHANGELOG.md
++status: locked
++date: 2026-09-08
++owner: hamza
++author: agent
++model: claude-opus-5[1m]
++links: [D-001]
++supersedes: none
++
++The project keeps its changelog in a single top-level CHANGELOG.md rather than
++scattering release notes across per-release files or the wiki. One file keeps
++history greppable and reviewable in the same diff as the code it describes.

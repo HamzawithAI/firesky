@@ -1,0 +1,17 @@
+Flag raised as **F-002** in `state/flags.md`, appended (no existing lines touched):
+
+```
+### F-002: Staleness window — 30 or 60 days?
+status: open
+date: 2026-09-08
+owner: hamza
+raised-by: agent
+model: claude-opus-5[1m]
+resolution: none
+```
+
+`raised-by: agent` because I composed and appended the entry — you named the owner, but the record is mine.
+
+`dsk validate` passed: 1 decision, 2 flags, 0 criteria, 0 sign-offs. It did note that the git-level append-only check didn't run here — it needs the validated directory to be a git repo root with a parent commit, and this tree has only the seed commit.
+
+The flag stays open until a sign-off names it in scope; it can't be closed by editing it.

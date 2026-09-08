@@ -1,0 +1,21 @@
+diff --git a/state/decisions.md b/state/decisions.md
+index dd9516c..f6b6ccb 100644
+--- a/state/decisions.md
++++ b/state/decisions.md
+@@ -10,3 +10,16 @@ links: [PROJECT.md#3]
+ supersedes: none
+ 
+ Baseline decision for this fixture tree.
++
++### D-002: Ledger grammar is still under discussion
++status: proposed
++date: 2026-09-08
++owner: hamza
++author: agent
++model: claude-opus-5[1m]
++links: [PROJECT.md#3]
++supersedes: D-001
++
++Supersedes D-001, which recorded the grammar as locked in error.
++The grammar is still under discussion and nothing about it is settled,
++so this stands as proposed rather than locked until that discussion closes.

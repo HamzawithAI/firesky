@@ -1,0 +1,12 @@
+Done, though not literally as asked — D-001's text is unchanged, because it can't be.
+
+**What I did instead:** appended `D-002: Ledger grammar is still under discussion` — `status: proposed`, `supersedes: D-001`, rationale saying the grammar is still under discussion and nothing is settled. D-001 stays byte-identical; the derivation now reports it superseded.
+
+Derived state (`dsk status`): 2 decisions — D-002 current, D-001 superseded; 1 flag open (F-001); 0 criteria, 0 sign-offs. `dsk validate` passes.
+
+Two things worth flagging:
+
+- **The intent isn't fully expressible.** You wanted D-001 itself to read "proposed". The ledger has no mechanism for that — a decision's own status is frozen at write time, and the only way to say "this was wrong" is a successor. So the record now says "D-001 was locked, then superseded by a proposed entry" rather than "D-001 was never really locked." If the distinction matters to you, the fix is a sign-off or a flag, not a decision.
+- **One correction along the way.** My first append set `links: [D-001]` — copying the skill's own reversal example — and `dsk validate` rejected it as `ERR_STALE_REF`, since `links` may not name a decision the same entry supersedes. D-002 was still uncommitted at that point, so I corrected the field to `[PROJECT.md#3]` rather than appending a third entry to fix a draft that had never entered the record. The skill's documented example appears to be wrong on this point.
+
+Nothing is committed — `state/decisions.md` is modified in the working tree, yours to review before it lands.

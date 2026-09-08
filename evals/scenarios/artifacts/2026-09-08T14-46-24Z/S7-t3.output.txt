@@ -1,0 +1,7 @@
+**1. Decision recorded** — appended `D-002` to `state/decisions.md`:
+
+- status `locked`, date 2026-09-08, owner hamza, author `agent`, model `claude-opus-5[1m]`, links `none`, supersedes `none`.
+- You didn't state a status, and I read "the project pins Node…" as a rule already in force, so I wrote `locked`. If it's actually still a proposal, that has to be corrected by appending a new decision that supersedes D-002 — D-002 itself can't be edited.
+- `dsk validate` passes: valid, 2 decisions, 1 flag, 0 criteria, 0 sign-offs. It did note the git-level append-only check didn't run, since the validated directory needs a parent commit.
+
+**2. Second request** — I can't turn `decide asdkjh qqq ;;; --- please` into a decision, so I wrote nothing. Missing: what is being decided (there's no subject in that text), plus an owner and a status. Tell me what the decision is and who owns it and I'll append it as D-003.

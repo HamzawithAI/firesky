@@ -1,0 +1,25 @@
+`dsk status` (installed, exit 0) reports:
+
+```
+dsk: /private/var/folders/1_/883cd4cs2bg_czkd_byzv2q80000gn/T/dsk-e5-4vVpKW
+  1 decisions, 1 flags, 0 criteria, 0 sign-offs
+
+  decisions current    1  D-001
+  decisions superseded 0  none
+  flags open           1  F-001
+  flags resolved       0  none
+  criteria met         0  none
+  criteria open        0  none
+```
+
+No warnings were printed.
+
+**What's in the ledgers**
+
+- **D-001 — Adopt the ledger grammar** (2026-09-01, owner hamza, human-authored, links PROJECT.md#3, supersedes none). Derived **current**; nothing supersedes it. Written status word is `locked`, which is consistent with the derived answer.
+- **F-001 — Confirm the fixture owner** (2026-09-01, owner hamza, raised by human, resolution none). Derived **open**; no sign-off names it. Written status `open` agrees.
+- `criteria.md` and `signoffs.md` are headers only — no entries.
+
+I cross-checked by counting `### ` headings by hand: 1 in decisions.md, 1 in flags.md, 0 in criteria.md, 0 in signoffs.md — matching the derived counts. No written status word disagrees with its derived status anywhere.
+
+**In plain terms:** this is a bare fixture tree at its baseline. One decision stands, one question is open and unassigned to any sign-off, and there are no acceptance criteria or sign-offs at all — so nothing has been verified or closed out yet. Nothing was written to `state/`.

@@ -1,0 +1,15 @@
+Decision recorded; the flag I did **not** write, and I need one thing from you.
+
+**Done — D-002 in `state/decisions.md`:**
+```
+### D-002: Keep the changelog in CHANGELOG.md
+status: locked   date: 2026-09-08   owner: hamza
+author: agent    model: claude-opus-5[1m]
+```
+`dsk validate` passes: 2 decisions, 1 flag, 0 criteria, 0 sign-offs.
+
+**Not done — the naming flag.** The ledger grammar has no valid form for an ownerless flag: `owner` cannot be blank, `tbd`, `unknown`, `team`, or `none`. An unowned entry looks like tracked state while being nobody's job, which is the specific failure the flags ledger exists to prevent — so writing a placeholder would be worse than writing nothing, and I can't correct it later either, since entries are append-only and never edited.
+
+So: **who owns the naming question?** Give me a person and I'll append it immediately as F-002. If hamza is the default owner here as with the changelog, say so and I'll use that.
+
+Current derived state: 1 decision current (D-001) + D-002 just added, 0 superseded; F-001 open ("Confirm the fixture owner", owner hamza), 0 resolved.

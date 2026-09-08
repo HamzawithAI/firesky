@@ -1,0 +1,20 @@
+Flag raised as **F-002** in `state/flags.md:10`:
+
+```
+### F-002: Staleness window: 30 or 60 days?
+status: open
+date: 2026-09-08
+owner: hamza
+raised-by: agent
+model: claude-opus-5[1m]
+resolution: none
+```
+
+`dsk validate` passes — 1 decision, 2 flags, 0 criteria, 0 sign-offs. Note that the git-level append-only check was skipped: it needs the validated directory to be a git repo root with a parent commit, and this repo has only the seed commit.
+
+Two things worth mentioning:
+
+- `raised-by: agent` because I composed and appended the entry, even though you asked for it.
+- The existing F-001 has no `model` field, but validate accepts it — presumably `model` is only required for `raised-by: agent` entries.
+
+The flag stays open until a sign-off names it in scope.

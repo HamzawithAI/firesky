@@ -1,0 +1,17 @@
+Flag raised as **F-002** in `state/flags.md`:
+
+```
+### F-002: Staleness window: 30 or 60 days?
+status: open
+date: 2026-09-08
+owner: hamza
+raised-by: agent
+model: claude-opus-5[1m]
+resolution: none
+```
+
+Appended below F-001; no existing lines touched. `dsk validate` passes (1 decision, 2 flags, 0 criteria, 0 sign-offs), with a note that the git append-only check didn't run because the validated directory isn't a git repo root with a parent commit.
+
+Two things worth knowing:
+- `state/state.yaml` already carries `staleness_days: 30`. So a value is in effect while the question is open — if 60 wins, that key needs updating too.
+- F-001 has no `model:` field, which the current rules require. It's append-only so I left it alone; resolving that would need a sign-off or a follow-up entry, your call.

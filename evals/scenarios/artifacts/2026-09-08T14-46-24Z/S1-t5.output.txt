@@ -1,0 +1,18 @@
+Recorded as **D-002** in `state/decisions.md`, appended below D-001:
+
+```
+### D-002: Use ISO dates everywhere
+status: locked
+date: 2026-09-08
+owner: hamza
+author: agent
+model: claude-opus-5[1m]
+links: none
+supersedes: none
+```
+
+`author: agent` with my model id because I wrote the entry — the decision is hamza's, and that's what `owner` carries.
+
+`dsk validate` passes: valid, 2 decisions, 1 flag, 0 criteria, 0 sign-offs. It notes the git-level append-only check didn't run here because the validated directory needs to be a git repo root with a parent commit — that's an environment note, not a problem with the entry.
+
+Where things stand: 2 locked decisions (D-001 baseline, D-002 ISO dates), and F-001 "Confirm the fixture owner" is still open with no sign-off resolving it.

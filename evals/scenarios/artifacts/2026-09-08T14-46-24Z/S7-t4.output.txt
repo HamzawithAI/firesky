@@ -1,0 +1,9 @@
+**Where things stood:** D-001 locked (ledger grammar), F-001 open (confirm the fixture owner).
+
+**1. Decision recorded.** Appended `D-002: Pin Node to the current LTS release` — locked, owner hamza, author agent. `dsk validate` passes; derived state is now 2 decisions current, 1 flag open. (The validator notes its git-level append-only check didn't run here — the fixture directory has no parent commit — so that guard is unverified in this session.)
+
+I did not record a version number, since you said "current LTS release" rather than naming one. If you want the pin nailed to a specific major (e.g. `22.x`), say which and I'll append a superseding decision.
+
+**2. The second item I did not write.** "decide asdkjh qqq ;;; --- please" doesn't carry a decision I can turn into a valid entry — I can't tell what's being decided, and inventing a plausible subject is exactly what the ledger rules forbid. What should D-003 say?
+
+If it wasn't meant as a decision but as something still unresolved, I can raise it as a flag instead — but that needs both the question and a named human owner before I write anything.

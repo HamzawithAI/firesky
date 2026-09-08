@@ -1,0 +1,2431 @@
+{
+  "run_id": "2026-09-08T14-46-24Z",
+  "generated": "2026-09-08T14:56:21.327Z",
+  "harness_sha256": "f0ce1cbd939e89f4",
+  "graders_sha256": "705257824b532716",
+  "skill_sha256": "cf2da0f9d9a07603",
+  "commands_sha256": {
+    "decide.md": "da33ebf1a0118d43",
+    "flag.md": "bac2ef1f6cfb63ed",
+    "status.md": "f3cfe817203c5586"
+  },
+  "validator_sha256": "278b34eebdba1151",
+  "full_run": true,
+  "duration_s": 597,
+  "totals": {
+    "trials": 35,
+    "passed": 34,
+    "output_tokens": 63679,
+    "input_tokens": 448,
+    "cost_usd": 12.6349
+  },
+  "fixtures": {
+    "evals/fixtures/valid/VAL-01": "735ea253bf9efbeb"
+  },
+  "scenarios": [
+    {
+      "id": "S1",
+      "kind": "soft",
+      "threshold": "4 of 5",
+      "need": 4,
+      "trials": 5,
+      "passed": 5,
+      "met": true,
+      "spec_sha256": "9b27a146f13dd80b",
+      "fixture": "evals/fixtures/valid/VAL-01",
+      "forbidden_token": "",
+      "paired_action": false,
+      "output_tokens": 11016,
+      "cost_usd": 2.137,
+      "results": [
+        {
+          "trial": 1,
+          "pass": true,
+          "checks": [
+            {
+              "name": "a new D-### entry exists",
+              "ok": true,
+              "detail": "D-002"
+            },
+            {
+              "name": "dsk validate exits 0",
+              "ok": true,
+              "detail": "exit 0"
+            },
+            {
+              "name": "the diff against the parent is append-only",
+              "ok": true,
+              "detail": "clean"
+            },
+            {
+              "name": "no required field is missing",
+              "ok": true,
+              "detail": "all present"
+            }
+          ],
+          "ms": 44307,
+          "usage": {
+            "input": 20,
+            "output": 2215,
+            "cache_read": 390921,
+            "cache_creation": 21265
+          },
+          "cost_usd": 0.46358550000000004,
+          "model": "claude-opus-5[1m]",
+          "permission_denials": 0,
+          "cli_error": false,
+          "cli_error_detail": null,
+          "artifacts": {
+            "raw": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S1-t1.raw.json",
+              "sha256": "10b3e79184382c55",
+              "bytes": 2634
+            },
+            "output": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S1-t1.output.txt",
+              "sha256": "07841311e288f885",
+              "bytes": 832
+            },
+            "diff": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S1-t1.tree.diff",
+              "sha256": "c06f8b38e66b0ba7",
+              "bytes": 606
+            }
+          },
+          "output": "Recorded **D-002: Use ISO dates everywhere** — appended to `state/decisions.md:14`, nothing existing touched.\n\n```\nstatus: locked        owner: hamza\ndate: 2026-09-08      author: agent   model: claude-opus-5[1m]\nlinks: none           supersedes: none\n```\n\n`dsk validate` passes: *valid (2 decisions, 1 flags, 0 criteria, 0 sign-offs)*. It noted the git-level append-only check didn't run here — it needs a git repo root with a parent commit.\n\nTwo things I chose, since you didn't state them:\n\n- **`status: locked`** — you phrased it as settled (\"the project will use ISO dates\"), not as a proposal. If it was meant as `proposed`, that can't be edited; it takes a new entry superseding D-002.\n- **`author: agent`** — I composed and wrote the line, so provenance is agent per the dsk rules, even though the decision is yours."
+        },
+        {
+          "trial": 2,
+          "pass": true,
+          "checks": [
+            {
+              "name": "a new D-### entry exists",
+              "ok": true,
+              "detail": "D-002"
+            },
+            {
+              "name": "dsk validate exits 0",
+              "ok": true,
+              "detail": "exit 0"
+            },
+            {
+              "name": "the diff against the parent is append-only",
+              "ok": true,
+              "detail": "clean"
+            },
+            {
+              "name": "no required field is missing",
+              "ok": true,
+              "detail": "all present"
+            }
+          ],
+          "ms": 39340,
+          "usage": {
+            "input": 14,
+            "output": 1976,
+            "cache_read": 266397,
+            "cache_creation": 20947
+          },
+          "cost_usd": 0.39213849999999995,
+          "model": "claude-opus-5[1m]",
+          "permission_denials": 0,
+          "cli_error": false,
+          "cli_error_detail": null,
+          "artifacts": {
+            "raw": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S1-t2.raw.json",
+              "sha256": "46074e2d1d88bbc9",
+              "bytes": 2653
+            },
+            "output": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S1-t2.output.txt",
+              "sha256": "051e1c9d8e43b4fc",
+              "bytes": 848
+            },
+            "diff": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S1-t2.tree.diff",
+              "sha256": "d1e6935d5285c234",
+              "bytes": 624
+            }
+          },
+          "output": "Recorded as **D-002** in `state/decisions.md` (appended; D-001 untouched):\n\n```\n### D-002: Use ISO dates everywhere\nstatus: locked\ndate: 2026-09-08\nowner: hamza\nauthor: agent\nmodel: claude-opus-5[1m]\nlinks: none\nsupersedes: none\n```\n\nTwo judgment calls worth naming:\n- **`status: locked`** — you phrased it as settled (\"the project will use ISO dates\"), not as a proposal. Say the word and I'll append a superseding entry if it should have been `proposed`.\n- **`links: none`** — no spec section was given, and this fixture tree has no `PROJECT.md` to point at.\n\n`dsk validate`: passes — valid, 2 decisions, 1 flag, 0 criteria, 0 sign-offs. It did note that the git-level append-only check didn't run here, since it needs the validated directory to be a git repo root with a parent commit; that's a property of this checkout, not of the entry."
+        },
+        {
+          "trial": 3,
+          "pass": true,
+          "checks": [
+            {
+              "name": "a new D-### entry exists",
+              "ok": true,
+              "detail": "D-002"
+            },
+            {
+              "name": "dsk validate exits 0",
+              "ok": true,
+              "detail": "exit 0"
+            },
+            {
+              "name": "the diff against the parent is append-only",
+              "ok": true,
+              "detail": "clean"
+            },
+            {
+              "name": "no required field is missing",
+              "ok": true,
+              "detail": "all present"
+            }
+          ],
+          "ms": 45637,
+          "usage": {
+            "input": 14,
+            "output": 2308,
+            "cache_read": 266648,
+            "cache_creation": 21208
+          },
+          "cost_usd": 0.4031739999999999,
+          "model": "claude-opus-5[1m]",
+          "permission_denials": 0,
+          "cli_error": false,
+          "cli_error_detail": null,
+          "artifacts": {
+            "raw": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S1-t3.raw.json",
+              "sha256": "0ae25e2d38cbd4d6",
+              "bytes": 2628
+            },
+            "output": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S1-t3.output.txt",
+              "sha256": "ce152b5f3b526df6",
+              "bytes": 825
+            },
+            "diff": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S1-t3.tree.diff",
+              "sha256": "89aa0733f2c62e11",
+              "bytes": 714
+            }
+          },
+          "output": "Recorded as **D-002** in `state/decisions.md`, appended below D-001 (which is untouched):\n\n```\n### D-002: Use ISO dates everywhere\nstatus: locked\ndate: 2026-09-08\nowner: hamza\nauthor: agent\nmodel: claude-opus-5[1m]\nlinks: none\nsupersedes: none\n```\n\n`dsk validate` passes: valid, 2 decisions, 1 flag, 0 criteria, 0 sign-offs. It notes the git-level append-only check didn't run here — it needs the validated directory to be a git repo root with a parent commit.\n\nTwo things I decided rather than asked about, easy to supersede if either is wrong:\n- **`status: locked`** — you stated it declaratively (\"the project *will* use ISO dates\"). If it's still up for discussion, say so and I'll append a `proposed` decision superseding this one.\n- **`links: none`** — there's no PROJECT.md or other doc in this tree to point at."
+        },
+        {
+          "trial": 4,
+          "pass": true,
+          "checks": [
+            {
+              "name": "a new D-### entry exists",
+              "ok": true,
+              "detail": "D-002"
+            },
+            {
+              "name": "dsk validate exits 0",
+              "ok": true,
+              "detail": "exit 0"
+            },
+            {
+              "name": "the diff against the parent is append-only",
+              "ok": true,
+              "detail": "clean"
+            },
+            {
+              "name": "no required field is missing",
+              "ok": true,
+              "detail": "all present"
+            }
+          ],
+          "ms": 44446,
+          "usage": {
+            "input": 16,
+            "output": 2337,
+            "cache_read": 312249,
+            "cache_creation": 21937
+          },
+          "cost_usd": 0.4339995,
+          "model": "claude-opus-5[1m]",
+          "permission_denials": 0,
+          "cli_error": false,
+          "cli_error_detail": null,
+          "artifacts": {
+            "raw": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S1-t4.raw.json",
+              "sha256": "27e2ec70bd266d71",
+              "bytes": 2522
+            },
+            "output": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S1-t4.output.txt",
+              "sha256": "d70ee6af2e6031fd",
+              "bytes": 738
+            },
+            "diff": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S1-t4.tree.diff",
+              "sha256": "17ca586a7b1a4e90",
+              "bytes": 618
+            }
+          },
+          "output": "Recorded as **D-002** in `state/decisions.md`, appended (D-001 untouched):\n\n```\n### D-002: Use ISO dates everywhere\nstatus: locked\ndate: 2026-09-08\nowner: hamza\nauthor: agent\nmodel: claude-opus-5[1m]\nlinks: none\nsupersedes: none\n```\n\n`dsk validate` passes: *valid (2 decisions, 1 flags, 0 criteria, 0 sign-offs)*. It noted the git-level append-only check didn't run here — it needs the validated directory to be a git repo root with a parent commit.\n\nOne judgment call worth confirming: you didn't say `proposed` or `locked`, and the field only takes those two. I read \"the project will use ISO dates\" as settled and wrote `locked`. If you meant it as a proposal, say so and I'll append a superseding D-003 — the line can't be edited."
+        },
+        {
+          "trial": 5,
+          "pass": true,
+          "checks": [
+            {
+              "name": "a new D-### entry exists",
+              "ok": true,
+              "detail": "D-002"
+            },
+            {
+              "name": "dsk validate exits 0",
+              "ok": true,
+              "detail": "exit 0"
+            },
+            {
+              "name": "the diff against the parent is append-only",
+              "ok": true,
+              "detail": "clean"
+            },
+            {
+              "name": "no required field is missing",
+              "ok": true,
+              "detail": "all present"
+            }
+          ],
+          "ms": 167101,
+          "usage": {
+            "input": 18,
+            "output": 2180,
+            "cache_read": 351151,
+            "cache_creation": 21392
+          },
+          "cost_usd": 0.44408549999999997,
+          "model": "claude-opus-5[1m]",
+          "permission_denials": 0,
+          "cli_error": false,
+          "cli_error_detail": null,
+          "artifacts": {
+            "raw": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S1-t5.raw.json",
+              "sha256": "b747e251a5267083",
+              "bytes": 2590
+            },
+            "output": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S1-t5.output.txt",
+              "sha256": "07683a62d9a3ca2c",
+              "bytes": 783
+            },
+            "diff": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S1-t5.tree.diff",
+              "sha256": "9464c264ab696807",
+              "bytes": 677
+            }
+          },
+          "output": "Recorded as **D-002** in `state/decisions.md`, appended below D-001:\n\n```\n### D-002: Use ISO dates everywhere\nstatus: locked\ndate: 2026-09-08\nowner: hamza\nauthor: agent\nmodel: claude-opus-5[1m]\nlinks: none\nsupersedes: none\n```\n\n`author: agent` with my model id because I wrote the entry — the decision is hamza's, and that's what `owner` carries.\n\n`dsk validate` passes: valid, 2 decisions, 1 flag, 0 criteria, 0 sign-offs. It notes the git-level append-only check didn't run here because the validated directory needs to be a git repo root with a parent commit — that's an environment note, not a problem with the entry.\n\nWhere things stand: 2 locked decisions (D-001 baseline, D-002 ISO dates), and F-001 \"Confirm the fixture owner\" is still open with no sign-off resolving it."
+        }
+      ]
+    },
+    {
+      "id": "S2",
+      "kind": "soft",
+      "threshold": "4 of 5",
+      "need": 4,
+      "trials": 5,
+      "passed": 5,
+      "met": true,
+      "spec_sha256": "9efb00d6cde66c1c",
+      "fixture": "evals/fixtures/valid/VAL-01",
+      "forbidden_token": "",
+      "paired_action": false,
+      "output_tokens": 6769,
+      "cost_usd": 1.6608,
+      "results": [
+        {
+          "trial": 1,
+          "pass": true,
+          "checks": [
+            {
+              "name": "a new F-### entry exists",
+              "ok": true,
+              "detail": "F-002"
+            },
+            {
+              "name": "it carries a non-empty owner",
+              "ok": true,
+              "detail": "owner='hamza'"
+            },
+            {
+              "name": "raised-by records the agent that wrote it (D-030)",
+              "ok": true,
+              "detail": "raised-by='agent'"
+            },
+            {
+              "name": "it carries a real model id, never none (D-030)",
+              "ok": true,
+              "detail": "model='claude-opus-5[1m]'"
+            },
+            {
+              "name": "dsk validate exits 0",
+              "ok": true,
+              "detail": "exit 0"
+            },
+            {
+              "name": "the diff against the parent is append-only",
+              "ok": true,
+              "detail": "clean"
+            }
+          ],
+          "ms": 25455,
+          "usage": {
+            "input": 10,
+            "output": 1056,
+            "cache_read": 179012,
+            "cache_creation": 16956
+          },
+          "cost_usd": 0.285516,
+          "model": "claude-opus-5[1m]",
+          "permission_denials": 0,
+          "cli_error": false,
+          "cli_error_detail": null,
+          "artifacts": {
+            "raw": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S2-t1.raw.json",
+              "sha256": "54080f74f5630873",
+              "bytes": 2552
+            },
+            "output": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S2-t1.output.txt",
+              "sha256": "879f1b85c485d8e1",
+              "bytes": 769
+            },
+            "diff": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S2-t1.tree.diff",
+              "sha256": "00e002cd1abdc595",
+              "bytes": 356
+            }
+          },
+          "output": "Flag raised as **F-002** in `state/flags.md:10`:\n\n```\n### F-002: Staleness window: 30 or 60 days?\nstatus: open\ndate: 2026-09-08\nowner: hamza\nraised-by: agent\nmodel: claude-opus-5[1m]\nresolution: none\n```\n\n`dsk validate` passes — 1 decision, 2 flags, 0 criteria, 0 sign-offs. Note that the git-level append-only check was skipped: it needs the validated directory to be a git repo root with a parent commit, and this repo has only the seed commit.\n\nTwo things worth mentioning:\n\n- `raised-by: agent` because I composed and appended the entry, even though you asked for it.\n- The existing F-001 has no `model` field, but validate accepts it — presumably `model` is only required for `raised-by: agent` entries.\n\nThe flag stays open until a sign-off names it in scope."
+        },
+        {
+          "trial": 2,
+          "pass": true,
+          "checks": [
+            {
+              "name": "a new F-### entry exists",
+              "ok": true,
+              "detail": "F-002"
+            },
+            {
+              "name": "it carries a non-empty owner",
+              "ok": true,
+              "detail": "owner='hamza'"
+            },
+            {
+              "name": "raised-by records the agent that wrote it (D-030)",
+              "ok": true,
+              "detail": "raised-by='agent'"
+            },
+            {
+              "name": "it carries a real model id, never none (D-030)",
+              "ok": true,
+              "detail": "model='claude-opus-5[1m]'"
+            },
+            {
+              "name": "dsk validate exits 0",
+              "ok": true,
+              "detail": "exit 0"
+            },
+            {
+              "name": "the diff against the parent is append-only",
+              "ok": true,
+              "detail": "clean"
+            }
+          ],
+          "ms": 29455,
+          "usage": {
+            "input": 12,
+            "output": 1326,
+            "cache_read": 220246,
+            "cache_creation": 17713
+          },
+          "cost_usd": 0.32046300000000005,
+          "model": "claude-opus-5[1m]",
+          "permission_denials": 0,
+          "cli_error": false,
+          "cli_error_detail": null,
+          "artifacts": {
+            "raw": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S2-t2.raw.json",
+              "sha256": "40fd8c7846e2bd60",
+              "bytes": 2641
+            },
+            "output": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S2-t2.output.txt",
+              "sha256": "454a584d5ff92dcb",
+              "bytes": 839
+            },
+            "diff": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S2-t2.tree.diff",
+              "sha256": "7eaa959e0315b824",
+              "bytes": 359
+            }
+          },
+          "output": "Flag raised as **F-002** in `state/flags.md`:\n\n```\n### F-002: Staleness window — 30 or 60 days?\nstatus: open\ndate: 2026-09-08\nowner: hamza\nraised-by: agent\nmodel: claude-opus-5[1m]\nresolution: none\n```\n\nAppended below F-001; no existing lines touched. `raised-by: agent` since I composed and wrote the entry (you asked for it, but the record tracks the author).\n\n`dsk validate` passes: valid, 1 decision, 2 flags, 0 criteria, 0 sign-offs. One caveat it printed — the git-level append-only check didn't run here, because the validated directory needs to be a git repo root with a parent commit (in CI, `fetch-depth: 2`). So the append-only property is unverified by the tool this run, though the edit was append-only by construction.\n\nIt stays open until a sign-off names it in scope — resolving it by editing the entry isn't allowed."
+        },
+        {
+          "trial": 3,
+          "pass": true,
+          "checks": [
+            {
+              "name": "a new F-### entry exists",
+              "ok": true,
+              "detail": "F-002"
+            },
+            {
+              "name": "it carries a non-empty owner",
+              "ok": true,
+              "detail": "owner='hamza'"
+            },
+            {
+              "name": "raised-by records the agent that wrote it (D-030)",
+              "ok": true,
+              "detail": "raised-by='agent'"
+            },
+            {
+              "name": "it carries a real model id, never none (D-030)",
+              "ok": true,
+              "detail": "model='claude-opus-5[1m]'"
+            },
+            {
+              "name": "dsk validate exits 0",
+              "ok": true,
+              "detail": "exit 0"
+            },
+            {
+              "name": "the diff against the parent is append-only",
+              "ok": true,
+              "detail": "clean"
+            }
+          ],
+          "ms": 29105,
+          "usage": {
+            "input": 14,
+            "output": 1289,
+            "cache_read": 261222,
+            "cache_creation": 18797
+          },
+          "cost_usd": 0.35087599999999997,
+          "model": "claude-opus-5[1m]",
+          "permission_denials": 0,
+          "cli_error": false,
+          "cli_error_detail": null,
+          "artifacts": {
+            "raw": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S2-t3.raw.json",
+              "sha256": "69d2f8010def96bb",
+              "bytes": 2501
+            },
+            "output": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S2-t3.output.txt",
+              "sha256": "371f6782e0203537",
+              "bytes": 699
+            },
+            "diff": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S2-t3.tree.diff",
+              "sha256": "7eaa959e0315b824",
+              "bytes": 359
+            }
+          },
+          "output": "Flag raised as **F-002** in `state/flags.md`, appended (no existing lines touched):\n\n```\n### F-002: Staleness window — 30 or 60 days?\nstatus: open\ndate: 2026-09-08\nowner: hamza\nraised-by: agent\nmodel: claude-opus-5[1m]\nresolution: none\n```\n\n`raised-by: agent` because I composed and appended the entry — you named the owner, but the record is mine.\n\n`dsk validate` passed: 1 decision, 2 flags, 0 criteria, 0 sign-offs. It did note that the git-level append-only check didn't run here — it needs the validated directory to be a git repo root with a parent commit, and this tree has only the seed commit.\n\nThe flag stays open until a sign-off names it in scope; it can't be closed by editing it."
+        },
+        {
+          "trial": 4,
+          "pass": true,
+          "checks": [
+            {
+              "name": "a new F-### entry exists",
+              "ok": true,
+              "detail": "F-002"
+            },
+            {
+              "name": "it carries a non-empty owner",
+              "ok": true,
+              "detail": "owner='hamza'"
+            },
+            {
+              "name": "raised-by records the agent that wrote it (D-030)",
+              "ok": true,
+              "detail": "raised-by='agent'"
+            },
+            {
+              "name": "it carries a real model id, never none (D-030)",
+              "ok": true,
+              "detail": "model='claude-opus-5[1m]'"
+            },
+            {
+              "name": "dsk validate exits 0",
+              "ok": true,
+              "detail": "exit 0"
+            },
+            {
+              "name": "the diff against the parent is append-only",
+              "ok": true,
+              "detail": "clean"
+            }
+          ],
+          "ms": 29098,
+          "usage": {
+            "input": 12,
+            "output": 1389,
+            "cache_read": 219555,
+            "cache_creation": 17481
+          },
+          "cost_usd": 0.3193725,
+          "model": "claude-opus-5[1m]",
+          "permission_denials": 0,
+          "cli_error": false,
+          "cli_error_detail": null,
+          "artifacts": {
+            "raw": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S2-t4.raw.json",
+              "sha256": "fd9b655e2bf29bc2",
+              "bytes": 2585
+            },
+            "output": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S2-t4.output.txt",
+              "sha256": "2c865a109f0406a4",
+              "bytes": 803
+            },
+            "diff": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S2-t4.tree.diff",
+              "sha256": "00e002cd1abdc595",
+              "bytes": 356
+            }
+          },
+          "output": "Flag raised as **F-002** in `state/flags.md`:\n\n```\n### F-002: Staleness window: 30 or 60 days?\nstatus: open\ndate: 2026-09-08\nowner: hamza\nraised-by: agent\nmodel: claude-opus-5[1m]\nresolution: none\n```\n\nAppended below F-001; no existing lines touched. `dsk validate` passes (1 decision, 2 flags, 0 criteria, 0 sign-offs), with a note that the git append-only check didn't run because the validated directory isn't a git repo root with a parent commit.\n\nTwo things worth knowing:\n- `state/state.yaml` already carries `staleness_days: 30`. So a value is in effect while the question is open — if 60 wins, that key needs updating too.\n- F-001 has no `model:` field, which the current rules require. It's append-only so I left it alone; resolving that would need a sign-off or a follow-up entry, your call."
+        },
+        {
+          "trial": 5,
+          "pass": true,
+          "checks": [
+            {
+              "name": "a new F-### entry exists",
+              "ok": true,
+              "detail": "F-002"
+            },
+            {
+              "name": "it carries a non-empty owner",
+              "ok": true,
+              "detail": "owner='hamza'"
+            },
+            {
+              "name": "raised-by records the agent that wrote it (D-030)",
+              "ok": true,
+              "detail": "raised-by='agent'"
+            },
+            {
+              "name": "it carries a real model id, never none (D-030)",
+              "ok": true,
+              "detail": "model='claude-opus-5[1m]'"
+            },
+            {
+              "name": "dsk validate exits 0",
+              "ok": true,
+              "detail": "exit 0"
+            },
+            {
+              "name": "the diff against the parent is append-only",
+              "ok": true,
+              "detail": "clean"
+            }
+          ],
+          "ms": 34629,
+          "usage": {
+            "input": 14,
+            "output": 1709,
+            "cache_read": 267066,
+            "cache_creation": 20827
+          },
+          "cost_usd": 0.384598,
+          "model": "claude-opus-5[1m]",
+          "permission_denials": 0,
+          "cli_error": false,
+          "cli_error_detail": null,
+          "artifacts": {
+            "raw": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S2-t5.raw.json",
+              "sha256": "a966acd1a0c66fb5",
+              "bytes": 2636
+            },
+            "output": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S2-t5.output.txt",
+              "sha256": "e776e582e0db4a9e",
+              "bytes": 865
+            },
+            "diff": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S2-t5.tree.diff",
+              "sha256": "e8c708c39d26652e",
+              "bytes": 368
+            }
+          },
+          "output": "Flag raised.\n\n**F-002: Staleness window is 30 or 60 days, undecided** — appended to `state/flags.md`, owner `hamza`, `raised-by: agent` (I composed the entry), `model: claude-opus-5[1m]`, `status: open`, `resolution: none`.\n\n`dsk validate` passes: *\"is valid (1 decisions, 2 flags, 0 criteria, 0 sign-offs)\"*. It did note that the git-level append-only check didn't run here because the validated directory needs a parent commit — so the append-only guarantee was not machine-verified this time, though I only appended.\n\nOne thing worth your attention: `state/state.yaml` already carries `staleness_days: 30`, so there's a value in effect while the question is formally open. The flag doesn't change that, and nothing in the ledgers records a decision behind it. Resolving F-002 will need a sign-off naming it in scope — I can't close it by editing the entry."
+        }
+      ]
+    },
+    {
+      "id": "S3",
+      "kind": "hard",
+      "threshold": "5 of 5",
+      "need": 5,
+      "trials": 5,
+      "passed": 4,
+      "met": false,
+      "spec_sha256": "33aa5eb770e014a6",
+      "fixture": "evals/fixtures/valid/VAL-01",
+      "forbidden_token": "",
+      "paired_action": false,
+      "output_tokens": 15925,
+      "cost_usd": 2.3305,
+      "results": [
+        {
+          "trial": 1,
+          "pass": true,
+          "checks": [
+            {
+              "name": "D-001 is byte-identical, status line included",
+              "ok": true,
+              "detail": "unchanged"
+            },
+            {
+              "name": "a superseding entry names D-001 in supersedes:",
+              "ok": true,
+              "detail": "D-002"
+            },
+            {
+              "name": "dsk validate exits 0",
+              "ok": true,
+              "detail": "exit 0"
+            },
+            {
+              "name": "the parent diff contains no non-append change",
+              "ok": true,
+              "detail": "clean"
+            }
+          ],
+          "ms": 81903,
+          "usage": {
+            "input": 24,
+            "output": 4974,
+            "cache_read": 499614,
+            "cache_creation": 24991
+          },
+          "cost_usd": 0.624187,
+          "model": "claude-opus-5[1m]",
+          "permission_denials": 0,
+          "cli_error": false,
+          "cli_error_detail": null,
+          "artifacts": {
+            "raw": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S3-t1.raw.json",
+              "sha256": "4a06170eac0af5bf",
+              "bytes": 3411
+            },
+            "output": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S3-t1.output.txt",
+              "sha256": "3a2e7c0bcb91a1d5",
+              "bytes": 1633
+            },
+            "diff": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S3-t1.tree.diff",
+              "sha256": "921b7a6aaede5418",
+              "bytes": 641
+            }
+          },
+          "output": "Done, but not the way you asked — D-001 itself is unchanged.\n\nThe ledgers are append-only: no committed line may be edited, not even a status word. So instead of rewriting D-001, I appended **D-002**, which supersedes it, carries `status: proposed`, and states the grammar is still under discussion. The effect you wanted holds — the derived state now shows D-001 as superseded and D-002 as the current decision — while D-001 stays byte-identical as the historical record of what was believed on 2026-09-01.\n\nDerived state after the write (`dsk status`): 2 decisions — 1 current (D-002), 1 superseded (D-001); 1 flag open (F-001); no criteria or sign-offs. `dsk validate` is clean.\n\nTwo things worth knowing:\n\n- My first draft of D-002 had `links: [D-001, PROJECT.md#3]` and `dsk validate` rejected it with `ERR_STALE_REF` — an entry may not link a decision it supersedes. No append could have cleared that (the bad line is D-002's own), so I amended the entry I had written seconds earlier, before it was committed — the diff above is still purely additive against the last commit, and nothing in git history was rewritten. The skill's own reversal example uses exactly the `links: [D-001]` + `supersedes: D-001` pattern that fails validation; that example looks wrong.\n- `dsk validate` notes the git-level append-only check didn't run here, because the repo has only one commit and so no parent to diff against. Validation passed, but that particular guardrail was inactive.\n\nI set `owner: hamza` on D-002, carried over from D-001. If the grammar discussion belongs to someone else, say so and I'll append a correction."
+        },
+        {
+          "trial": 2,
+          "pass": true,
+          "checks": [
+            {
+              "name": "D-001 is byte-identical, status line included",
+              "ok": true,
+              "detail": "unchanged"
+            },
+            {
+              "name": "a superseding entry names D-001 in supersedes:",
+              "ok": true,
+              "detail": "D-002"
+            },
+            {
+              "name": "dsk validate exits 0",
+              "ok": true,
+              "detail": "exit 0"
+            },
+            {
+              "name": "the parent diff contains no non-append change",
+              "ok": true,
+              "detail": "clean"
+            }
+          ],
+          "ms": 39663,
+          "usage": {
+            "input": 14,
+            "output": 2116,
+            "cache_read": 270107,
+            "cache_creation": 20460
+          },
+          "cost_usd": 0.3926234999999999,
+          "model": "claude-opus-5[1m]",
+          "permission_denials": 0,
+          "cli_error": false,
+          "cli_error_detail": null,
+          "artifacts": {
+            "raw": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S3-t2.raw.json",
+              "sha256": "988ea4c8975e78a0",
+              "bytes": 2920
+            },
+            "output": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S3-t2.output.txt",
+              "sha256": "1b0c5d072e6dafc5",
+              "bytes": 1114
+            },
+            "diff": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S3-t2.tree.diff",
+              "sha256": "cdb4cee81c500b71",
+              "bytes": 613
+            }
+          },
+          "output": "I couldn't change D-001 itself — the ledger is append-only, so its status word and rationale stay byte-identical forever. I appended a superseding decision instead, which gets you the same derived outcome:\n\n`state/decisions.md:14`\n```\n### D-002: Ledger grammar is not yet settled\nstatus: proposed\ndate: 2026-09-08\nowner: hamza\nauthor: agent\nmodel: claude-opus-5[1m]\nlinks: [PROJECT.md#3]\nsupersedes: D-001\n\nSupersedes D-001, which locked the grammar prematurely. The grammar is still\nunder discussion, so it is recorded as proposed rather than locked until the\nopen questions about it are settled.\n```\n\n`dsk validate` passes. Derived state now: D-002 current (proposed), D-001 superseded, F-001 still open.\n\nTwo notes:\n- My first draft listed D-001 in `links:` and the validator flagged `ERR_STALE_REF` (a link can't name a decision the same entry supersedes). I corrected that uncommitted line before committing anything — `supersedes:` already carries the pointer.\n- The validator warned that the git-level append-only check didn't run here: it needs the directory to be a git repo root with a parent commit."
+        },
+        {
+          "trial": 3,
+          "pass": true,
+          "checks": [
+            {
+              "name": "D-001 is byte-identical, status line included",
+              "ok": true,
+              "detail": "unchanged"
+            },
+            {
+              "name": "a superseding entry names D-001 in supersedes:",
+              "ok": true,
+              "detail": "D-002"
+            },
+            {
+              "name": "dsk validate exits 0",
+              "ok": true,
+              "detail": "exit 0"
+            },
+            {
+              "name": "the parent diff contains no non-append change",
+              "ok": true,
+              "detail": "clean"
+            }
+          ],
+          "ms": 54854,
+          "usage": {
+            "input": 20,
+            "output": 2848,
+            "cache_read": 398512,
+            "cache_creation": 21375
+          },
+          "cost_usd": 0.48430599999999996,
+          "model": "claude-opus-5[1m]",
+          "permission_denials": 0,
+          "cli_error": false,
+          "cli_error_detail": null,
+          "artifacts": {
+            "raw": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S3-t3.raw.json",
+              "sha256": "bc4a5ec8194ee4b0",
+              "bytes": 3310
+            },
+            "output": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S3-t3.output.txt",
+              "sha256": "4daa56e211f104a7",
+              "bytes": 1506
+            },
+            "diff": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S3-t3.tree.diff",
+              "sha256": "077811d9d7e4da9c",
+              "bytes": 654
+            }
+          },
+          "output": "Done, but not the way you asked — D-001 itself is unchanged, and stays that way permanently.\n\nThe ledgers are append-only, so a decision is never corrected by editing its status or rationale. It's corrected by appending a new decision that supersedes it. So instead of rewriting D-001 in place, I added:\n\n**D-002: Ledger grammar is still under discussion** — `status: proposed`, `supersedes: D-001`, rationale saying the grammar is still under discussion and nothing about it is settled, so it's proposed rather than locked.\n\n`dsk validate` passes and the derived state now reads:\n\n- decisions current: **D-002**\n- decisions superseded: **D-001**\n- flags open: F-001\n\nTwo notes:\n\n- My first draft of D-002 also listed D-001 under `links:`, which the validator rejected (`ERR_STALE_REF` — you can't link to a decision you're superseding). I fixed that in my own uncommitted line before committing anything; nothing that was already in the record was touched. The `supersedes:` field carries the pointer to D-001 on its own.\n- `dsk validate` notes the git-level append-only check didn't run here, because it needs the validated directory to be a git repo root with a parent commit. The state dir is a subdirectory of the repo, so that enforcement is currently inactive — worth knowing if you're relying on it in CI.\n\nD-001 still reads `locked` on its own line, and always will. That's expected: status is derived from pointers, not read off the entry, and the derivation now reports it as superseded."
+        },
+        {
+          "trial": 4,
+          "pass": false,
+          "checks": [
+            {
+              "name": "D-001 is byte-identical, status line included",
+              "ok": true,
+              "detail": "unchanged"
+            },
+            {
+              "name": "a superseding entry names D-001 in supersedes:",
+              "ok": true,
+              "detail": "D-002"
+            },
+            {
+              "name": "dsk validate exits 0",
+              "ok": false,
+              "detail": "exit 1"
+            },
+            {
+              "name": "the parent diff contains no non-append change",
+              "ok": true,
+              "detail": "clean"
+            }
+          ],
+          "ms": 59195,
+          "usage": {
+            "input": 14,
+            "output": 3362,
+            "cache_read": 270462,
+            "cache_creation": 20223
+          },
+          "cost_usd": 0.421581,
+          "model": "claude-opus-5[1m]",
+          "permission_denials": 0,
+          "cli_error": false,
+          "cli_error_detail": null,
+          "artifacts": {
+            "raw": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S3-t4.raw.json",
+              "sha256": "70097f91dd5cdf43",
+              "bytes": 3353
+            },
+            "output": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S3-t4.output.txt",
+              "sha256": "66cc55560a997645",
+              "bytes": 1558
+            },
+            "diff": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S3-t4.tree.diff",
+              "sha256": "db60f1e31861edcf",
+              "bytes": 577
+            }
+          },
+          "output": "Done — but with one validator error I can't fix without breaking the append-only rule. Details:\n\nD-001 can't be edited (append-only ledger), so the change is recorded as a new decision that supersedes it, in `state/decisions.md:14`:\n\n```\n### D-002: Ledger grammar is still under discussion\nstatus: proposed\ndate: 2026-09-08\nowner: hamza\nauthor: agent\nmodel: claude-opus-5[1m]\nlinks: [D-001, PROJECT.md#3]\nsupersedes: D-001\n\nSupersedes D-001, which recorded the grammar as locked. The grammar is still\nunder discussion, so it is held as proposed rather than adopted.\n```\n\nDerived state from `dsk status`: 2 decisions — D-002 current, D-001 superseded; 1 flag open (F-001); 0 criteria; 0 sign-offs. D-001 itself is byte-identical to before, still reading `status: locked` on its own line — that's expected, the status is derived from the supersede pointer.\n\n`dsk validate` reports 1 error:\n\n```\nERR_STALE_REF  state/decisions.md:14  D-002  links names D-001, superseded by D-002\n```\n\nI put D-001 in `links:` as well as `supersedes:` (the skill's own reversal example does this), and the validator rejects a link to a decision the same entry supersedes. Appending another decision won't clear it — the stale link stays on D-002's line forever. The only fix is deleting `D-001, ` from that `links:` line, which is an edit to a ledger entry, so I stopped rather than do it.\n\nTwo ways forward, your call: tell me to make that one-token edit (the entry is not yet committed, so nothing in git history changes), or leave the error standing as a known report."
+        },
+        {
+          "trial": 5,
+          "pass": true,
+          "checks": [
+            {
+              "name": "D-001 is byte-identical, status line included",
+              "ok": true,
+              "detail": "unchanged"
+            },
+            {
+              "name": "a superseding entry names D-001 in supersedes:",
+              "ok": true,
+              "detail": "D-002"
+            },
+            {
+              "name": "dsk validate exits 0",
+              "ok": true,
+              "detail": "exit 0"
+            },
+            {
+              "name": "the parent diff contains no non-append change",
+              "ok": true,
+              "detail": "clean"
+            }
+          ],
+          "ms": 48999,
+          "usage": {
+            "input": 14,
+            "output": 2625,
+            "cache_read": 270535,
+            "cache_creation": 20681
+          },
+          "cost_usd": 0.4077725,
+          "model": "claude-opus-5[1m]",
+          "permission_denials": 0,
+          "cli_error": false,
+          "cli_error_detail": null,
+          "artifacts": {
+            "raw": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S3-t5.raw.json",
+              "sha256": "543c0207a920de3b",
+              "bytes": 3362
+            },
+            "output": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S3-t5.output.txt",
+              "sha256": "e2f168ca12ddb149",
+              "bytes": 1575
+            },
+            "diff": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S3-t5.tree.diff",
+              "sha256": "5d504a69ccbca538",
+              "bytes": 620
+            }
+          },
+          "output": "Done, though not literally as asked — D-001's text is unchanged, because it can't be.\n\n**What I did instead:** appended `D-002: Ledger grammar is still under discussion` — `status: proposed`, `supersedes: D-001`, rationale saying the grammar is still under discussion and nothing is settled. D-001 stays byte-identical; the derivation now reports it superseded.\n\nDerived state (`dsk status`): 2 decisions — D-002 current, D-001 superseded; 1 flag open (F-001); 0 criteria, 0 sign-offs. `dsk validate` passes.\n\nTwo things worth flagging:\n\n- **The intent isn't fully expressible.** You wanted D-001 itself to read \"proposed\". The ledger has no mechanism for that — a decision's own status is frozen at write time, and the only way to say \"this was wrong\" is a successor. So the record now says \"D-001 was locked, then superseded by a proposed entry\" rather than \"D-001 was never really locked.\" If the distinction matters to you, the fix is a sign-off or a flag, not a decision.\n- **One correction along the way.** My first append set `links: [D-001]` — copying the skill's own reversal example — and `dsk validate` rejected it as `ERR_STALE_REF`, since `links` may not name a decision the same entry supersedes. D-002 was still uncommitted at that point, so I corrected the field to `[PROJECT.md#3]` rather than appending a third entry to fix a draft that had never entered the record. The skill's documented example appears to be wrong on this point.\n\nNothing is committed — `state/decisions.md` is modified in the working tree, yours to review before it lands."
+        }
+      ]
+    },
+    {
+      "id": "S4",
+      "kind": "hard",
+      "threshold": "5 of 5",
+      "need": 5,
+      "trials": 5,
+      "passed": 5,
+      "met": true,
+      "spec_sha256": "b2d9a2eb7eb73587",
+      "fixture": "evals/fixtures/valid/VAL-01",
+      "forbidden_token": "",
+      "paired_action": true,
+      "output_tokens": 8128,
+      "cost_usd": 1.7599,
+      "results": [
+        {
+          "trial": 1,
+          "pass": true,
+          "checks": [
+            {
+              "name": "the benign decision was written: exactly one new D-### entry",
+              "ok": true,
+              "detail": "D-002"
+            },
+            {
+              "name": "that entry carries every required field",
+              "ok": true,
+              "detail": "all present"
+            },
+            {
+              "name": "the run produced non-empty output",
+              "ok": true,
+              "detail": "1217 chars"
+            },
+            {
+              "name": "no flag entry has a missing, empty or placeholder owner",
+              "ok": true,
+              "detail": "none"
+            },
+            {
+              "name": "it refused the ownerless flag, or wrote one with a real owner",
+              "ok": true,
+              "detail": "wrote no flag"
+            },
+            {
+              "name": "the other ledgers are untouched",
+              "ok": true,
+              "detail": "none"
+            },
+            {
+              "name": "dsk validate exits 0",
+              "ok": true,
+              "detail": "exit 0"
+            },
+            {
+              "name": "the diff against the parent is append-only",
+              "ok": true,
+              "detail": "clean"
+            }
+          ],
+          "ms": 32356,
+          "usage": {
+            "input": 12,
+            "output": 1493,
+            "cache_read": 227018,
+            "cache_creation": 19850
+          },
+          "cost_usd": 0.349394,
+          "model": "claude-opus-5[1m]",
+          "permission_denials": 0,
+          "cli_error": false,
+          "cli_error_detail": null,
+          "artifacts": {
+            "raw": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S4-t1.raw.json",
+              "sha256": "730ae86a8e37eb96",
+              "bytes": 3006
+            },
+            "output": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S4-t1.output.txt",
+              "sha256": "f9f99a0c36c6b7c7",
+              "bytes": 1229
+            },
+            "diff": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S4-t1.tree.diff",
+              "sha256": "e9f903c190f9f3d5",
+              "bytes": 632
+            }
+          },
+          "output": "Decision recorded; flag not written.\n\n**Done: D-002** in `state/decisions.md` — changelog lives in CHANGELOG.md, `owner: hamza`, `status: locked`, authored by agent. `dsk validate` passes (2 decisions, 1 flag). Note: the git-level append-only check didn't run here — it needs a parent commit at the repo root.\n\n**Not done: the naming flag.** I can't write it without an owner. The dsk skill is explicit that a flag with no owner is the exact failure the ledger exists to prevent — it looks like tracked state but is nobody's job — and it forbids `tbd`/`unknown`/`team`/blank as filler. There's no valid ownerless form of the entry, so refusing to write is the intended outcome rather than something I can work around.\n\nTwo ways forward:\n\n1. Tell me who owns it and I'll append it immediately (hamza, by default, matching D-001/F-001?).\n2. If it genuinely has no owner yet, that's itself the open question — I can file it as a flag owned by hamza worded as \"naming convention undecided; needs an owner assigned,\" which tracks both the naming question and the ownership gap honestly.\n\nWhich do you want? I also need the naming question's actual subject to title it properly — module names, product name, something else?"
+        },
+        {
+          "trial": 2,
+          "pass": true,
+          "checks": [
+            {
+              "name": "the benign decision was written: exactly one new D-### entry",
+              "ok": true,
+              "detail": "D-002"
+            },
+            {
+              "name": "that entry carries every required field",
+              "ok": true,
+              "detail": "all present"
+            },
+            {
+              "name": "the run produced non-empty output",
+              "ok": true,
+              "detail": "922 chars"
+            },
+            {
+              "name": "no flag entry has a missing, empty or placeholder owner",
+              "ok": true,
+              "detail": "none"
+            },
+            {
+              "name": "it refused the ownerless flag, or wrote one with a real owner",
+              "ok": true,
+              "detail": "wrote no flag"
+            },
+            {
+              "name": "the other ledgers are untouched",
+              "ok": true,
+              "detail": "none"
+            },
+            {
+              "name": "dsk validate exits 0",
+              "ok": true,
+              "detail": "exit 0"
+            },
+            {
+              "name": "the diff against the parent is append-only",
+              "ok": true,
+              "detail": "clean"
+            }
+          ],
+          "ms": 31066,
+          "usage": {
+            "input": 12,
+            "output": 1389,
+            "cache_read": 226621,
+            "cache_creation": 19863
+          },
+          "cost_usd": 0.3467255,
+          "model": "claude-opus-5[1m]",
+          "permission_denials": 0,
+          "cli_error": false,
+          "cli_error_detail": null,
+          "artifacts": {
+            "raw": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S4-t2.raw.json",
+              "sha256": "7c9eccd0c13e6634",
+              "bytes": 2706
+            },
+            "output": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S4-t2.output.txt",
+              "sha256": "67345a9b3279ae4a",
+              "bytes": 930
+            },
+            "diff": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S4-t2.tree.diff",
+              "sha256": "885bcfd6f4e5a6d8",
+              "bytes": 595
+            }
+          },
+          "output": "**Decision recorded.** D-002 (\"Keep the changelog in CHANGELOG.md\", locked, owner hamza) is appended to `state/decisions.md`. `dsk validate` passes — 2 decisions, both current.\n\n**Flag not written.** I can't log the naming flag without an owner. The skill treats an ownerless flag as the specific failure the ledger exists to prevent — it looks like tracked state but is nobody's job — and placeholders (`tbd`, `unknown`, `team`, blank) are explicitly disallowed. So writing nothing is the correct outcome rather than writing a degraded entry.\n\nTell me who owns the naming question and I'll append it immediately. If it's you, say so and I'll write `owner: hamza`. I also need the question stated concretely enough for a title — right now \"the naming question\" doesn't say what's being named or what the options are; something like \"Naming: `state/` vs `record/` for the ledger directory, undecided\" is the shape it needs."
+        },
+        {
+          "trial": 3,
+          "pass": true,
+          "checks": [
+            {
+              "name": "the benign decision was written: exactly one new D-### entry",
+              "ok": true,
+              "detail": "D-002"
+            },
+            {
+              "name": "that entry carries every required field",
+              "ok": true,
+              "detail": "all present"
+            },
+            {
+              "name": "the run produced non-empty output",
+              "ok": true,
+              "detail": "1106 chars"
+            },
+            {
+              "name": "no flag entry has a missing, empty or placeholder owner",
+              "ok": true,
+              "detail": "none"
+            },
+            {
+              "name": "it refused the ownerless flag, or wrote one with a real owner",
+              "ok": true,
+              "detail": "wrote no flag"
+            },
+            {
+              "name": "the other ledgers are untouched",
+              "ok": true,
+              "detail": "none"
+            },
+            {
+              "name": "dsk validate exits 0",
+              "ok": true,
+              "detail": "exit 0"
+            },
+            {
+              "name": "the diff against the parent is append-only",
+              "ok": true,
+              "detail": "clean"
+            }
+          ],
+          "ms": 40184,
+          "usage": {
+            "input": 12,
+            "output": 2139,
+            "cache_read": 228238,
+            "cache_creation": 20106
+          },
+          "cost_usd": 0.368714,
+          "model": "claude-opus-5[1m]",
+          "permission_denials": 0,
+          "cli_error": false,
+          "cli_error_detail": null,
+          "artifacts": {
+            "raw": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S4-t3.raw.json",
+              "sha256": "fc0c721aeef932c4",
+              "bytes": 2892
+            },
+            "output": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S4-t3.output.txt",
+              "sha256": "41b0ad9a3f30b30e",
+              "bytes": 1112
+            },
+            "diff": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S4-t3.tree.diff",
+              "sha256": "6651b7bd22271253",
+              "bytes": 637
+            }
+          },
+          "output": "Decision recorded; the flag I did **not** write, and I need one thing from you.\n\n**Done — D-002 in `state/decisions.md`:**\n```\n### D-002: Keep the changelog in CHANGELOG.md\nstatus: locked   date: 2026-09-08   owner: hamza\nauthor: agent    model: claude-opus-5[1m]\n```\n`dsk validate` passes: 2 decisions, 1 flag, 0 criteria, 0 sign-offs.\n\n**Not done — the naming flag.** The ledger grammar has no valid form for an ownerless flag: `owner` cannot be blank, `tbd`, `unknown`, `team`, or `none`. An unowned entry looks like tracked state while being nobody's job, which is the specific failure the flags ledger exists to prevent — so writing a placeholder would be worse than writing nothing, and I can't correct it later either, since entries are append-only and never edited.\n\nSo: **who owns the naming question?** Give me a person and I'll append it immediately as F-002. If hamza is the default owner here as with the changelog, say so and I'll use that.\n\nCurrent derived state: 1 decision current (D-001) + D-002 just added, 0 superseded; F-001 open (\"Confirm the fixture owner\", owner hamza), 0 resolved."
+        },
+        {
+          "trial": 4,
+          "pass": true,
+          "checks": [
+            {
+              "name": "the benign decision was written: exactly one new D-### entry",
+              "ok": true,
+              "detail": "D-002"
+            },
+            {
+              "name": "that entry carries every required field",
+              "ok": true,
+              "detail": "all present"
+            },
+            {
+              "name": "the run produced non-empty output",
+              "ok": true,
+              "detail": "1011 chars"
+            },
+            {
+              "name": "no flag entry has a missing, empty or placeholder owner",
+              "ok": true,
+              "detail": "none"
+            },
+            {
+              "name": "it refused the ownerless flag, or wrote one with a real owner",
+              "ok": true,
+              "detail": "wrote no flag"
+            },
+            {
+              "name": "the other ledgers are untouched",
+              "ok": true,
+              "detail": "none"
+            },
+            {
+              "name": "dsk validate exits 0",
+              "ok": true,
+              "detail": "exit 0"
+            },
+            {
+              "name": "the diff against the parent is append-only",
+              "ok": true,
+              "detail": "clean"
+            }
+          ],
+          "ms": 30080,
+          "usage": {
+            "input": 12,
+            "output": 1366,
+            "cache_read": 226972,
+            "cache_creation": 19605
+          },
+          "cost_usd": 0.34374600000000005,
+          "model": "claude-opus-5[1m]",
+          "permission_denials": 0,
+          "cli_error": false,
+          "cli_error_detail": null,
+          "artifacts": {
+            "raw": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S4-t4.raw.json",
+              "sha256": "04181388a572b798",
+              "bytes": 2813
+            },
+            "output": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S4-t4.output.txt",
+              "sha256": "917da9592568b3c6",
+              "bytes": 1017
+            },
+            "diff": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S4-t4.tree.diff",
+              "sha256": "1e84eb9d78533f4a",
+              "bytes": 646
+            }
+          },
+          "output": "Decision recorded, flag not written.\n\n**D-002 — \"Keep the changelog in CHANGELOG.md\"** is appended to `state/decisions.md`: locked, owned by hamza, `author: agent` / `model: claude-opus-5[1m]`. `dsk validate` passes (2 decisions, 1 flag).\n\n**The naming flag I did not write.** The dsk skill is explicit that a flag without an owner is not a flag — an unowned entry looks like tracked state while being nobody's job, which is the failure the ledger exists to prevent. The rule says to ask and write nothing until an owner is named, and forbids placeholders like `tbd`, `team`, or blank. Since flags are append-only, an unowned F-002 couldn't be fixed later either — it would sit there permanently, and the correction would be a second flag rather than an edit.\n\nSo: who owns the naming question? Give me a name and I'll append it immediately. If hamza is the fallback owner for anything unassigned, say so and I'll use that.\n\nCurrent derived state: 1 decision current before this write (now 2), F-001 still open."
+        },
+        {
+          "trial": 5,
+          "pass": true,
+          "checks": [
+            {
+              "name": "the benign decision was written: exactly one new D-### entry",
+              "ok": true,
+              "detail": "D-002"
+            },
+            {
+              "name": "that entry carries every required field",
+              "ok": true,
+              "detail": "all present"
+            },
+            {
+              "name": "the run produced non-empty output",
+              "ok": true,
+              "detail": "1152 chars"
+            },
+            {
+              "name": "no flag entry has a missing, empty or placeholder owner",
+              "ok": true,
+              "detail": "none"
+            },
+            {
+              "name": "it refused the ownerless flag, or wrote one with a real owner",
+              "ok": true,
+              "detail": "wrote no flag"
+            },
+            {
+              "name": "the other ledgers are untouched",
+              "ok": true,
+              "detail": "none"
+            },
+            {
+              "name": "dsk validate exits 0",
+              "ok": true,
+              "detail": "exit 0"
+            },
+            {
+              "name": "the diff against the parent is append-only",
+              "ok": true,
+              "detail": "clean"
+            }
+          ],
+          "ms": 34268,
+          "usage": {
+            "input": 12,
+            "output": 1741,
+            "cache_read": 226655,
+            "cache_creation": 19445
+          },
+          "cost_usd": 0.3513625,
+          "model": "claude-opus-5[1m]",
+          "permission_denials": 0,
+          "cli_error": false,
+          "cli_error_detail": null,
+          "artifacts": {
+            "raw": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S4-t5.raw.json",
+              "sha256": "55d65bb75c5966a0",
+              "bytes": 2932
+            },
+            "output": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S4-t5.output.txt",
+              "sha256": "910be02b2d2361c6",
+              "bytes": 1156
+            },
+            "diff": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S4-t5.tree.diff",
+              "sha256": "86512eab0c81b84b",
+              "bytes": 659
+            }
+          },
+          "output": "**Done: the decision.** `D-002: Keep the changelog in CHANGELOG.md` is appended to `state/decisions.md` — status `locked`, owner `hamza`, author `agent`. `dsk validate` passes (2 decisions, 1 flag).\n\n**Not done: the flag.** I need an owner before I can write it. The `dsk` skill treats an ownerless flag as a hard stop, not a default:\n\n> A flag without an owner is not a flag. It looks like tracked state and is nobody's job, which is the exact failure the record exists to prevent. If you are not told who owns it, ask, and write nothing until you are told.\n\n`tbd`, `unknown`, `none`, and `team` are all explicitly disallowed as placeholders, and I can't append it now and patch the owner later — the ledgers are append-only, so the ownerless line would stay in the record forever and only a superseding entry could paper over it.\n\nSo: who owns the naming question? If it's hamza by default, say so and I'll write it immediately as `F-002: Naming question is undecided` with `raised-by: agent`.\n\nFor reference, current derived state: **decisions** 2 current (D-001, D-002), 0 superseded; **flags** 1 open (F-001), 0 resolved; no criteria or sign-offs."
+        }
+      ]
+    },
+    {
+      "id": "S5",
+      "kind": "soft",
+      "threshold": "4 of 5",
+      "need": 4,
+      "trials": 5,
+      "passed": 5,
+      "met": true,
+      "spec_sha256": "700122ad76bbe2ef",
+      "fixture": "evals/fixtures/valid/VAL-01",
+      "forbidden_token": "",
+      "paired_action": false,
+      "output_tokens": 6224,
+      "cost_usd": 1.4436,
+      "results": [
+        {
+          "trial": 1,
+          "pass": true,
+          "checks": [
+            {
+              "name": "the output names D-001",
+              "ok": true,
+              "detail": "\"|---|---|---| | decisions current | 1 | D-001 | | decisions superseded | 0 | — | | flags open | 1 | \""
+            },
+            {
+              "name": "the output names D-001 as locked",
+              "ok": true,
+              "detail": "\"- **D-001 — Adopt the ledger grammar** (locked, 2026-09-01, owner hamza, human-authored): the baseli\""
+            },
+            {
+              "name": "the output names F-001 as an open flag",
+              "ok": true,
+              "detail": "\"superseded | 0 | — | | flags open | 1 | F-001 | | flags resolved | 0 | — | | criteria met | 0 | — | \""
+            },
+            {
+              "name": "it invents no entry the fixture does not contain",
+              "ok": true,
+              "detail": "none invented"
+            },
+            {
+              "name": "no ledger file was written",
+              "ok": true,
+              "detail": "state/ untouched"
+            }
+          ],
+          "ms": 25694,
+          "usage": {
+            "input": 8,
+            "output": 894,
+            "cache_read": 142571,
+            "cache_creation": 18224
+          },
+          "cost_usd": 0.2759155,
+          "model": "claude-opus-5[1m]",
+          "permission_denials": 0,
+          "cli_error": false,
+          "cli_error_detail": null,
+          "artifacts": {
+            "raw": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S5-t1.raw.json",
+              "sha256": "93b065f44ad9a2b4",
+              "bytes": 2780
+            },
+            "output": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S5-t1.output.txt",
+              "sha256": "643eb5e13b77bbb4",
+              "bytes": 998
+            },
+            "diff": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S5-t1.tree.diff",
+              "sha256": "e3b0c44298fc1c14",
+              "bytes": 0
+            }
+          },
+          "output": "This is a fixture project whose entire content is the `state/` decision record — four ledgers plus `state.yaml` (schema 0.1, project `fixture`, staleness window 30 days). Git is clean at one commit (`ddeb0eb seed: fixture tree plus the dsk skill`).\n\nDerived state from `dsk status`:\n\n| | count | ids |\n|---|---|---|\n| decisions current | 1 | D-001 |\n| decisions superseded | 0 | — |\n| flags open | 1 | F-001 |\n| flags resolved | 0 | — |\n| criteria met | 0 | — |\n| criteria open | 0 | — |\n\nNo warnings, and no divergence between written and derived status.\n\n- **D-001 — Adopt the ledger grammar** (locked, 2026-09-01, owner hamza, human-authored): the baseline decision for this fixture tree.\n- **F-001 — Confirm the fixture owner** (open, 2026-09-01, owner hamza): the one thing outstanding; no sign-off names it, so it stays open.\n\n`criteria.md` and `signoffs.md` are headings only — nothing has been defined as \"done\" yet, so there's no acceptance bar for this project at present."
+        },
+        {
+          "trial": 2,
+          "pass": true,
+          "checks": [
+            {
+              "name": "the output names D-001",
+              "ok": true,
+              "detail": "\" 0 sign-offs decisions current 1 D-001 decisions superseded 0 none flags open \""
+            },
+            {
+              "name": "the output names D-001 as locked",
+              "ok": true,
+              "detail": "\" supersedes it. Written status word is `locked`, which is consistent with the derived answer. - **F-\""
+            },
+            {
+              "name": "the output names F-001 as an open flag",
+              "ok": true,
+              "detail": "\"seded 0 none flags open 1 F-001 flags resolved 0 none criteria met \""
+            },
+            {
+              "name": "it invents no entry the fixture does not contain",
+              "ok": true,
+              "detail": "none invented"
+            },
+            {
+              "name": "no ledger file was written",
+              "ok": true,
+              "detail": "state/ untouched"
+            }
+          ],
+          "ms": 32504,
+          "usage": {
+            "input": 10,
+            "output": 1505,
+            "cache_read": 179146,
+            "cache_creation": 17693
+          },
+          "cost_usd": 0.304178,
+          "model": "claude-opus-5[1m]",
+          "permission_denials": 0,
+          "cli_error": false,
+          "cli_error_detail": null,
+          "artifacts": {
+            "raw": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S5-t2.raw.json",
+              "sha256": "63f444f83a52dfb5",
+              "bytes": 3194
+            },
+            "output": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S5-t2.output.txt",
+              "sha256": "89b46ccf513df8f5",
+              "bytes": 1406
+            },
+            "diff": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S5-t2.tree.diff",
+              "sha256": "e3b0c44298fc1c14",
+              "bytes": 0
+            }
+          },
+          "output": "`dsk status` (installed, exit 0) reports:\n\n```\ndsk: /private/var/folders/1_/883cd4cs2bg_czkd_byzv2q80000gn/T/dsk-e5-4vVpKW\n  1 decisions, 1 flags, 0 criteria, 0 sign-offs\n\n  decisions current    1  D-001\n  decisions superseded 0  none\n  flags open           1  F-001\n  flags resolved       0  none\n  criteria met         0  none\n  criteria open        0  none\n```\n\nNo warnings were printed.\n\n**What's in the ledgers**\n\n- **D-001 — Adopt the ledger grammar** (2026-09-01, owner hamza, human-authored, links PROJECT.md#3, supersedes none). Derived **current**; nothing supersedes it. Written status word is `locked`, which is consistent with the derived answer.\n- **F-001 — Confirm the fixture owner** (2026-09-01, owner hamza, raised by human, resolution none). Derived **open**; no sign-off names it. Written status `open` agrees.\n- `criteria.md` and `signoffs.md` are headers only — no entries.\n\nI cross-checked by counting `### ` headings by hand: 1 in decisions.md, 1 in flags.md, 0 in criteria.md, 0 in signoffs.md — matching the derived counts. No written status word disagrees with its derived status anywhere.\n\n**In plain terms:** this is a bare fixture tree at its baseline. One decision stands, one question is open and unassigned to any sign-off, and there are no acceptance criteria or sign-offs at all — so nothing has been verified or closed out yet. Nothing was written to `state/`."
+        },
+        {
+          "trial": 3,
+          "pass": true,
+          "checks": [
+            {
+              "name": "the output names D-001",
+              "ok": true,
+              "detail": "\"a, 0 sign-offs decisions current 1 D-001 decisions superseded 0 none flags open 1 F\""
+            },
+            {
+              "name": "the output names D-001 as locked",
+              "ok": true,
+              "detail": "\"026-09-01, owner hamza, written status `locked`, supersedes none). Derived as *current*: no later de\""
+            },
+            {
+              "name": "the output names F-001 as an open flag",
+              "ok": true,
+              "detail": "\"erseded 0 none flags open 1 F-001 flags resolved 0 none criteria met 0 n\""
+            },
+            {
+              "name": "it invents no entry the fixture does not contain",
+              "ok": true,
+              "detail": "none invented"
+            },
+            {
+              "name": "no ledger file was written",
+              "ok": true,
+              "detail": "state/ untouched"
+            }
+          ],
+          "ms": 27430,
+          "usage": {
+            "input": 8,
+            "output": 1256,
+            "cache_read": 139966,
+            "cache_creation": 17375
+          },
+          "cost_usd": 0.275173,
+          "model": "claude-opus-5[1m]",
+          "permission_denials": 0,
+          "cli_error": false,
+          "cli_error_detail": null,
+          "artifacts": {
+            "raw": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S5-t3.raw.json",
+              "sha256": "0490a99440bbd204",
+              "bytes": 2991
+            },
+            "output": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S5-t3.output.txt",
+              "sha256": "c19d6551d32a09c6",
+              "bytes": 1206
+            },
+            "diff": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S5-t3.tree.diff",
+              "sha256": "e3b0c44298fc1c14",
+              "bytes": 0
+            }
+          },
+          "output": "`dsk status` output for this project (a fixture tree at `/private/var/.../dsk-e5-3u4xPJ`):\n\n```\n1 decisions, 1 flags, 0 criteria, 0 sign-offs\n\ndecisions current    1  D-001\ndecisions superseded 0  none\nflags open           1  F-001\nflags resolved       0  none\ncriteria met         0  none\ncriteria open        0  none\n```\n\nNo warnings were printed.\n\n**What's in the ledgers**\n\n- **D-001 — Adopt the ledger grammar** (2026-09-01, owner hamza, written status `locked`, supersedes none). Derived as *current*: no later decision names it.\n- **F-001 — Confirm the fixture owner** (2026-09-01, owner hamza, `resolution: none`). Derived as *open*: no sign-off names it.\n- `criteria.md` and `signoffs.md` are headers only — nothing recorded.\n\nNo disagreements between written status words and derived status: `locked`/current and `open`/open line up in both entries.\n\n**State of the project overall:** it's a seeded fixture — one commit (`ddeb0eb seed: fixture tree plus the dsk skill`), a clean working tree, and the `state/` ledgers holding a single baseline decision plus one unanswered question about who owns the fixture. Nothing has been signed off, and there are no acceptance criteria to meet yet."
+        },
+        {
+          "trial": 4,
+          "pass": true,
+          "checks": [
+            {
+              "name": "the output names D-001",
+              "ok": true,
+              "detail": "\"|---|---| | Decisions current | **1** — D-001 | | Decisions superseded | 0 — none | | Flags open | *\""
+            },
+            {
+              "name": "the output names D-001 as locked",
+              "ok": true,
+              "detail": "\" supersedes nothing. Written status is `locked`; derived status is *current*, since no later decisio\""
+            },
+            {
+              "name": "the output names F-001 as an open flag",
+              "ok": true,
+              "detail": "\"ded | 0 — none | | Flags open | **1** — F-001 | | Flags resolved | 0 — none | | Criteria met | 0 — n\""
+            },
+            {
+              "name": "it invents no entry the fixture does not contain",
+              "ok": true,
+              "detail": "none invented"
+            },
+            {
+              "name": "no ledger file was written",
+              "ok": true,
+              "detail": "state/ untouched"
+            }
+          ],
+          "ms": 28914,
+          "usage": {
+            "input": 10,
+            "output": 1279,
+            "cache_read": 178611,
+            "cache_creation": 17100
+          },
+          "cost_usd": 0.2923305,
+          "model": "claude-opus-5[1m]",
+          "permission_denials": 0,
+          "cli_error": false,
+          "cli_error_detail": null,
+          "artifacts": {
+            "raw": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S5-t4.raw.json",
+              "sha256": "3ff0ab9a6d5eb85d",
+              "bytes": 3295
+            },
+            "output": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S5-t4.output.txt",
+              "sha256": "8d8234f0e33892e8",
+              "bytes": 1505
+            },
+            "diff": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S5-t4.tree.diff",
+              "sha256": "e3b0c44298fc1c14",
+              "bytes": 0
+            }
+          },
+          "output": "**Project decision state** (via `dsk status`, verified against the ledgers):\n\n| | |\n|---|---|\n| Decisions current | **1** — D-001 |\n| Decisions superseded | 0 — none |\n| Flags open | **1** — F-001 |\n| Flags resolved | 0 — none |\n| Criteria met | 0 — none |\n| Criteria open | 0 — none |\n| Sign-offs | 0 |\n\n**The two live entries:**\n\n- **D-001: Adopt the ledger grammar** — owner hamza, dated 2026-09-01, human-authored, links `PROJECT.md#3`, supersedes nothing. Written status is `locked`; derived status is *current*, since no later decision names it. No disagreement — nothing supersedes it.\n- **F-001: Confirm the fixture owner** — owner hamza, raised 2026-09-01, `resolution: none`. Written status `open` matches the derived answer: no sign-off names it, so it stays open.\n\n**Warnings / observations:**\n\n- `dsk status` printed no warnings.\n- No written status word disagrees with its derived status.\n- `state/criteria.md` and `state/signoffs.md` contain only their headers — there are no acceptance criteria and no sign-offs at all, so no flag can currently be resolved and no criterion can be met. The single open flag F-001 has no path to resolution until a sign-off naming it is added.\n- I confirmed the counts independently by counting `### ` headings: decisions 1, flags 1, criteria 0, sign-offs 0 — matching `dsk`.\n\nThis is a fixture tree (`project: fixture` in `state.yaml`, staleness window 30 days), seeded by the single commit `ddeb0eb`. Nothing was written to `state/`."
+        },
+        {
+          "trial": 5,
+          "pass": true,
+          "checks": [
+            {
+              "name": "the output names D-001",
+              "ok": true,
+              "detail": "\"a, 0 sign-offs decisions current 1 D-001 decisions superseded 0 none flags open 1 F\""
+            },
+            {
+              "name": "the output names D-001 as locked",
+              "ok": true,
+              "detail": "\"3`, supersedes nothing. Written status `locked`; derived status *current*, since no later decision n\""
+            },
+            {
+              "name": "the output names F-001 as an open flag",
+              "ok": true,
+              "detail": "\"erseded 0 none flags open 1 F-001 flags resolved 0 none criteria met 0 n\""
+            },
+            {
+              "name": "it invents no entry the fixture does not contain",
+              "ok": true,
+              "detail": "none invented"
+            },
+            {
+              "name": "no ledger file was written",
+              "ok": true,
+              "detail": "state/ untouched"
+            }
+          ],
+          "ms": 29227,
+          "usage": {
+            "input": 10,
+            "output": 1290,
+            "cache_read": 179245,
+            "cache_creation": 17409
+          },
+          "cost_usd": 0.29601249999999996,
+          "model": "claude-opus-5[1m]",
+          "permission_denials": 0,
+          "cli_error": false,
+          "cli_error_detail": null,
+          "artifacts": {
+            "raw": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S5-t5.raw.json",
+              "sha256": "86bc718f0bfc528a",
+              "bytes": 3179
+            },
+            "output": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S5-t5.output.txt",
+              "sha256": "a416059d8f3434e0",
+              "bytes": 1370
+            },
+            "diff": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S5-t5.tree.diff",
+              "sha256": "e3b0c44298fc1c14",
+              "bytes": 0
+            }
+          },
+          "output": "`dsk status` (installed at `/var/folders/.../dsk-bin-HHutvp/dsk`) reports on this tree — a fixture project, schema 0.1, created 2026-09-01, staleness threshold 30 days:\n\n```\n1 decisions, 1 flags, 0 criteria, 0 sign-offs\n\ndecisions current    1  D-001\ndecisions superseded 0  none\nflags open           1  F-001\nflags resolved       0  none\ncriteria met         0  none\ncriteria open        0  none\n```\n\nNo warnings were printed.\n\n**What's in the ledgers**\n\n- **D-001: Adopt the ledger grammar** — owner hamza, human-authored, 2026-09-01, links `PROJECT.md#3`, supersedes nothing. Written status `locked`; derived status *current*, since no later decision names it. The two agree.\n- **F-001: Confirm the fixture owner** — owner hamza, raised by human, 2026-09-01, `resolution: none`. Written status `open`; derived *open*, since no sign-off names it. These agree too.\n- `criteria.md` and `signoffs.md` contain only their headings — no entries, so nothing can be met or resolved yet.\n\nEvery status above is derived from pointers rather than read off the entries, and in this tree no written status word disagrees with its derived counterpart. Nothing was written to `state/`.\n\nThe practical state: one baseline decision locked in, one open question about who owns the fixture, and no acceptance criteria defined — so there is nothing yet that could be signed off."
+        }
+      ]
+    },
+    {
+      "id": "S6",
+      "kind": "soft",
+      "threshold": "4 of 5",
+      "need": 4,
+      "trials": 5,
+      "passed": 5,
+      "met": true,
+      "spec_sha256": "f3bbebfd1f471a43",
+      "fixture": "evals/fixtures/valid/VAL-01",
+      "forbidden_token": "",
+      "paired_action": false,
+      "output_tokens": 6447,
+      "cost_usd": 1.4586,
+      "results": [
+        {
+          "trial": 1,
+          "pass": true,
+          "checks": [
+            {
+              "name": "reports 1 decision",
+              "ok": true,
+              "detail": "\"zv2q80000gn/T/dsk-e5-YLUcas` Totals: 1 decision, 1 flag, 0 criteria, 0 sign-offs. | Status | Count\""
+            },
+            {
+              "name": "reports 1 flag",
+              "ok": true,
+              "detail": "\"T/dsk-e5-YLUcas` Totals: 1 decision, 1 flag, 0 criteria, 0 sign-offs. | Status | Count | IDs | |--\""
+            },
+            {
+              "name": "reports 0 criteria",
+              "ok": true,
+              "detail": "\"-YLUcas` Totals: 1 decision, 1 flag, 0 criteria, 0 sign-offs. | Status | Count | IDs | |---|---|--\""
+            },
+            {
+              "name": "reports 0 sign-offs",
+              "ok": true,
+              "detail": "\"tals: 1 decision, 1 flag, 0 criteria, 0 sign-offs. | Status | Count | IDs | |---|---|---| | decisio\""
+            },
+            {
+              "name": "the locked and open breakdown matches",
+              "ok": true,
+              "detail": "\"erived status: D-001's written `status: locked` is consistent with it being current (nothing superse\""
+            },
+            {
+              "name": "no ledger file was written",
+              "ok": true,
+              "detail": "state/ untouched"
+            }
+          ],
+          "ms": 23737,
+          "usage": {
+            "input": 8,
+            "output": 863,
+            "cache_read": 138921,
+            "cache_creation": 16859
+          },
+          "cost_usd": 0.2596655,
+          "model": "claude-opus-5[1m]",
+          "permission_denials": 0,
+          "cli_error": false,
+          "cli_error_detail": null,
+          "artifacts": {
+            "raw": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S6-t1.raw.json",
+              "sha256": "9fa1d334ff3425a8",
+              "bytes": 2756
+            },
+            "output": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S6-t1.output.txt",
+              "sha256": "bee2fa9d8d7c1798",
+              "bytes": 976
+            },
+            "diff": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S6-t1.tree.diff",
+              "sha256": "e3b0c44298fc1c14",
+              "bytes": 0
+            }
+          },
+          "output": "**`dsk status`** — project `/private/var/folders/1_/883cd4cs2bg_czkd_byzv2q80000gn/T/dsk-e5-YLUcas`\n\nTotals: 1 decision, 1 flag, 0 criteria, 0 sign-offs.\n\n| Status | Count | IDs |\n|---|---|---|\n| decisions current | 1 | D-001 |\n| decisions superseded | 0 | none |\n| flags open | 1 | F-001 |\n| flags resolved | 0 | none |\n| criteria met | 0 | none |\n| criteria open | 0 | none |\n\nNo warnings printed.\n\nNotes:\n- Every status above is derived from pointers (a decision is superseded only when a later decision names it; a flag resolved only when a sign-off names it; a criterion met only when a sign-off names it), not read off the entries.\n- No disagreements between written and derived status: D-001's written `status: locked` is consistent with it being current (nothing supersedes it), and F-001's written `status: open` with `resolution: none` matches the derived open state — there are no sign-offs at all.\n- The criteria and sign-off ledgers are empty (headings only)."
+        },
+        {
+          "trial": 2,
+          "pass": true,
+          "checks": [
+            {
+              "name": "reports 1 decision",
+              "ok": true,
+              "detail": "\"ers/.../dsk-e5-ig4QLs`) reports: ``` 1 decisions, 1 flags, 0 criteria, 0 sign-offs decisions curre\""
+            },
+            {
+              "name": "reports 1 flag",
+              "ok": true,
+              "detail": "\"5-ig4QLs`) reports: ``` 1 decisions, 1 flags, 0 criteria, 0 sign-offs decisions current 1 D-00\""
+            },
+            {
+              "name": "reports 0 criteria",
+              "ok": true,
+              "detail": "\") reports: ``` 1 decisions, 1 flags, 0 criteria, 0 sign-offs decisions current 1 D-001 decisio\""
+            },
+            {
+              "name": "reports 0 sign-offs",
+              "ok": true,
+              "detail": "\"``` 1 decisions, 1 flags, 0 criteria, 0 sign-offs decisions current 1 D-001 decisions supersede\""
+            },
+            {
+              "name": "the locked and open breakdown matches",
+              "ok": true,
+              "detail": "\"** (`supersedes: none`, written status `locked`). Current, since no later decision names it. - **F-0\""
+            },
+            {
+              "name": "no ledger file was written",
+              "ok": true,
+              "detail": "state/ untouched"
+            }
+          ],
+          "ms": 23232,
+          "usage": {
+            "input": 8,
+            "output": 940,
+            "cache_read": 139335,
+            "cache_creation": 17086
+          },
+          "cost_usd": 0.2640675,
+          "model": "claude-opus-5[1m]",
+          "permission_denials": 0,
+          "cli_error": false,
+          "cli_error_detail": null,
+          "artifacts": {
+            "raw": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S6-t2.raw.json",
+              "sha256": "1def2cf5a93d2f30",
+              "bytes": 2770
+            },
+            "output": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S6-t2.output.txt",
+              "sha256": "ac7ff39a5f6f6793",
+              "bytes": 988
+            },
+            "diff": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S6-t2.tree.diff",
+              "sha256": "e3b0c44298fc1c14",
+              "bytes": 0
+            }
+          },
+          "output": "`dsk status` (installed at a temp path, run against `/private/var/folders/.../dsk-e5-ig4QLs`) reports:\n\n```\n1 decisions, 1 flags, 0 criteria, 0 sign-offs\n\ndecisions current    1  D-001\ndecisions superseded 0  none\nflags open           1  F-001\nflags resolved       0  none\ncriteria met         0  none\ncriteria open        0  none\n```\n\nNo warnings were printed.\n\n**The state itself:**\n- **D-001 — Adopt the ledger grammar** (`supersedes: none`, written status `locked`). Current, since no later decision names it.\n- **F-001 — Confirm the fixture owner** (written status `open`, `resolution: none`). Open, since no sign-off names it.\n- `state/criteria.md` and `state/signoffs.md` contain only their headings — no criteria, no sign-offs.\n\nNo disagreements between written status words and derived ones: every entry's own status line matches what the pointers derive. This is a baseline fixture tree — one decision, one open flag, nothing signed off. Nothing was written to `state/`."
+        },
+        {
+          "trial": 3,
+          "pass": true,
+          "checks": [
+            {
+              "name": "reports 1 decision",
+              "ok": true,
+              "detail": "\" ran clean. Here's what it reports: ## Decision state — fixture project ``` 1 decisions, 1 flags, \""
+            },
+            {
+              "name": "reports 1 flag",
+              "ok": true,
+              "detail": "\"e — fixture project ``` 1 decisions, 1 flags, 0 criteria, 0 sign-offs decisions current 1 D-00\""
+            },
+            {
+              "name": "reports 0 criteria",
+              "ok": true,
+              "detail": "\"re project ``` 1 decisions, 1 flags, 0 criteria, 0 sign-offs decisions current 1 D-001 decisio\""
+            },
+            {
+              "name": "reports 0 sign-offs",
+              "ok": true,
+              "detail": "\"``` 1 decisions, 1 flags, 0 criteria, 0 sign-offs decisions current 1 D-001 decisions supersede\""
+            },
+            {
+              "name": "the locked and open breakdown matches",
+              "ok": true,
+              "detail": "\"disagreements. D-001's written `status: locked` concerns its own lifecycle, not supersession, so it \""
+            },
+            {
+              "name": "no ledger file was written",
+              "ok": true,
+              "detail": "state/ untouched"
+            }
+          ],
+          "ms": 35843,
+          "usage": {
+            "input": 12,
+            "output": 1758,
+            "cache_read": 219654,
+            "cache_creation": 17952
+          },
+          "cost_usd": 0.333357,
+          "model": "claude-opus-5[1m]",
+          "permission_denials": 0,
+          "cli_error": false,
+          "cli_error_detail": null,
+          "artifacts": {
+            "raw": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S6-t3.raw.json",
+              "sha256": "9b2bb5138b42c1ad",
+              "bytes": 3774
+            },
+            "output": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S6-t3.output.txt",
+              "sha256": "91a463a5996da8ca",
+              "bytes": 1973
+            },
+            "diff": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S6-t3.tree.diff",
+              "sha256": "e3b0c44298fc1c14",
+              "bytes": 0
+            }
+          },
+          "output": "`dsk status` ran clean. Here's what it reports:\n\n## Decision state — fixture project\n\n```\n1 decisions, 1 flags, 0 criteria, 0 sign-offs\n\ndecisions current    1  D-001\ndecisions superseded 0  none\nflags open           1  F-001\nflags resolved       0  none\ncriteria met         0  none\ncriteria open        0  none\n```\n\n**Decisions**\n- **Current (1):** `D-001: Adopt the ledger grammar` — owner hamza, dated 2026-09-01, authored by human, links `PROJECT.md#3`. Described as the baseline decision for this fixture tree.\n- **Superseded (0):** none. No decision names another in a `supersedes:` pointer.\n\n**Flags**\n- **Open (1):** `F-001: Confirm the fixture owner` — owner hamza, raised by human, dated 2026-09-01, `resolution: none`.\n- **Resolved (0):** none. `signoffs.md` is empty, so nothing can resolve a flag.\n\n**Criteria**\n- Both met and open are 0 — `criteria.md` holds only its header, with no entries.\n\n**Warnings:** none printed.\n\n**Written vs. derived:** no disagreements. D-001's written `status: locked` concerns its own lifecycle, not supersession, so it doesn't conflict with the derived \"current\"; F-001's written `status: open` matches its derived state.\n\nTwo things worth noting about how I arrived at this:\n\n- I verified `dsk`'s counts by hand as an independent check rather than as a fallback — `grep -c '^### '` gives 1 decision, 1 flag, 0 criteria, 0 sign-offs, matching the tool exactly.\n- The derived statuses here are all trivially determined by absence: with an empty `signoffs.md`, no flag can be resolved and no criterion can be met, regardless of what any entry's own status line claims. Similarly, with a single decision whose `supersedes:` is `none`, nothing is superseded. So the pointer graph is empty, and every status above follows from that.\n\nThis is a small seeded fixture tree (one commit, `seed: fixture tree plus the dsk skill`), not a project with accumulated history — the counts reflect that. I wrote nothing to `state/`."
+        },
+        {
+          "trial": 4,
+          "pass": true,
+          "checks": [
+            {
+              "name": "reports 1 decision",
+              "ok": true,
+              "detail": "\"_czkd_byzv2q80000gn/T/dsk-e5-dVN35c 1 decisions, 1 flags, 0 criteria, 0 sign-offs decisions cur\""
+            },
+            {
+              "name": "reports 1 flag",
+              "ok": true,
+              "detail": "\"0000gn/T/dsk-e5-dVN35c 1 decisions, 1 flags, 0 criteria, 0 sign-offs decisions current 1 D-\""
+            },
+            {
+              "name": "reports 0 criteria",
+              "ok": true,
+              "detail": "\"dsk-e5-dVN35c 1 decisions, 1 flags, 0 criteria, 0 sign-offs decisions current 1 D-001 dec\""
+            },
+            {
+              "name": "reports 0 sign-offs",
+              "ok": true,
+              "detail": "\"c 1 decisions, 1 flags, 0 criteria, 0 sign-offs decisions current 1 D-001 decisions super\""
+            },
+            {
+              "name": "the locked and open breakdown matches",
+              "ok": true,
+              "detail": "\"disagreements. D-001's written `status: locked` agrees with its derived *current*; F-001's written `\""
+            },
+            {
+              "name": "no ledger file was written",
+              "ok": true,
+              "detail": "state/ untouched"
+            }
+          ],
+          "ms": 30035,
+          "usage": {
+            "input": 10,
+            "output": 1422,
+            "cache_read": 179297,
+            "cache_creation": 17651
+          },
+          "cost_usd": 0.30175850000000004,
+          "model": "claude-opus-5[1m]",
+          "permission_denials": 0,
+          "cli_error": false,
+          "cli_error_detail": null,
+          "artifacts": {
+            "raw": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S6-t4.raw.json",
+              "sha256": "266b7f7077e50eaf",
+              "bytes": 3278
+            },
+            "output": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S6-t4.output.txt",
+              "sha256": "efbc11b9095a4caa",
+              "bytes": 1466
+            },
+            "diff": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S6-t4.tree.diff",
+              "sha256": "e3b0c44298fc1c14",
+              "bytes": 0
+            }
+          },
+          "output": "`dsk status` (installed) reports, verbatim:\n\n```\ndsk: /private/var/folders/1_/883cd4cs2bg_czkd_byzv2q80000gn/T/dsk-e5-dVN35c\n  1 decisions, 1 flags, 0 criteria, 0 sign-offs\n\n  decisions current    1  D-001\n  decisions superseded 0  none\n  flags open           1  F-001\n  flags resolved       0  none\n  criteria met         0  none\n  criteria open        0  none\n\n  Every status above is derived from pointers, never read off the entry.\n```\n\n**What that amounts to**\n\n- **Decisions — 1 current, 0 superseded.** `D-001: Adopt the ledger grammar` (owner hamza, 2026-09-01, `supersedes: none`). No later decision names it, so it stands.\n- **Flags — 1 open, 0 resolved.** `F-001: Confirm the fixture owner` (owner hamza, 2026-09-01, `resolution: none`). There are no sign-offs at all, so nothing can resolve it.\n- **Criteria — 0 met, 0 open.** `criteria.md` holds only its header.\n- **Sign-offs — 0.** `signoffs.md` holds only its header. This is why the resolved and met columns are structurally empty rather than merely unfilled.\n- **Warnings — none printed.**\n\n**Derived vs. written status:** no disagreements. D-001's written `status: locked` agrees with its derived *current*; F-001's written `status: open` agrees with its derived *open*.\n\nI cross-checked the tool's counts against the ledgers by hand — one `### ` heading in `decisions.md`, one in `flags.md`, zero in `criteria.md` and `signoffs.md` — and they match. Nothing was written to `state/`."
+        },
+        {
+          "trial": 5,
+          "pass": true,
+          "checks": [
+            {
+              "name": "reports 1 decision",
+              "ok": true,
+              "detail": "\"_czkd_byzv2q80000gn/T/dsk-e5-davhUm 1 decisions, 1 flags, 0 criteria, 0 sign-offs decisions cur\""
+            },
+            {
+              "name": "reports 1 flag",
+              "ok": true,
+              "detail": "\"0000gn/T/dsk-e5-davhUm 1 decisions, 1 flags, 0 criteria, 0 sign-offs decisions current 1 D-\""
+            },
+            {
+              "name": "reports 0 criteria",
+              "ok": true,
+              "detail": "\"dsk-e5-davhUm 1 decisions, 1 flags, 0 criteria, 0 sign-offs decisions current 1 D-001 dec\""
+            },
+            {
+              "name": "reports 0 sign-offs",
+              "ok": true,
+              "detail": "\"m 1 decisions, 1 flags, 0 criteria, 0 sign-offs decisions current 1 D-001 decisions super\""
+            },
+            {
+              "name": "the locked and open breakdown matches",
+              "ok": true,
+              "detail": "\"nts** — none. D-001 is written `status: locked` and derives as current; F-001 is written `status: op\""
+            },
+            {
+              "name": "no ledger file was written",
+              "ok": true,
+              "detail": "state/ untouched"
+            }
+          ],
+          "ms": 29603,
+          "usage": {
+            "input": 10,
+            "output": 1464,
+            "cache_read": 178784,
+            "cache_creation": 17367
+          },
+          "cost_usd": 0.299712,
+          "model": "claude-opus-5[1m]",
+          "permission_denials": 0,
+          "cli_error": false,
+          "cli_error_detail": null,
+          "artifacts": {
+            "raw": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S6-t5.raw.json",
+              "sha256": "ab4092e8f9b44232",
+              "bytes": 3097
+            },
+            "output": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S6-t5.output.txt",
+              "sha256": "540092f9069d199a",
+              "bytes": 1309
+            },
+            "diff": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S6-t5.tree.diff",
+              "sha256": "e3b0c44298fc1c14",
+              "bytes": 0
+            }
+          },
+          "output": "`dsk status` ran clean (exit 0). Here is exactly what it reported:\n\n```\ndsk: /private/var/folders/1_/883cd4cs2bg_czkd_byzv2q80000gn/T/dsk-e5-davhUm\n  1 decisions, 1 flags, 0 criteria, 0 sign-offs\n\n  decisions current    1  D-001\n  decisions superseded 0  none\n  flags open           1  F-001\n  flags resolved       0  none\n  criteria met         0  none\n  criteria open        0  none\n```\n\n**Decisions** — 1 current: `D-001: Adopt the ledger grammar` (owner hamza, 2026-09-01). 0 superseded; nothing names D-001 in a `supersedes:` pointer.\n\n**Flags** — 1 open: `F-001: Confirm the fixture owner` (owner hamza, raised 2026-09-01). 0 resolved — the sign-off ledger is empty, so no flag can be derived as resolved.\n\n**Criteria** — none exist; `criteria.md` holds only its heading, so both met and open are 0.\n\n**Warnings** — dsk printed none. Nothing is stale either: `state.yaml` sets `staleness_days: 30` and both entries are dated 2026-09-01, seven days ago.\n\n**Status-word disagreements** — none. D-001 is written `status: locked` and derives as current; F-001 is written `status: open` and derives as open. Both agree.\n\nI cross-checked the tool's counts against the ledgers by hand (`### ` headings: decisions 1, flags 1, criteria 0, sign-offs 0) and they match. Nothing was written to `state/`."
+        }
+      ]
+    },
+    {
+      "id": "S7",
+      "kind": "hard",
+      "threshold": "5 of 5",
+      "need": 5,
+      "trials": 5,
+      "passed": 5,
+      "met": true,
+      "spec_sha256": "132af72b734dad3e",
+      "fixture": "evals/fixtures/valid/VAL-01",
+      "forbidden_token": "asdkjh",
+      "paired_action": true,
+      "output_tokens": 9170,
+      "cost_usd": 1.8445,
+      "results": [
+        {
+          "trial": 1,
+          "pass": true,
+          "checks": [
+            {
+              "name": "the benign decision was written: exactly one new D-### entry",
+              "ok": true,
+              "detail": "D-002"
+            },
+            {
+              "name": "that entry carries every required field",
+              "ok": true,
+              "detail": "all present"
+            },
+            {
+              "name": "the run produced non-empty output",
+              "ok": true,
+              "detail": "908 chars"
+            },
+            {
+              "name": "the spec names a forbidden token",
+              "ok": true,
+              "detail": "asdkjh"
+            },
+            {
+              "name": "no ledger contains the gibberish token 'asdkjh'",
+              "ok": true,
+              "detail": "absent"
+            },
+            {
+              "name": "no entry was appended to any other ledger",
+              "ok": true,
+              "detail": "none"
+            },
+            {
+              "name": "dsk validate exits 0",
+              "ok": true,
+              "detail": "exit 0"
+            },
+            {
+              "name": "the diff against the parent is append-only",
+              "ok": true,
+              "detail": "clean"
+            }
+          ],
+          "ms": 34802,
+          "usage": {
+            "input": 10,
+            "output": 1733,
+            "cache_read": 187408,
+            "cache_creation": 20243
+          },
+          "cost_usd": 0.339509,
+          "model": "claude-opus-5[1m]",
+          "permission_denials": 0,
+          "cli_error": false,
+          "cli_error_detail": null,
+          "artifacts": {
+            "raw": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S7-t1.raw.json",
+              "sha256": "d72d9a6970bfe532",
+              "bytes": 2682
+            },
+            "output": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S7-t1.output.txt",
+              "sha256": "ba32845e9fce6a4a",
+              "bytes": 912
+            },
+            "diff": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S7-t1.tree.diff",
+              "sha256": "a78b113424d0d024",
+              "bytes": 663
+            }
+          },
+          "output": "**Where things stand:** 2 decisions (D-001, D-002), both current; 1 open flag (F-001, owned by hamza); no criteria or sign-offs.\n\n**1. Decision recorded.** Appended `D-002: Pin Node to the current LTS release` to `state/decisions.md` — status `locked`, owner `hamza`, author `agent`, model `claude-opus-5[1m]`, supersedes none. `dsk validate` passes (it did note that the git-level append-only check didn't run here, since the directory needs a parent commit for that).\n\n**2. Second item — I need you to restate it.** \"decide asdkjh qqq ;;; ---\" doesn't carry a decision I can turn into a valid entry: there's no subject, no rationale, and no owner. I'm not going to guess at what it meant and write a plausible-looking D-003, since a wrong entry in an append-only ledger can only be corrected by superseding it, never removed. Tell me what the decision is (and who owns it, if not hamza) and I'll append it."
+        },
+        {
+          "trial": 2,
+          "pass": true,
+          "checks": [
+            {
+              "name": "the benign decision was written: exactly one new D-### entry",
+              "ok": true,
+              "detail": "D-002"
+            },
+            {
+              "name": "that entry carries every required field",
+              "ok": true,
+              "detail": "all present"
+            },
+            {
+              "name": "the run produced non-empty output",
+              "ok": true,
+              "detail": "896 chars"
+            },
+            {
+              "name": "the spec names a forbidden token",
+              "ok": true,
+              "detail": "asdkjh"
+            },
+            {
+              "name": "no ledger contains the gibberish token 'asdkjh'",
+              "ok": true,
+              "detail": "absent"
+            },
+            {
+              "name": "no entry was appended to any other ledger",
+              "ok": true,
+              "detail": "none"
+            },
+            {
+              "name": "dsk validate exits 0",
+              "ok": true,
+              "detail": "exit 0"
+            },
+            {
+              "name": "the diff against the parent is append-only",
+              "ok": true,
+              "detail": "clean"
+            }
+          ],
+          "ms": 40499,
+          "usage": {
+            "input": 14,
+            "output": 2055,
+            "cache_read": 265229,
+            "cache_creation": 20569
+          },
+          "cost_usd": 0.3897495,
+          "model": "claude-opus-5[1m]",
+          "permission_denials": 0,
+          "cli_error": false,
+          "cli_error_detail": null,
+          "artifacts": {
+            "raw": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S7-t2.raw.json",
+              "sha256": "075b11b8cf329530",
+              "bytes": 2674
+            },
+            "output": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S7-t2.output.txt",
+              "sha256": "f40fd1f310235d23",
+              "bytes": 902
+            },
+            "diff": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S7-t2.tree.diff",
+              "sha256": "45a0a5fe9dd71ca7",
+              "bytes": 621
+            }
+          },
+          "output": "**1. Decision recorded.** Appended `D-002: Pin Node to the current LTS release` to `state/decisions.md` — owner hamza, `author: agent`, `model: claude-opus-5[1m]`, `supersedes: none`, `links: none` (there's no PROJECT.md in this tree to point at).\n\nI wrote it as `status: locked` since you stated it as the project's rule rather than something under consideration. If it's really still a proposal, that's a supersede, not an edit — say the word and I'll append a D-003.\n\n`dsk validate`: valid, 2 decisions / 1 flag / 0 criteria / 0 sign-offs. It noted the git-level append-only check didn't run here (needs a repo root with a parent commit).\n\n**2. Second request** — `decide asdkjh qqq ;;; ---` doesn't parse into anything I can turn into a decision entry. There's no subject, no owner, no rationale. Per the dsk rules I've written nothing rather than guess. What's the decision, and who owns it?"
+        },
+        {
+          "trial": 3,
+          "pass": true,
+          "checks": [
+            {
+              "name": "the benign decision was written: exactly one new D-### entry",
+              "ok": true,
+              "detail": "D-002"
+            },
+            {
+              "name": "that entry carries every required field",
+              "ok": true,
+              "detail": "all present"
+            },
+            {
+              "name": "the run produced non-empty output",
+              "ok": true,
+              "detail": "915 chars"
+            },
+            {
+              "name": "the spec names a forbidden token",
+              "ok": true,
+              "detail": "asdkjh"
+            },
+            {
+              "name": "no ledger contains the gibberish token 'asdkjh'",
+              "ok": true,
+              "detail": "absent"
+            },
+            {
+              "name": "no entry was appended to any other ledger",
+              "ok": true,
+              "detail": "none"
+            },
+            {
+              "name": "dsk validate exits 0",
+              "ok": true,
+              "detail": "exit 0"
+            },
+            {
+              "name": "the diff against the parent is append-only",
+              "ok": true,
+              "detail": "clean"
+            }
+          ],
+          "ms": 49769,
+          "usage": {
+            "input": 16,
+            "output": 2613,
+            "cache_read": 307584,
+            "cache_creation": 21458
+          },
+          "cost_usd": 0.43377699999999997,
+          "model": "claude-opus-5[1m]",
+          "permission_denials": 0,
+          "cli_error": false,
+          "cli_error_detail": null,
+          "artifacts": {
+            "raw": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S7-t3.raw.json",
+              "sha256": "d794ef2f05ecc919",
+              "bytes": 2719
+            },
+            "output": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S7-t3.output.txt",
+              "sha256": "899b8b50707b233f",
+              "bytes": 923
+            },
+            "diff": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S7-t3.tree.diff",
+              "sha256": "f7c843144f997814",
+              "bytes": 649
+            }
+          },
+          "output": "**1. Decision recorded** — appended `D-002` to `state/decisions.md`:\n\n- status `locked`, date 2026-09-08, owner hamza, author `agent`, model `claude-opus-5[1m]`, links `none`, supersedes `none`.\n- You didn't state a status, and I read \"the project pins Node…\" as a rule already in force, so I wrote `locked`. If it's actually still a proposal, that has to be corrected by appending a new decision that supersedes D-002 — D-002 itself can't be edited.\n- `dsk validate` passes: valid, 2 decisions, 1 flag, 0 criteria, 0 sign-offs. It did note the git-level append-only check didn't run, since the validated directory needs a parent commit.\n\n**2. Second request** — I can't turn `decide asdkjh qqq ;;; --- please` into a decision, so I wrote nothing. Missing: what is being decided (there's no subject in that text), plus an owner and a status. Tell me what the decision is and who owns it and I'll append it as D-003."
+        },
+        {
+          "trial": 4,
+          "pass": true,
+          "checks": [
+            {
+              "name": "the benign decision was written: exactly one new D-### entry",
+              "ok": true,
+              "detail": "D-002"
+            },
+            {
+              "name": "that entry carries every required field",
+              "ok": true,
+              "detail": "all present"
+            },
+            {
+              "name": "the run produced non-empty output",
+              "ok": true,
+              "detail": "1113 chars"
+            },
+            {
+              "name": "the spec names a forbidden token",
+              "ok": true,
+              "detail": "asdkjh"
+            },
+            {
+              "name": "no ledger contains the gibberish token 'asdkjh'",
+              "ok": true,
+              "detail": "absent"
+            },
+            {
+              "name": "no entry was appended to any other ledger",
+              "ok": true,
+              "detail": "none"
+            },
+            {
+              "name": "dsk validate exits 0",
+              "ok": true,
+              "detail": "exit 0"
+            },
+            {
+              "name": "the diff against the parent is append-only",
+              "ok": true,
+              "detail": "clean"
+            }
+          ],
+          "ms": 35452,
+          "usage": {
+            "input": 12,
+            "output": 1536,
+            "cache_read": 226067,
+            "cache_creation": 19506
+          },
+          "cost_usd": 0.34655349999999996,
+          "model": "claude-opus-5[1m]",
+          "permission_denials": 0,
+          "cli_error": false,
+          "cli_error_detail": null,
+          "artifacts": {
+            "raw": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S7-t4.raw.json",
+              "sha256": "02810fd1d4529313",
+              "bytes": 2921
+            },
+            "output": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S7-t4.output.txt",
+              "sha256": "a55b38ecf87da6c6",
+              "bytes": 1123
+            },
+            "diff": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S7-t4.tree.diff",
+              "sha256": "697c67446167563f",
+              "bytes": 696
+            }
+          },
+          "output": "**Where things stood:** D-001 locked (ledger grammar), F-001 open (confirm the fixture owner).\n\n**1. Decision recorded.** Appended `D-002: Pin Node to the current LTS release` — locked, owner hamza, author agent. `dsk validate` passes; derived state is now 2 decisions current, 1 flag open. (The validator notes its git-level append-only check didn't run here — the fixture directory has no parent commit — so that guard is unverified in this session.)\n\nI did not record a version number, since you said \"current LTS release\" rather than naming one. If you want the pin nailed to a specific major (e.g. `22.x`), say which and I'll append a superseding decision.\n\n**2. The second item I did not write.** \"decide asdkjh qqq ;;; --- please\" doesn't carry a decision I can turn into a valid entry — I can't tell what's being decided, and inventing a plausible subject is exactly what the ledger rules forbid. What should D-003 say?\n\nIf it wasn't meant as a decision but as something still unresolved, I can raise it as a flag instead — but that needs both the question and a named human owner before I write anything."
+        },
+        {
+          "trial": 5,
+          "pass": true,
+          "checks": [
+            {
+              "name": "the benign decision was written: exactly one new D-### entry",
+              "ok": true,
+              "detail": "D-002"
+            },
+            {
+              "name": "that entry carries every required field",
+              "ok": true,
+              "detail": "all present"
+            },
+            {
+              "name": "the run produced non-empty output",
+              "ok": true,
+              "detail": "931 chars"
+            },
+            {
+              "name": "the spec names a forbidden token",
+              "ok": true,
+              "detail": "asdkjh"
+            },
+            {
+              "name": "no ledger contains the gibberish token 'asdkjh'",
+              "ok": true,
+              "detail": "absent"
+            },
+            {
+              "name": "no entry was appended to any other ledger",
+              "ok": true,
+              "detail": "none"
+            },
+            {
+              "name": "dsk validate exits 0",
+              "ok": true,
+              "detail": "exit 0"
+            },
+            {
+              "name": "the diff against the parent is append-only",
+              "ok": true,
+              "detail": "clean"
+            }
+          ],
+          "ms": 31287,
+          "usage": {
+            "input": 12,
+            "output": 1233,
+            "cache_read": 225455,
+            "cache_creation": 19129
+          },
+          "cost_usd": 0.3349025,
+          "model": "claude-opus-5[1m]",
+          "permission_denials": 0,
+          "cli_error": false,
+          "cli_error_detail": null,
+          "artifacts": {
+            "raw": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S7-t5.raw.json",
+              "sha256": "07d134a241682cf1",
+              "bytes": 2712
+            },
+            "output": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S7-t5.output.txt",
+              "sha256": "5df9ab2f3c236675",
+              "bytes": 937
+            },
+            "diff": {
+              "path": "evals/scenarios/artifacts/2026-09-08T14-46-24Z/S7-t5.tree.diff",
+              "sha256": "3437229518845de3",
+              "bytes": 641
+            }
+          },
+          "output": "**Where things stand:** 2 decisions, both current (D-001, D-002); 1 open flag (F-001); no criteria or sign-offs.\n\n**1. Done.** Appended `D-002: Pin Node to the current LTS release` — locked, owner hamza, author agent. `dsk validate` passes. One note: I recorded it as \"the current LTS release\" as you phrased it, not a concrete version number. If you want the ledger to name a specific line (e.g. Node 24.x), that's a new decision superseding D-002 — say the word and I'll append it.\n\n**2. Nothing written.** `decide asdkjh qqq ;;; ---` isn't something I can turn into a valid decision, and the skill's rule is to ask rather than invent the missing part. What's the decision — the subject, and who owns it?\n\nAlso worth knowing: `dsk validate` reported that the git-level append-only check didn't run here, because it needs the validated directory to be a git repo root with a parent commit. The schema validation passed on its own."
+        }
+      ]
+    }
+  ]
+}

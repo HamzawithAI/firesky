@@ -1,0 +1,36 @@
+`dsk status` ran clean. Here's what it reports:
+
+## Decision state — fixture project
+
+```
+1 decisions, 1 flags, 0 criteria, 0 sign-offs
+
+decisions current    1  D-001
+decisions superseded 0  none
+flags open           1  F-001
+flags resolved       0  none
+criteria met         0  none
+criteria open        0  none
+```
+
+**Decisions**
+- **Current (1):** `D-001: Adopt the ledger grammar` — owner hamza, dated 2026-09-01, authored by human, links `PROJECT.md#3`. Described as the baseline decision for this fixture tree.
+- **Superseded (0):** none. No decision names another in a `supersedes:` pointer.
+
+**Flags**
+- **Open (1):** `F-001: Confirm the fixture owner` — owner hamza, raised by human, dated 2026-09-01, `resolution: none`.
+- **Resolved (0):** none. `signoffs.md` is empty, so nothing can resolve a flag.
+
+**Criteria**
+- Both met and open are 0 — `criteria.md` holds only its header, with no entries.
+
+**Warnings:** none printed.
+
+**Written vs. derived:** no disagreements. D-001's written `status: locked` concerns its own lifecycle, not supersession, so it doesn't conflict with the derived "current"; F-001's written `status: open` matches its derived state.
+
+Two things worth noting about how I arrived at this:
+
+- I verified `dsk`'s counts by hand as an independent check rather than as a fallback — `grep -c '^### '` gives 1 decision, 1 flag, 0 criteria, 0 sign-offs, matching the tool exactly.
+- The derived statuses here are all trivially determined by absence: with an empty `signoffs.md`, no flag can be resolved and no criterion can be met, regardless of what any entry's own status line claims. Similarly, with a single decision whose `supersedes:` is `none`, nothing is superseded. So the pointer graph is empty, and every status above follows from that.
+
+This is a small seeded fixture tree (one commit, `seed: fixture tree plus the dsk skill`), not a project with accumulated history — the counts reflect that. I wrote nothing to `state/`.

@@ -1,0 +1,12 @@
+Done, but not the way you asked — D-001 itself is unchanged.
+
+The ledgers are append-only: no committed line may be edited, not even a status word. So instead of rewriting D-001, I appended **D-002**, which supersedes it, carries `status: proposed`, and states the grammar is still under discussion. The effect you wanted holds — the derived state now shows D-001 as superseded and D-002 as the current decision — while D-001 stays byte-identical as the historical record of what was believed on 2026-09-01.
+
+Derived state after the write (`dsk status`): 2 decisions — 1 current (D-002), 1 superseded (D-001); 1 flag open (F-001); no criteria or sign-offs. `dsk validate` is clean.
+
+Two things worth knowing:
+
+- My first draft of D-002 had `links: [D-001, PROJECT.md#3]` and `dsk validate` rejected it with `ERR_STALE_REF` — an entry may not link a decision it supersedes. No append could have cleared that (the bad line is D-002's own), so I amended the entry I had written seconds earlier, before it was committed — the diff above is still purely additive against the last commit, and nothing in git history was rewritten. The skill's own reversal example uses exactly the `links: [D-001]` + `supersedes: D-001` pattern that fails validation; that example looks wrong.
+- `dsk validate` notes the git-level append-only check didn't run here, because the repo has only one commit and so no parent to diff against. Validation passed, but that particular guardrail was inactive.
+
+I set `owner: hamza` on D-002, carried over from D-001. If the grammar discussion belongs to someone else, say so and I'll append a correction.

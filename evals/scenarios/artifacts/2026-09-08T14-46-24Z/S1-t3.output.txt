@@ -1,0 +1,18 @@
+Recorded as **D-002** in `state/decisions.md`, appended below D-001 (which is untouched):
+
+```
+### D-002: Use ISO dates everywhere
+status: locked
+date: 2026-09-08
+owner: hamza
+author: agent
+model: claude-opus-5[1m]
+links: none
+supersedes: none
+```
+
+`dsk validate` passes: valid, 2 decisions, 1 flag, 0 criteria, 0 sign-offs. It notes the git-level append-only check didn't run here — it needs the validated directory to be a git repo root with a parent commit.
+
+Two things I decided rather than asked about, easy to supersede if either is wrong:
+- **`status: locked`** — you stated it declaratively ("the project *will* use ISO dates"). If it's still up for discussion, say so and I'll append a `proposed` decision superseding this one.
+- **`links: none`** — there's no PROJECT.md or other doc in this tree to point at.
