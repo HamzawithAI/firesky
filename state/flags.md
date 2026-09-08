@@ -496,3 +496,54 @@ proposed and unsigned, and PLAN.md now records the M1 gate as met contingent on
 Hamza accepting D-023. If he rejects it, M1 is not done and the runner reverts
 to counting PENDING suites as red, which makes the honest reading of the M1
 gate "E1, E2 and E3 green, CI red until M3".
+
+### F-034: INV-17 was moved past the D-024 cutoff, and the green side has no fixture slot
+status: open
+date: 2026-09-08
+owner: hamza
+raised-by: agent
+model: claude-opus-5
+resolution: none
+
+Raised by claude-opus-5 while applying M1-REVIEW.md section 2.2, and recorded
+under CLAUDE.md mistake-avoidance rule 4, which requires an F flag with
+rationale in the same commit as any fixture change. INV-17 is an agent-raised
+flag with no model id, dated 2026-09-01. D-024 makes the model requirement
+apply only from 2026-09-08, so the fixture as written would have stopped
+exercising ERR_MODEL_ID and turned green. One line changed, the date, from
+2026-09-01 to 2026-09-08; no expected output changed, since the entry keeps its
+line number and its single expected code. This strengthens the fixture rather
+than weakening it: before the change it would have passed by accident.
+
+The green side of the cutoff, a pre-cutoff agent flag with no model id that is
+legal, has nowhere in the E1 inventory to live: an INV fixture must be invalid,
+a VAL fixture would need an entry added and its counts changed, and M0-REVIEW
+section 5 freezes the set at VAL-01 to VAL-05 and INV-01 to INV-17. Applied
+under M1-REVIEW section 2.5: it is pinned in test/model-field-since.test.mjs,
+written red before the rule and green after. Hamza's ruling wanted on whether
+a rule this close to schema conformance may live only in a unit test, which is
+the same question F-032 asks from the other side.
+
+### F-035: ERR_MODEL_ID fires on entries SCHEMA.md says it cannot
+status: open
+date: 2026-09-08
+owner: hamza
+raised-by: agent
+model: claude-opus-5
+resolution: none
+
+Raised by claude-opus-5 while implementing D-024. SCHEMA.md section 2 ends the
+provenance paragraph with "ERR_MODEL_ID cannot fire on an entry that already
+has no provenance block", and the same paragraph defines an entry as having no
+provenance block when its author is missing or invalid or its date is absent.
+The implementation only ever checked the author half, so an agent-authored
+entry with no date at all drew both ERR_PROVENANCE and ERR_MODEL_ID, against
+the sentence's plain words. No committed fixture exercises the combination:
+INV-06's provenance-less decision carries no author, and INV-13's entries are
+human-authored, so nothing was red and nothing caught it.
+
+Interpretation applied: implement the sentence as written, suppressing
+ERR_MODEL_ID whenever the entry has no provenance block. This is transcription
+of an existing SCHEMA.md line, not a new rule, and it fails safe, since such an
+entry is already red under ERR_PROVENANCE. Pinned by three cases in
+test/model-field-since.test.mjs, written red before the fix (EVALS.md 1.3).
