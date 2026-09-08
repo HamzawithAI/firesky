@@ -71,6 +71,22 @@ export function supersededDecisions(tree: Tree): Set<string> {
   return superseded;
 }
 
+/**
+ * Resolution by derivation (D-025, ruled by M1-REVIEW.md section 2.3): a flag is
+ * resolved if and only if a sign-off names it in `scope:`. Nothing is read off
+ * the flag itself; its own `status:` and `resolution:` are advisory, correct at
+ * write time and never afterwards, because D-021 forbids editing a committed
+ * line. This is the symmetry with `supersededDecisions` the ruling asked for.
+ */
+export function resolvedFlags(tree: Tree): Set<string> {
+  const resolved = new Set<string>();
+  for (const entry of tree.entries) {
+    if (entry.kind !== "signoff") continue;
+    for (const member of idMembers(entry, "scope")) if (member.startsWith("F-")) resolved.add(member);
+  }
+  return resolved;
+}
+
 /** ID-shaped members of a bracketed list field. Non-ID members are not links. */
 export function idMembers(entry: Entry, key: string): string[] {
   const raw = field(entry, key);

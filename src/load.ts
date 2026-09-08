@@ -22,17 +22,18 @@ export const STATE_YAML = "state/state.yaml";
 
 function loadStateYaml(root: string): StateYaml {
   const path = join(root, STATE_YAML);
-  if (!existsSync(path)) return { present: false, keys: new Set() };
+  if (!existsSync(path)) return { present: false, keys: new Set(), stalenessDays: null };
   let parsed: unknown;
   try {
     parsed = parseYaml(readFileSync(path, "utf8"));
   } catch {
     // Unparseable yaml has no schema key, which is what ERR_SCHEMA_VERSION says.
-    return { present: true, keys: new Set() };
+    return { present: true, keys: new Set(), stalenessDays: null };
   }
-  const keys =
-    parsed !== null && typeof parsed === "object" ? new Set(Object.keys(parsed)) : new Set<string>();
-  return { present: true, keys };
+  const record = parsed !== null && typeof parsed === "object" ? (parsed as Record<string, unknown>) : {};
+  const raw = record["staleness_days"];
+  const stalenessDays = typeof raw === "number" && Number.isInteger(raw) && raw >= 0 ? raw : null;
+  return { present: true, keys: new Set(Object.keys(record)), stalenessDays };
 }
 
 export function loadTree(root: string, appendViolations: Tree["appendViolations"]): Tree {

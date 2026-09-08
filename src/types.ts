@@ -59,6 +59,8 @@ export interface AppendViolation {
 export interface StateYaml {
   readonly present: boolean;
   readonly keys: ReadonlySet<string>;
+  /** SCHEMA.md section 4: feeds R20, overridable per run. Null when absent. */
+  readonly stalenessDays: number | null;
 }
 
 export interface Tree {
@@ -85,3 +87,5 @@ export interface Rule {
   readonly code: string;
   run(tree: Tree): DskError[];
 }
+
+export type { StalenessReport, StaleRow, OpenFlagRow } from "./staleness.js";
