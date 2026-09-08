@@ -460,3 +460,18 @@ provenance enforcement: `raised-by: agent` then `raised-by: human` reads as
 human-raised, so ERR_MODEL_ID never fires. New code ERR_DUP_KEY, fixture INV-19;
 adding a code by ruling is permitted, renaming stays forbidden. It sits after
 D-034 because the code was written before the entry, and the validator said so.
+
+### D-035: A links member the same entry supersedes is exempt from ERR_STALE_REF
+status: proposed
+date: 2026-09-08
+owner: hamza
+author: agent
+model: claude-opus-5
+links: [M3-REVIEW-2.md#2, SCHEMA.md#3, D-028, F-066]
+supersedes: none
+
+Ruled by the second M3 external review, section 2.1, closing F-066. The code
+exists to catch superseded context treated as live, and a link sitting beside
+its own `supersedes:` declaration is self-evidently historical. Narrow and per
+member: a different superseded id in the same list still fires. Fixture VAL-02
+D-006. The shipped example drops the redundant links line under section 2.2.

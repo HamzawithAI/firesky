@@ -52,6 +52,10 @@ the diff against SCHEMA-DRAFT.md is never a surprise:
 16. **D-033, a repeated key inside one entry is an error** (M3-REVIEW.md section
     5, closing the F-052 close call structurally). New code ERR_DUP_KEY, new
     fixture INV-19. The inventory becomes sixteen codes. Sections 2 and 6.
+17. **D-035, the same-entry supersedes exemption** (M3-REVIEW-2.md section 2.1,
+    closing F-066). A `links` member is exempt from ERR_STALE_REF when the same
+    entry's `supersedes:` field names the same id. No code is added or removed.
+    Section 3.
 
 ## 1. Files
 
@@ -267,6 +271,19 @@ code to the one place a stale reference actually misleads.
    decision. An entry that has been superseded is history, and history may point
    at history — which is what finally gives a stale `links` an append-only
    remedy: supersede the entry that carries it.
+4. **A `links` member the same entry supersedes is exempt** (D-035, ruled by
+   M3-REVIEW-2.md section 2.1). The exemption is per member and it is narrow:
+   the member is exempt only when this entry's own `supersedes:` field names
+   that same id. An entry that supersedes one decision and links a different
+   superseded one is still a live entry pointing at dead context, and still red.
+   The grounds are the same ones clause 3 rests on: the code exists to catch
+   superseded context treated as live, and a reference sitting beside its own
+   supersedes declaration is self-evidently historical — the entry did the
+   superseding. Until this exemption existed, the one worked supersede example
+   this kit ships was invalid under this schema, and an agent that followed it
+   literally produced a red tree (F-066). Fixture: VAL-02's D-006. The example
+   drops the redundant `links` line under section 2.2 of the same ruling; the
+   link stays legal here, it is simply no longer taught as the default.
 
 ## 4. state.yaml
 

@@ -30,12 +30,31 @@
  *        legal fix for a stale `links` is to supersede the entry that carries
  *        it, which is a pure append.
  *
+ * D-035 then narrows it once more (M3-REVIEW-2.md section 2.1, closing F-066).
+ * A `links` member is exempt when the SAME entry's `supersedes` field names the
+ * same id. The rule exists to catch superseded context being treated as live,
+ * and a reference co-located with its own supersedes declaration is
+ * self-evidently historical: the entry is not mistaking D-001 for current, it
+ * is the entry that retired it. Until this exemption existed the one worked
+ * supersede example the kit ships — `links: [D-001]` beside `supersedes: D-001`
+ * in SKILL.md and in the R11 snippet — produced a red tree every time an agent
+ * followed it literally, and one E5 S3 trial did exactly that against a hard
+ * 5-of-5 gate (F-066, findings 37 and 41). The example is corrected too; the
+ * exemption is what makes the pattern legal rather than merely untaught.
+ *
+ * The exemption is per member, not per entry: an entry that supersedes D-003
+ * and also links a superseded D-001 it has no claim over is still a live entry
+ * pointing at dead context, and still red.
+ *
  * Fixture: INV-04, whose D-003 is current and links a superseded D-001, which
- * is exactly case 2.3 and needed no adjustment. Whole-tree pass: VAL-02. The
- * valid trees the ruling creates have no home in the frozen inventory and are
- * pinned in test/f036-ruling.test.mjs (F-049).
+ * is exactly case 2.3 and needed no adjustment — its `supersedes` is `none`, so
+ * D-035 cannot reach it. Whole-tree pass: VAL-02, which carries the exempt
+ * pattern as D-005 and D-006 (F-067). The remaining valid trees the two rulings
+ * create have no home in the frozen inventory and are pinned in
+ * test/f036-ruling.test.mjs (F-049) and test/d035-same-entry-supersedes.test.mjs.
  */
-import { idMembers, supersededBy, supersededDecisions } from "./helpers.js";
+import { parseList } from "../parse.js";
+import { field, idMembers, supersededBy, supersededDecisions, unset } from "./helpers.js";
 import type { DskError, Rule } from "../types.js";
 
 export const rule: Rule = {
@@ -49,10 +68,18 @@ export const rule: Rule = {
       // 2.3: an entry that has itself been superseded is history, and history
       // is allowed to point at history.
       if (superseded.has(entry.id)) continue;
+      // D-035: what this entry supersedes itself, read from this entry alone.
+      // `unset` keeps `supersedes: none` from parsing as the member "none" and,
+      // more to the point, from being read as "this entry supersedes something".
+      const raw = field(entry, "supersedes");
+      const ownSupersedes = new Set(unset(raw) ? [] : parseList(raw ?? ""));
       // `scope` is gone from this rule entirely: exempt on sign-offs (2.1), a
       // warning on criteria (2.2). Only `links` remains.
       for (const member of idMembers(entry, "links")) {
         if (!superseded.has(member)) continue;
+        // D-035, per member: this entry's own supersedes names it, so the link
+        // is a pointer at the thing this very entry retired, not a live claim.
+        if (ownSupersedes.has(member)) continue;
         errors.push({
           code: "ERR_STALE_REF",
           file: entry.file,
