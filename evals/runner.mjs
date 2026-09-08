@@ -39,6 +39,17 @@ const specValid = uniqSorted(evalsDoc.match(/\bVAL-\d{2}\b/g) ?? []);
 const specInvalid = uniqSorted(evalsDoc.match(/\bINV-\d{2}\b/g) ?? []);
 const specScenarios = uniqSorted([...evalsDoc.matchAll(/^S([1-7]) /gm)].map((m) => `S${m[1]}`));
 
+/* E4's fixture, clock and windows are derived from EVALS.md section 5 the same
+   way the fixture inventory is derived from section 3: the spec document is the
+   source, never a list hand-copied into this file (F-045). */
+const e4Fixture = (/the tree is \*\*(VAL-\d{2})\*\*/.exec(evalsDoc) ?? [])[1] ?? null;
+const e4Now = (/DSK_NOW=(\d{4}-\d{2}-\d{2})/.exec(evalsDoc) ?? [])[1] ?? null;
+const e4Windows = (() => {
+  const m = /three windows are \*\*(\d+), (\d+) and (\d+) days\*\*/.exec(evalsDoc);
+  return m === null ? [] : [m[1], m[2], m[3]].map(Number);
+})();
+const e4Id = (w) => `E4-${String(w).padStart(2, "0")}`;
+
 const section6 = schemaDoc.slice(schemaDoc.indexOf("## 6. Error code inventory"));
 const codesInInventory = uniqSorted(section6.match(/\bERR_[A-Z_]+\b/g) ?? []);
 const codesAnywhere = uniqSorted(schemaDoc.match(/\bERR_[A-Z_]+\b/g) ?? []);
@@ -143,6 +154,17 @@ check("each invalid fixture expects exactly one error code", multiCode.length ==
 check("every SCHEMA.md error code has a fixture", uncovered.length === 0, uncovered.join(", ") || `${covered.length} of ${codesInInventory.length} covered`);
 check("no fixture expects an unknown error code", unknown.length === 0, unknown.join(", ") || "none");
 
+/* E4, section 5. Same discipline as the E1 inventory: the spec names the tree,
+   the clock and the windows, and this asserts the tree agrees. */
+const e4Specified = e4Fixture !== null && e4Now !== null && e4Windows.length === 3;
+check("EVALS.md names E4's fixture, clock and windows", e4Specified,
+  e4Specified ? `${e4Fixture} at ${e4Now}, windows ${e4Windows.join(", ")}` : "section 5 is underspecified");
+const e4MissingExpected = e4Windows.filter((w) => !existsSync(join(expectedDir, `${e4Id(w)}.json`)));
+check("every E4 window has an expected output", e4Specified && e4MissingExpected.length === 0,
+  e4MissingExpected.map(e4Id).join(", ") || `${e4Windows.length} of ${e4Windows.length}`);
+check("E4's fixture is one of the declared valid fixtures", e4Fixture !== null && specValid.includes(e4Fixture),
+  e4Fixture ?? "none named");
+
 const inventoryOk = checks.every((c) => c.ok);
 
 /* --inventory-only gates CI on the inventory alone. It must be green at every
@@ -235,6 +257,69 @@ const fixtureResults = [
   ...specValid.map((id) => runFixture(id, "valid")),
   ...specInvalid.map((id) => runFixture(id, "invalid")),
 ];
+/* ------------------------------------------------------------------- E4, R20 */
+
+/* Structural comparison: the expected file specifies the whole report, so this
+   asserts the whole report. Key order is not asserted; everything else is. */
+function deepEqual(a, b) {
+  if (a === b) return true;
+  if (Array.isArray(a) || Array.isArray(b)) {
+    if (!Array.isArray(a) || !Array.isArray(b) || a.length !== b.length) return false;
+    return a.every((x, i) => deepEqual(x, b[i]));
+  }
+  if (a === null || b === null || typeof a !== "object" || typeof b !== "object") return false;
+  const ka = Object.keys(a).sort();
+  const kb = Object.keys(b).sort();
+  return setEq(ka, kb) && ka.every((k) => deepEqual(a[k], b[k]));
+}
+
+/** First differing path, so a failure names the field rather than dumping JSON. */
+function firstDiff(a, b, path = "") {
+  if (deepEqual(a, b)) return null;
+  if (a === null || b === null || typeof a !== "object" || typeof b !== "object")
+    return `${path || "value"}: got ${JSON.stringify(a)}, expected ${JSON.stringify(b)}`;
+  if (Array.isArray(a) !== Array.isArray(b)) return `${path}: array/object mismatch`;
+  if (Array.isArray(a)) {
+    if (a.length !== b.length) return `${path}: ${a.length} rows, expected ${b.length}`;
+    for (let i = 0; i < a.length; i++) {
+      const d = firstDiff(a[i], b[i], `${path}[${i}]`);
+      if (d !== null) return d;
+    }
+    return `${path}: differs`;
+  }
+  for (const k of new Set([...Object.keys(a), ...Object.keys(b)])) {
+    const d = firstDiff(a[k], b[k], path ? `${path}.${k}` : k);
+    if (d !== null) return d;
+  }
+  return `${path}: differs`;
+}
+
+function runE4(window) {
+  const id = e4Id(window);
+  if (!e4Specified) return { id, kind: "staleness", status: "FAIL", detail: "EVALS.md section 5 is underspecified" };
+  if (!cliBuilt) return { id, kind: "staleness", status: "NOT_IMPLEMENTED", detail: "dist/cli.js not built" };
+  const target = join(EVALS, "fixtures/valid", e4Fixture);
+  const r = spawnSync(process.execPath, [CLI, "staleness", "--json", "--window", String(window), target], {
+    encoding: "utf8",
+    env: { ...process.env, DSK_NOW: e4Now },
+  });
+  if (r.status === 2) return { id, kind: "staleness", status: "NOT_IMPLEMENTED", detail: "dsk staleness exits 2" };
+  if (r.status !== 0) return { id, kind: "staleness", status: "FAIL", detail: `exit ${r.status}, expected 0 (R20 is a report, F-046)` };
+  let actual;
+  try {
+    actual = JSON.parse(r.stdout);
+  } catch {
+    return { id, kind: "staleness", status: "FAIL", detail: `stdout is not JSON: ${(r.stdout || r.stderr).trim().slice(0, 120)}` };
+  }
+  const want = JSON.parse(readFileSync(join(expectedDir, `${id}.json`), "utf8"));
+  const diff = firstDiff(actual, want);
+  return diff === null
+    ? { id, kind: "staleness", status: "PASS", detail: `${e4Fixture} at ${e4Now}, window ${window}` }
+    : { id, kind: "staleness", status: "FAIL", detail: diff };
+}
+
+const e4Results = e4Windows.map(runE4);
+
 /* Names the report file. Defaults to "adhoc", never to a milestone name. It used
    to default to "M0", which meant the documented `bash evals/run.sh` overwrote
    the committed M0 red-gate report with whatever the current tree produces —
@@ -318,7 +403,7 @@ const scenarioResults = specScenarios.map((id) => ({
     : "E5 harness lands at M3 (PLAN.md M3.3); spec only",
 }));
 
-const all = [...fixtureResults, ...scenarioResults];
+const all = [...fixtureResults, ...e4Results, ...scenarioResults];
 const tally = all.reduce((a, r) => ((a[r.status] = (a[r.status] ?? 0) + 1), a), {});
 const pending = all.filter((r) => r.status === "PENDING").length;
 /* With the expiry on, PENDING is simply not PASS, so it counts against the run. */
@@ -362,6 +447,15 @@ Inventory: **${inventoryOk ? "COMPLETE" : "INCOMPLETE"}**
 | ID | Kind | Status | Detail |
 |---|---|---|---|
 ${fixtureResults.map(row).join("\n")}
+
+## E4, staleness (R20)
+
+Clock pinned through \`DSK_NOW\`; the report is graded on stdout, not on an exit
+code (F-046). Fixture, clock and windows are derived from EVALS.md section 5.
+
+| ID | Kind | Status | Detail |
+|---|---|---|---|
+${e4Results.map(row).join("\n")}
 
 ## Scenarios
 

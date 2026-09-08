@@ -87,3 +87,22 @@ materialises them into a throwaway repository under `evals/.work/`, commits
 `base/` then `head/`, and runs the parent-commit diff there. `counts` describes
 the `head/` tree. VAL-05 is the passing case: its head is a byte-for-byte
 prefix-preserving append, so the git check must stay silent.
+
+## E4 staleness expectations
+
+`E4-06.json`, `E4-08.json` and `E4-30.json` are the three window configurations
+EVALS.md section 5 requires, all read against **VAL-04** with the clock pinned
+to `DSK_NOW=2026-09-10` (F-045). They were written before `dsk staleness`
+existed and are its specification, not a recording of it (D-007).
+
+An entry is stale when its age in whole days strictly exceeds the window, so
+the boundary is exercised: at window 8 the two 9-day entries are stale and the
+8-day sign-offs are not. `current` is derived, never read off the entry: a
+decision is current unless a later decision supersedes it (D-021), a flag is
+current unless a sign-off names it in scope (D-025), and a sign-off is always
+current. Criteria carry no `date` and appear only in `counts.undated`, so
+nothing is dropped without being counted. Rows are ordered by file then line,
+which is a total order, so the output is byte-stable.
+
+The 30-day window returns an empty report on purpose: a stub that returns
+nothing passes one of the three and fails the other two.

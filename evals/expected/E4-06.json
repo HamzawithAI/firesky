@@ -1,0 +1,16 @@
+{
+  "now": "2026-09-10",
+  "window_days": 6,
+  "stale": [
+    { "kind": "decision", "file": "state/decisions.md", "id": "D-001", "line": 3, "date": "2026-09-01", "age_days": 9, "current": true },
+    { "kind": "decision", "file": "state/decisions.md", "id": "D-002", "line": 14, "date": "2026-09-01", "age_days": 9, "current": true },
+    { "kind": "flag", "file": "state/flags.md", "id": "F-001", "line": 3, "date": "2026-09-01", "age_days": 9, "current": true },
+    { "kind": "signoff", "file": "state/signoffs.md", "id": "S-001", "line": 3, "date": "2026-09-02", "age_days": 8, "current": true },
+    { "kind": "signoff", "file": "state/signoffs.md", "id": "S-002", "line": 9, "date": "2026-09-02", "age_days": 8, "current": true },
+    { "kind": "signoff", "file": "state/signoffs.md", "id": "S-003", "line": 15, "date": "2026-09-03", "age_days": 7, "current": true }
+  ],
+  "open_flags": [
+    { "kind": "flag", "file": "state/flags.md", "id": "F-001", "line": 3, "date": "2026-09-01", "age_days": 9, "owner": "hamza", "current": true }
+  ],
+  "counts": { "entries": 9, "dated": 6, "undated": 3, "stale": 6, "open_flags": 1 }
+}
