@@ -61,13 +61,23 @@ fixture.
 8. **ERR_PROVENANCE has a definition** (M0-REVIEW 4.5, closing F-019): `author`
    missing or invalid, or `date` absent, applied per entry type to the fields
    that type's grammar defines. INV-06 fires it by removing `author`.
-   ERR_MODEL_ID cannot fire on the same entry, being conditioned on an author or
-   raiser of `agent`.
-9. **`model:` is conditional on flags as on decisions** (M0-REVIEW 4.4, closing
-   F-013 and F-018): required and non-none when `raised-by` is `agent`. VAL-01,
-   VAL-02, VAL-04 and VAL-05 carry human-raised flags with no `model` field and
-   are green, which is what makes the condition testable; VAL-03 carries the
-   agent-raised flag that has one; INV-17 is the same flag without it.
+   ERR_MODEL_ID cannot fire on the same entry: that is a precondition of the
+   code, not a consequence of its author test, and the two rules now read one
+   shared predicate (F-035). An empty `date:` value counts as absent, so it is
+   this rule's and not ERR_DATE's (F-038).
+9. **`model:` is conditional on flags, and dated** (M0-REVIEW 4.4 closing F-013
+   and F-018, then D-024): required and non-none when `raised-by` is `agent`,
+   on flag entries dated `MODEL_FIELD_SINCE` (2026-09-08) or later only.
+   VAL-01, VAL-02, VAL-04 and VAL-05 carry human-raised flags with no `model`
+   field and are green, which is what makes the `raised-by` condition testable;
+   VAL-03 carries an agent-raised flag that has one. INV-17 is an agent-raised
+   flag without one, and F-034 moved its date to 2026-09-08 so that it still
+   fires after the cutoff existed. The two are therefore no longer the same
+   flag minus one field: they differ in the date as well, deliberately. The
+   green side of the cutoff has no fixture slot, since an INV fixture must be
+   invalid, and lives in test/model-field-since.test.mjs (F-034, M1-REVIEW 2.5).
+   The grandfather is flag-only: an agent-authored decision needs its `model`
+   whatever its date, which is what INV-07 pins.
 
 ## Git-level fixtures
 

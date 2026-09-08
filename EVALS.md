@@ -9,8 +9,10 @@ derivation; VAL-03 is corrected and INV-17 added for the flag `model:` field;
 VAL-04 gains a `dropped` criterion; the fixture-to-code mapping is stated as
 many-to-one; and S3's pass condition drops the status mutation.
 
-Amended again after the M1 external review (M1-REVIEW.md, locked by S-004 and
-S-005). The amendments are: D-023's acceptance carries a hard expiry at M3,
+Amended again after the M1 external review (M1-REVIEW.md, committed in this
+repository, locked by the sign-offs S-004 and S-005 appended in the same commit
+series; until those entries existed this sentence ran ahead of its evidence,
+which the adversarial pass caught and F-039's family of gaps records). The amendments are: D-023's acceptance carries a hard expiry at M3,
 written into section 6 and enforced by evals/runner.mjs; and section 1 states
 where implementation-level regressions live, which the frozen fixture inventory
 has no room for.

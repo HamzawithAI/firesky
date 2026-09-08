@@ -84,7 +84,7 @@ for (const id of [...specValid, ...specInvalid]) {
       if (!existsSync(join(base, "state", f))) malformedTrees.push(`${id}/state/${f}`);
   }
 }
-check("every fixture has an expected output", missingExpected.length === 0, missingExpected.join(", ") || "22 of 22");
+check("every fixture has an expected output", missingExpected.length === 0, missingExpected.join(", ") || `${specValid.length + specInvalid.length} of ${specValid.length + specInvalid.length}`);
 check("every fixture tree carries all five state files", malformedTrees.length === 0,
   malformedTrees.join(", ") || "SCHEMA.md section 1 satisfied");
 /* gitFixtures is collected valid-first, and setEq compares positionally, so sort
@@ -98,6 +98,10 @@ check("git-level fixtures are two-commit (D-016)", setEq(uniqSorted(gitFixtures)
    does not validate ledger content against SCHEMA.md, which is M1's work. */
 const emptyFiles = [];
 const countMismatch = [];
+/* Measured, not asserted. These detail strings are printed into a committed
+   report, and a hardcoded "110 files non-empty" stays convincing after the
+   inventory grows (F-039). */
+let nonEmptyCount = 0;
 for (const id of [...specValid, ...specInvalid]) {
   const dir = join(EVALS, specValid.includes(id) ? "fixtures/valid" : "fixtures/invalid", id);
   const stateDir = existsSync(join(dir, "fixture.json")) ? join(dir, "head", "state") : join(dir, "state");
@@ -105,6 +109,7 @@ for (const id of [...specValid, ...specInvalid]) {
     const fp = join(stateDir, fname);
     if (!existsSync(fp)) continue;
     if (readFileSync(fp, "utf8").trim().length === 0) emptyFiles.push(`${id}/${fname}`);
+    else nonEmptyCount++;
   }
   const expPath = join(expectedDir, `${id}.json`);
   if (!existsSync(expPath)) continue;
@@ -117,9 +122,9 @@ for (const id of [...specValid, ...specInvalid]) {
     if (got !== want[key]) countMismatch.push(`${id}/${l}: tree has ${got}, expected file says ${want[key]}`);
   }
 }
-check("no fixture file is empty", emptyFiles.length === 0, emptyFiles.join(", ") || "110 files non-empty");
+check("no fixture file is empty", emptyFiles.length === 0, emptyFiles.join(", ") || `${nonEmptyCount} files non-empty`);
 check("fixture entry counts match their expected files", countMismatch.length === 0,
-  countMismatch.join("; ") || "22 of 22 consistent");
+  countMismatch.join("; ") || `${specValid.length + specInvalid.length} of ${specValid.length + specInvalid.length} consistent`);
 
 /* error-code coverage: many-to-one is expected, see F-006 */
 const codeOf = {};
@@ -134,7 +139,7 @@ const covered = uniqSorted(Object.values(codeOf).flat());
 const uncovered = codesInInventory.filter((c) => !covered.includes(c));
 const unknown = covered.filter((c) => !codesInInventory.includes(c));
 
-check("each invalid fixture expects exactly one error code", multiCode.length === 0, multiCode.join(", ") || "17 of 17");
+check("each invalid fixture expects exactly one error code", multiCode.length === 0, multiCode.join(", ") || `${Object.keys(codeOf).length} of ${specInvalid.length}`);
 check("every SCHEMA.md error code has a fixture", uncovered.length === 0, uncovered.join(", ") || `${covered.length} of ${codesInInventory.length} covered`);
 check("no fixture expects an unknown error code", unknown.length === 0, unknown.join(", ") || "none");
 
@@ -265,8 +270,11 @@ const milestone = process.env.DSK_MILESTONE ?? "adhoc";
  */
 const E5_GATED_FROM = 3;
 
+/* Prefix match, not exact. The exact form let "M3-final" or "M3-rerun" yield no
+   number and leave the gate off, which is one rename away from forgetting the
+   expiry entirely. Found by the completeness critic (F-039). */
 function milestoneNumber(name) {
-  const m = /^M(\d+)$/.exec(name.trim());
+  const m = /^M(\d+)/.exec(name.trim());
   return m === null ? null : Number(m[1]);
 }
 
@@ -286,13 +294,18 @@ function planSaysM3Started() {
   return { started, detail: `PLAN.md M3 status: ${status}` };
 }
 
-const scenarioHarness = join(EVALS, "scenarios", "harness.mjs");
-const harnessExists = existsSync(scenarioHarness);
+/* Any executable file in evals/scenarios/ counts as the harness. Naming one
+   exact filename meant renaming it to run-scenarios.mjs turned the leg off
+   (F-039). The spec files themselves are markdown, so they cannot collide. */
+const harnessFiles = existsSync(join(EVALS, "scenarios"))
+  ? readdirSync(join(EVALS, "scenarios")).filter((f) => /\.(mjs|cjs|js|sh|ts)$/.test(f)).sort()
+  : [];
+const harnessExists = harnessFiles.length > 0;
 const planM3 = planSaysM3Started();
 const e5Legs = [
   { name: "DSK_MILESTONE is M3 or later", on: (milestoneNumber(milestone) ?? -1) >= E5_GATED_FROM, detail: milestone },
   { name: "PLAN.md says M3 has started", on: planM3.started, detail: planM3.detail },
-  { name: "the E5 harness exists", on: harnessExists, detail: harnessExists ? "evals/scenarios/harness.mjs" : "not built yet" },
+  { name: "an E5 harness exists", on: harnessExists, detail: harnessExists ? harnessFiles.join(", ") : "no executable in evals/scenarios/" },
 ];
 const e5Gated = e5Legs.some((l) => l.on);
 
