@@ -38,6 +38,14 @@ the diff against SCHEMA-DRAFT.md is never a surprise:
 12. **The preamble rule** (M1-REVIEW 2.4, on F-029). Full-file immutability
     stands with no region carve-outs, and a preamble carries only timeless text.
     Section 2.
+13. **D-028, sign-offs are attestations of a moment** (M2-REVIEW.md section 2,
+    resolving F-036). ERR_STALE_REF is narrowed: sign-off `scope` is exempt from
+    it forever, criterion `scope` becomes a report warning rather than an error,
+    and `links` fires only on an entry that is itself current. Sections 2 and 3.
+14. **D-027, criteria resolution by derivation** (M2-REVIEW.md section 2.4). A
+    criterion is met if and only if a sign-off names it in `scope:`. Its own
+    `status:` becomes advisory, exactly as D-025 made flag status advisory.
+    Section 2.
 
 ## 1. Files
 
@@ -134,6 +142,21 @@ scope: [D-003]
 
 `status` is `open`, `met`, or `dropped`.
 
+Criteria derive their status the way decisions derive supersession and flags
+derive resolution (D-027, ruled by M2-REVIEW.md section 2.4): **a criterion is
+met if and only if a sign-off names it in its `scope:`**. The criterion's own
+`status:` field is advisory, correct at write time and never afterwards, for the
+same reason a flag's is — D-021 forbids editing a committed ledger line, so no
+status word can ever move. The derived answer is the authoritative one wherever
+it is shown: `dsk status`, `render`, and validator reporting.
+
+The derivation has exactly two outcomes, met and open. `dropped` stays
+advisory-only in v0.1 by the same ruling: it carries no derivation, so a
+criterion written `dropped` that no sign-off names derives as open, with the
+written word displayed beside the derived one rather than acted on (F-050).
+Removing the advisory field is a grammar change, deferred to v0.2 alongside the
+same cleanup on flags. No fixture changes here.
+
 Sign-off entry, signoffs.md:
 
 ```
@@ -183,12 +206,32 @@ F-035. The two rules now read one shared predicate.
 
 IDs match `D-`, `F-`, `S-`, or `AC-` plus exactly three digits, zero-padded, permanent, never reused (violation: ERR_ID_GRAMMAR, duplicates: ERR_DUP_ID). Dates are ISO `YYYY-MM-DD` (ERR_DATE). `links` and `scope` are bracketed comma lists whose ID members must resolve within `state/`: an unresolved member of a `links` field is ERR_LINK, and of a `scope` field is ERR_SCOPE (M0-REVIEW 4.3, closing F-007).
 
-ERR_STALE_REF (M0-REVIEW 3.2, resolving F-015 and F-016) governs `links` and
-`scope` members only, and never the `supersedes` field. It fires when a `links`
-or `scope` member resolves to a decision that is superseded, where superseded-ness
-is derived from the `supersedes:` pointers of later entries per section 2. A
-decision naming its predecessor in `supersedes:` is therefore always legal, which
-is the whole point of the derivation.
+ERR_STALE_REF (M0-REVIEW 3.2, resolving F-015 and F-016; narrowed by D-028,
+M2-REVIEW.md section 2, resolving F-036) never governs the `supersedes` field. A
+decision naming its predecessor in `supersedes:` is always legal, which is the
+whole point of the derivation. Superseded-ness is derived from the `supersedes:`
+pointers of later entries per section 2.
+
+As M0-REVIEW 3.2 first defined it, the code governed every `links` and `scope`
+member of every entry, and F-036 found that this made supersession — the one
+legal correction this schema has — permanently invalidate the tree: supersede a
+decision that a sign-off names in `scope` and that sign-off is red forever, since
+a sign-off can neither be edited (D12, law 4) nor un-scoped. D-028 narrows the
+code to the one place a stale reference actually misleads.
+
+1. **Sign-off `scope` is exempt, permanently.** A sign-off records approval of an
+   entry as it stood at that time, and a later supersession does not falsify
+   history. ERR_SCOPE still applies to sign-offs in full: every scoped id must
+   resolve. The exemption is from staleness, never from existence.
+2. **Criterion `scope` is not an error.** A criterion whose `scope` names a
+   superseded decision is reported as a warning in the staleness report, and
+   surfaced by `dsk status` and `render`. It mints no code, so the inventory
+   stays at fifteen. The signal survives, the brick does not.
+3. **`links` fires, on current entries only.** It is a hard error when a `links`
+   member of an entry that is **not itself superseded** resolves to a superseded
+   decision. An entry that has been superseded is history, and history may point
+   at history — which is what finally gives a stale `links` an append-only
+   remedy: supersede the entry that carries it.
 
 ## 4. state.yaml
 

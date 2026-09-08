@@ -340,3 +340,48 @@ while the remote was empty. It says author; committer was reset too, because
 leaving it would publish the old address on every commit and defeat the point.
 All 21 tree ids, all subjects and every ledger checksum are byte-identical
 across the rewrite, and the append-only proof replays clean over all 21.
+
+### D-027: Criteria resolution by derivation
+status: proposed
+date: 2026-09-08
+owner: hamza
+author: agent
+model: claude-opus-5
+links: [M2-REVIEW.md#2.4, SCHEMA.md#2, D-021, D-025, F-036]
+supersedes: none
+
+Ruled by the M2 external review in M2-REVIEW.md section 2.4, transcribed here.
+A criterion is met if and only if a sign-off names it in scope, as decisions
+derive supersession and flags derive resolution. Its own status field becomes
+advisory. The derivation has two outcomes, met and open; dropped stays
+advisory-only in v0.1 and the grammar cleanup joins the v0.2 bucket (F-050).
+
+### D-028: Sign-offs are attestations of a moment
+status: proposed
+date: 2026-09-08
+owner: hamza
+author: agent
+model: claude-opus-5
+links: [M2-REVIEW.md#2, SCHEMA.md#3, D-021, F-036]
+supersedes: none
+
+Ruled by the M2 external review in M2-REVIEW.md section 2, resolving F-036.
+ERR_STALE_REF narrows: sign-off scope is exempt forever, criterion scope becomes
+a report warning, and links fires only on an entry that is itself current. A
+sign-off records approval of an entry as it stood and a later supersession does
+not falsify history. ERR_SCOPE still applies to sign-offs in full.
+
+### D-029: The internal adversarial pass has a hard budget
+status: proposed
+date: 2026-09-08
+owner: hamza
+author: agent
+model: claude-opus-5
+links: [M2-REVIEW.md#7, M0-REVIEW.md#6, PLAN.md, D-014]
+supersedes: none
+
+Ruled by the M2 external review in M2-REVIEW.md section 7. From M3 onward the
+internal pass is capped at fifteen agents, one pass, roughly one million tokens,
+and any finding it cannot verify inside the cap is written down as an open flag
+rather than re-derived by fan-out. Depth beyond the cap is the external reviews'
+job. The 122-agent pass caught F-037 and is still not the pattern.
