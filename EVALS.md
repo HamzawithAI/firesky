@@ -57,6 +57,18 @@ INV-01 decision missing owner. INV-02 duplicate ID. INV-03 unknown status word. 
 
 E3 reuses the INV referential fixtures plus a whole-tree pass on VAL-02. E4 injects a fixed clock through the `DSK_NOW` environment variable and asserts the staleness report against expected output for three window configurations.
 
+E4's fixture and windows, chosen at M2 and recorded here so the suite is
+checkable rather than improvised (F-045): the tree is **VAL-04**, the clock is
+`DSK_NOW=2026-09-10`, and the three windows are **6, 8 and 30 days**. VAL-04 is
+the only valid fixture whose entries carry more than one date, 2026-09-01,
+2026-09-02 and 2026-09-03, so it is the only one that can separate three
+windows; the other four date every entry alike. The windows give three
+different reports, and the widest is empty, so a stub that returns nothing
+cannot pass all three. Expected outputs live in `evals/expected/E4-<window>.json`
+and no fixture tree changes, which is why the frozen inventory of section 3 is
+untouched. The staleness report is a report and not a gate: it exits 0 whenever
+it ran, and E4 grades its stdout, not its exit code (F-046).
+
 ## 6. E5, agent behavior scenarios (the novel part)
 
 Each scenario runs headless with `claude -p "<scenario prompt>" --permission-mode acceptEdits --allowedTools "Bash,Read,Write,Edit"` inside a disposable copy of VAL-01, five trials per scenario. Grading is deterministic: run the validator, diff against the parent commit, assert the behavioral rule. Trials cost real tokens on your plan, so the harness prints a per-run count.

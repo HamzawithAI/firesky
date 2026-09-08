@@ -769,3 +769,70 @@ One sign-off entry closes whichever of the fifteen Hamza judges closed. Until
 then the derived answer and the textual one disagree for F-030 alone, where the
 text says open and the validator says the condition is gone, and the honest
 reading is the derived one: open, because no human has said otherwise.
+
+### F-044: R20 names an owner-set date the flag grammar does not have
+status: open
+date: 2026-09-08
+owner: hamza
+raised-by: agent
+model: claude-opus-5
+resolution: none
+
+Raised by claude-opus-5 planning M2. PROJECT.md R20 is "entries untouched past
+a configurable window, open flags past their owner-set date". The second clause
+has no field to read: SCHEMA.md section 2 gives a flag status, date, owner,
+raised-by, model and resolution, and date is when it was raised, not a deadline
+anyone set. Adding a due: field is a grammar change and law 6 says leave a
+field out when in doubt.
+
+Interpretation applied, the smallest: the flag's own date is the reference, so
+the second clause reads as the open flags among the entries the first clause
+already found, reported separately because R20 asks for them separately. A
+second question left open rather than answered: whether a superseded decision
+or a derived-resolved flag should still count as stale. Reporting them is the
+literal reading of "entries untouched" and is what ships; the report carries a
+derived current field on every row so a later ruling can filter without the
+rule changing.
+
+### F-045: EVALS section 5 specifies E4 without naming a fixture or a window
+status: open
+date: 2026-09-08
+owner: hamza
+raised-by: agent
+model: claude-opus-5
+resolution: none
+
+Raised by claude-opus-5 planning M2. EVALS.md section 5 says E4 "injects a
+fixed clock through the DSK_NOW environment variable and asserts the staleness
+report against expected output for three window configurations", and names
+neither the fixture nor the three windows, so the suite cannot be built without
+a choice.
+
+Interpretation applied and written into EVALS.md section 5 so it is checkable:
+VAL-04, DSK_NOW 2026-09-10, windows 6, 8 and 30 days. VAL-04 is the only valid
+fixture whose entries carry more than one date, 2026-09-01, -02 and -03, so it
+is the only one of the five that can separate three windows at all; VAL-01,
+VAL-02 and VAL-03 date every entry 2026-09-01 and would give the same answer
+three times. The three windows were chosen to give three genuinely different
+reports, the widest of them empty, so a stub returning nothing cannot pass. No
+fixture tree changes: E4 reads VAL-04 as it stands and adds only expected
+outputs, which the frozen inventory does not govern.
+
+### F-046: The staleness and render command names are the builder's choice
+status: open
+date: 2026-09-08
+owner: hamza
+raised-by: agent
+model: claude-opus-5
+resolution: none
+
+Raised by claude-opus-5 planning M2. PROJECT.md 6.2 names render; nothing names
+the R20 command, and SCHEMA.md section 5 fixes the JSON contract for validate
+alone. Three choices made here, each one line to reverse. One, staleness is its
+own subcommand rather than a validate flag, so validate's exit codes keep
+meaning valid and invalid only. Two, it always exits 0 when it ran: R20 calls
+it a report, no ERR_ code exists for staleness, and the inventory is frozen at
+fifteen, so gating CI on it would need a decision this session does not have.
+Three, render writes one self-contained HTML file with no script and no
+external asset, to stdout unless --out names a path, which is what makes the
+GitHub Pages path in 6.2 work without a build step.
