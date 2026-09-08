@@ -385,3 +385,18 @@ internal pass is capped at fifteen agents, one pass, roughly one million tokens,
 and any finding it cannot verify inside the cap is written down as an open flag
 rather than re-derived by fan-out. Depth beyond the cap is the external reviews'
 job. The 122-agent pass caught F-037 and is still not the pattern.
+
+### D-030: raised-by records the composing writer
+status: proposed
+date: 2026-09-08
+owner: hamza
+author: agent
+model: claude-opus-5
+links: [M3-REVIEW.md#2, SCHEMA.md#2, F-058]
+supersedes: none
+
+Ruled by the M3 external review, section 2. `raised-by` records the actor that
+composed the entry and wrote it, exactly as `author` does on a decision; the
+instruction that prompted it is the flag's subject, not its authorship. Closes
+the root cause of F-058, where one E5 run produced both answers. The S2 grader
+gains a hard provenance assertion; the misrecorded artifacts stay as history.

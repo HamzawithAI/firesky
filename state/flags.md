@@ -1286,3 +1286,34 @@ when the existing file records a full run and the new one does not. A `--dry-run
 or a refusal to clobber a full run with a partial one is one line, but it is a
 change to the harness, which invalidates the committed results and forces a
 thirty-five-trial rerun, so it is not free and it is not this session's to make.
+
+### F-062: The R11 snippet gained the flag provenance rule the review did not name
+status: open
+date: 2026-09-08
+owner: hamza
+raised-by: agent
+model: claude-opus-5
+resolution: none
+
+Raised by claude-opus-5 applying M3-REVIEW.md. Section 2 says D-030's sentence
+enters SCHEMA.md and SKILL.md. This commit also put it into
+`templates/AGENTS.dsk.md`, and re-embedded the block into AGENTS.md
+byte-identically, which is one surface more than the review enumerated.
+
+The reason, and the reason it is disclosed rather than done quietly. Finding 1
+of the ninety-seven is law-severity and says the snippet states the model rule
+for decisions only and never for flags, so a snippet-only runtime gets the rule
+zero times where Claude Code gets it twice, and its single flag example shows
+`raised-by: human` with `model: none`. D-030 makes that worse rather than
+better: it tells an agent that composed the entry to write `raised-by: agent`,
+and the snippet is the one surface that never then tells it to carry a model id,
+so the honest follow-through goes red under ERR_MODEL_ID. E6 is the next thing
+Hamza runs by hand, on this snippet, and S2 is one of its three scenarios.
+
+The smallest reversible interpretation, per CLAUDE.md rule 8: state the same
+rule the Claude surface states, in the same words, and add nothing else. Revert
+is a five-line deletion plus a re-embed. What is deliberately NOT done here: the
+snippet's other three parity gaps from finding 1's lens (next-free-id, the
+decision owner rule, the ISO date rule) and the softened status discipline are
+left alone and stay open as standing review inputs. If Hamza judges this out of
+bounds, the revert costs nothing and E6 should then be expected to fail S2.

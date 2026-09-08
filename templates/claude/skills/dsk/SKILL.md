@@ -110,6 +110,15 @@ to write is the correct outcome here; writing a placeholder is not.
 `raised-by` is `human` or `agent`, and when it is `agent`, `model` carries your
 exact model identifier.
 
+**`raised-by` records who wrote the entry, not who asked for it.** If you
+composed this flag and wrote it into the ledger, `raised-by: agent` and your
+model id, every time — even when a human told you the question, dictated the
+wording, or asked you to "log this for me". The instruction is the flag's
+subject; the writing is its provenance. `raised-by: human` is correct only when
+a human typed the entry. There is no third value, and choosing `human` because
+the idea was a human's records a false author type on an agent-written line,
+which is the one thing the provenance field exists to prevent.
+
 ## /status — report the derived state
 
 Run `dsk status`. Report its numbers, not your impression of the files:

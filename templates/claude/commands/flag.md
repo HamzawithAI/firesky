@@ -13,6 +13,9 @@ Do this:
 3. Fields, all required: `status: open`, `date` (ISO), `owner` (a person),
    `raised-by` (`human` or `agent`), `model` (your exact model id when
    `raised-by: agent`, otherwise `none`), `resolution: none`.
+   `raised-by` records **who wrote the entry, not who asked for it**: if you
+   composed and appended it, that is `raised-by: agent` with your model id, even
+   when a human gave you the question or asked you to log it for them.
 4. **The owner is not optional.** If you have not been told who owns this, ask
    and write nothing until you are told. Never write `tbd`, `unknown`, `none`,
    `team`, or an empty owner. An unowned flag looks like tracked state and is

@@ -88,6 +88,13 @@ model: none
 resolution: none
 ```
 
+`raised-by` is `human` or `agent`, and when it is `agent`, `model` must carry
+your exact model identifier, never `none` — the same rule decisions carry. It
+records **who wrote the entry, not who asked for it**: if you composed this flag
+and wrote it into the ledger, `raised-by: agent` and your model id, every time,
+even when a human told you the question or asked you to log it for them. The
+example above shows a human-typed flag. There is no third value.
+
 **A flag with no owner is not a flag.** If you have not been told who owns it,
 ask and write nothing. Never write `tbd`, `unknown`, `none`, `team`, or an empty
 owner: an unowned flag looks like tracked state and is nobody's job, which is

@@ -46,6 +46,12 @@ the diff against SCHEMA-DRAFT.md is never a surprise:
     criterion is met if and only if a sign-off names it in `scope:`. Its own
     `status:` becomes advisory, exactly as D-025 made flag status advisory.
     Section 2.
+15. **D-030, `raised-by` records the composing writer** (M3-REVIEW.md section 2,
+    closing the root cause of F-058). The field records whose act wrote the
+    entry, exactly as `author` does on a decision. Section 2.
+16. **D-033, a repeated key inside one entry is an error** (M3-REVIEW.md section
+    5, closing the F-052 close call structurally). New code ERR_DUP_KEY, new
+    fixture INV-19. The inventory becomes sixteen codes. Sections 2 and 6.
 
 ## 1. Files
 
@@ -99,6 +105,18 @@ ERR_RESOLUTION. `owner` missing or empty is ERR_OWNER. `raised-by` is `human` or
 `agent`. `model` carries the same rule as on decisions: required and non-none
 when `raised-by` is agent, enforced by ERR_MODEL_ID (D-021 amendment 4, closing
 F-013 and F-018).
+
+**Whose act `raised-by` records (D-030, ruled by M3-REVIEW.md section 2).**
+`raised-by` records the actor that composed the entry and wrote it into the
+ledger, exactly as `author` does on a decision. An agent that composes a flag on
+a human's instruction writes `raised-by: agent` and carries its own model id: the
+instruction is the flag's subject, not its authorship, and law 3 exists so that
+agent-written context is visible as such. A human who wants human provenance
+types the entry personally. The field records the writing, never the prompting,
+and there is no third value for "a human asked and an agent wrote". Until this
+sentence existed the same skill produced opposite provenance for the same task
+inside one E5 run, three trials to two, with no check anywhere that could see it
+(F-058). The three misrecorded trial artifacts stay committed as history.
 
     MODEL_FIELD_SINCE: 2026-09-08
 
