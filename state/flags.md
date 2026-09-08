@@ -547,3 +547,200 @@ ERR_MODEL_ID whenever the entry has no provenance block. This is transcription
 of an existing SCHEMA.md line, not a new rule, and it fails safe, since such an
 entry is already red under ERR_PROVENANCE. Pinned by three cases in
 test/model-field-since.test.mjs, written red before the fix (EVALS.md 1.3).
+
+### F-036: Supersession, the one legal correction, permanently invalidates the tree
+status: open
+date: 2026-09-08
+owner: hamza
+raised-by: agent
+model: claude-opus-5
+resolution: none
+
+Raised by claude-opus-5 from the M1 adversarial pass, and reproduced by hand
+twice before recording. This is the finding this build should like least after
+F-033. ERR_STALE_REF fires on any links or scope member that resolves to a
+superseded decision, and it runs over every entry kind. Two consequences:
+
+One, supersede a decision that a sign-off names in scope and the sign-off goes
+red forever. Reproduced: D-001 signed by S-001, then D-002 with supersedes:
+D-001, gives ERR_STALE_REF on S-001. Sign-offs cannot be edited (D12, law 4)
+and nothing can un-scope one, so the tree is permanently invalid. This repo is
+already exposed: S-002 scopes D-015 to D-022, so superseding any of the eight
+turns dsk validate . red with no legal exit. Two, superseding the referring
+entry does not clear it either. Reproduced: D-002 links D-001, D-003 supersedes
+D-001, D-004 supersedes D-002; the error still names D-002. So the append-only
+remedy D-021 promises does not exist for this code.
+
+Nothing applied, and this is not the builder's call. It is a defect in
+ERR_STALE_REF as M0-REVIEW section 3.2 defined it, and every fix is a schema
+change: exempt sign-off scope from the rule, clear the error when the referring
+entry is itself superseded, or narrow the code to entries that are current by
+derivation. The third reading is the one that matches D-021's own logic, and it
+is the smallest, but it is a change to a frozen error code's meaning and needs
+Hamza. Until it is ruled on, supersession is unusable in practice, which makes
+this a blocker for the M5 dogfood rather than for M2.
+
+### F-037: The append-only check is a byte prefix, so law 5 can be defeated
+status: open
+date: 2026-09-08
+owner: hamza
+raised-by: agent
+model: claude-opus-5
+resolution: none
+
+Raised by claude-opus-5 from the M1 adversarial pass, reproduced by hand.
+src/git.ts tests h.startsWith(b) on raw blob content. When the parent blob has
+no trailing newline, its final line is a proper byte prefix of a longer line,
+so the last committed line can be rewritten in place and the check passes.
+Reproduced end to end: a ledger whose last committed line is "owner: hamza"
+with no newline, extended to "owner: hamza-NO-WAIT-mallory", and dsk validate
+reports the tree valid with exit 0. Law 5 and D12 are both defeated, in the one
+check that exists to enforce them, and the M1 gate went green over it because
+no fixture ends a ledger without a trailing newline.
+
+Fixed in this session rather than deferred, because it is a breach of a
+non-negotiable law rather than an ambiguity: the prefix test is now line-aware,
+so a partial final line is not a prefix. Regression-tested first in
+test/git-guard.test.mjs (EVALS.md 1.3). Recorded as a flag anyway, because the
+milestone was declared green while this was live, and that belongs in the
+record. Hamza's ruling wanted on one point only: whether a ledger file lacking
+a trailing newline should additionally be an error in its own right, which
+would need a sixteenth code the frozen inventory has no room for.
+
+### F-038: The F-035 fix covered half its own defect
+status: open
+date: 2026-09-08
+owner: hamza
+raised-by: agent
+model: claude-opus-5
+resolution: none
+
+Raised by claude-opus-5 from the M1 adversarial pass, reproduced by hand. F-035
+made ERR_MODEL_ID read the provenance block, but provenanceOf tests date only
+for undefined, so a present-but-empty "date:" line counts as provenance. An
+agent-authored decision with an empty date draws ERR_DATE and ERR_MODEL_ID and
+no ERR_PROVENANCE, which is the exact combination SCHEMA.md section 2 forbids
+and M0-REVIEW 4.5 split the two codes to prevent.
+
+The underlying question is a schema ambiguity: is an empty value an absent
+field or a malformed one? SCHEMA.md does not say. Interpretation applied, the
+smallest and the one already used everywhere else in this codebase: the unset()
+helper treats absent, empty and the literal none alike for model and
+supersedes, so date joins them. An empty date is absent, ERR_PROVENANCE fires,
+ERR_DATE does not, ERR_MODEL_ID stays suppressed. It fails safe, since such an
+entry is red either way. Fixed here, regression-tested first. No fixture uses
+an empty value, so nothing in the inventory moves.
+
+### F-039: The eval harness and CI gate less than the documents claim
+status: open
+date: 2026-09-08
+owner: hamza
+raised-by: agent
+model: claude-opus-5
+resolution: none
+
+Raised by claude-opus-5 from the M1 adversarial pass. Four separate gaps
+between what grades this build and what the documents say grades it.
+
+One, CI runs no unit tests. EVALS.md section 1.3, as this session amended it
+under M1-REVIEW 2.5, makes test/ the permanent home for implementation-level
+regressions, and nothing in .github/workflows/evals.yml invokes npm test. A
+lens demonstrated it by reverting the M1 symlink fix on a clean copy: every CI
+gate stayed green while the unit suite went red. Two, evals/run.sh swallows a
+failed build and continues, so the report can read GREEN against a stale dist
+on a tree that does not compile, and it prints a message asserting the
+opposite. Three, the runner prints hardcoded pass details such as "110 files
+non-empty" that are asserted rather than measured, so a committed report can
+carry stale numbers. Four, two of the three D-023 expiry legs are evadable:
+leg one matches DSK_MILESTONE exactly, so "M3-final" yields no number, and leg
+three hardcodes the filename harness.mjs.
+
+Items three and four are fixed here, since four is the expiry M1-REVIEW 2.1
+told this session to make un-forgettable. Items one and two are R22's own
+subject matter and land at M2, which PLAN.md scopes as CI mode plus the Action
+wrapper. Recorded so the M2 gate is not read as having found them itself.
+
+### F-040: The parser and loader accept trees SCHEMA.md forbids
+status: open
+date: 2026-09-08
+owner: hamza
+raised-by: agent
+model: claude-opus-5
+resolution: none
+
+Raised by claude-opus-5 from the M1 adversarial pass, which surfaced these
+across three independent lenses. Each is a state/ tree the validator calls
+valid and SCHEMA.md does not. One, a missing ledger file parses as empty, so a
+state/ holding only state.yaml validates green against section 1's five-file
+rule. Two, CRLF ledgers parse with zero fields, so every field-based rule is
+silently disabled and a valid tree is reported invalid. Three, duplicate field
+keys inside one entry are last-write-wins, so appending a second raised-by
+line suppresses ERR_MODEL_ID. Four, entry kind comes from the filename and the
+id prefix is never checked against it, so an F entry in decisions.md escapes
+the flag rules. Five, supersedes accepts several ids and non-decision ids,
+where section 2 says none or one D id, and a non-decision target then misfires
+ERR_STALE_REF elsewhere. Six, ERR_DATE is a format regex, so 2026-13-45 passes.
+Seven, prose written with no blank line before it is eaten by the field loop,
+so ERR_RATIONALE cannot fire on it.
+
+Nothing applied, and deliberately so. Every one of these needs either a new
+error code, and M0-REVIEW section 5 freezes the count at fifteen with its own
+fixture pair per code under D-011, or a SCHEMA.md sentence that does not exist
+yet. Both are Hamza's call, not the builder's, and picking a reading here would
+be exactly the improvisation CLAUDE.md rule 6 forbids. The full list with
+per-item reproduction is in evals/reports/2026-09-08-M1-adversarial-pass.md.
+
+### F-041: The four findings dropped at the M1 cap were never written down
+status: open
+date: 2026-09-08
+owner: hamza
+raised-by: agent
+model: claude-opus-5
+resolution: none
+
+Raised by claude-opus-5 discharging M1-REVIEW.md section 2.6, which instructs
+this session to list the four findings the M1 adversarial pass dropped at its
+cap and verify or dismiss each with one line. They cannot be listed. They
+appear in no commit, no flag, no report and no file in this repository, and
+git log over the full history finds nothing; the M1 session recorded F-030 to
+F-033 and discarded the rest without a record. The reviewer saw them in a
+transcript this repository never held.
+
+Applied in their place, as the only honest discharge: one fresh capped
+adversarial pass under the same M0-REVIEW section 6 budget, six lenses, with
+every candidate recorded in evals/reports/2026-09-08-M1-adversarial-pass.md
+including the refuted ones and the reason each was dismissed. That pass found
+115 candidates, of which 63 survived independent refutation, and among them
+F-036 and F-037, one of which defeats law 5 outright. Whether four such
+findings were among the originals is unknowable, which is the point.
+
+The standing gap, for Hamza: nothing in the build rules requires an adversarial
+pass to leave a record of what it discarded. M0-REVIEW section 6 already noted
+that M0's cap dropped forty findings unverified. This is the second time. The
+rule that would close it is one sentence, that a pass commits its full
+candidate list before any triage, and it is a change to the build protocol
+rather than to the kit, so it is not the builder's to make.
+
+### F-042: D-025 is retroactive and re-opens two flags this repo calls resolved
+status: open
+date: 2026-09-08
+owner: hamza
+raised-by: agent
+model: claude-opus-5
+resolution: none
+
+Raised by claude-opus-5 from the completeness critic. D-025, transcribed in
+this session from M1-REVIEW section 2.3, makes a flag resolved if and only if a
+sign-off names it in scope. It carries no dated cutoff, unlike its sibling
+D-024. F-002 and F-004 in this ledger both read status: resolved with real
+resolution notes, migrated from PROJECT.md section 12 where Hamza closed them
+by default, and no sign-off names either: S-001 scopes two D ids, S-002 eight,
+S-003 F-005 to F-022 and F-024. Under the new rule both derive as open.
+
+Nothing applied. The advisory-field reading D-025 states means the ledger text
+is not wrong, only non-authoritative, so no line needs touching and nothing is
+red today, because no code consumes the derivation yet; render and status will
+be the first. Two exits, both Hamza's: append a sign-off naming F-002 and
+F-004, which is one entry and costs nothing, or give D-025 a dated cutoff the
+way D-024 has one. The first is cleaner, since the derivation is meant to be
+the record and a sign-off is exactly how a human says so.
