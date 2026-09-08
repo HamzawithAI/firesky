@@ -9,5 +9,6 @@
   "open_flags": [
     { "kind": "flag", "file": "state/flags.md", "id": "F-001", "line": 3, "date": "2026-09-01", "age_days": 9, "owner": "hamza", "current": true }
   ],
-  "counts": { "entries": 9, "dated": 6, "undated": 3, "stale": 3, "open_flags": 1 }
+  "stale_scope": [],
+  "counts": { "entries": 9, "dated": 6, "undated": 3, "stale": 3, "open_flags": 1, "stale_scope": 0 }
 }

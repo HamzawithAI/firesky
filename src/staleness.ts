@@ -11,9 +11,16 @@
  *
  * It is a report, not a gate: no ERR_ code is minted for staleness, the
  * inventory is frozen at fifteen, and the CLI exits 0 whenever it ran (F-046).
+ *
+ * It also carries `stale_scope`, the criteria whose `scope` names a superseded
+ * decision. That was ERR_STALE_REF until the F-036 ruling; M2-REVIEW.md section
+ * 2.2 downgraded it to a warning and named this report as its home. It is
+ * clock-free and identical in every window, which is why E4's three expected
+ * outputs all carry the same empty array: VAL-04 has no superseded decision, so
+ * the warning's real coverage is in test/f036-ruling.test.mjs (F-049).
  */
-import { ISO_DATE_RE, field, resolvedFlags, supersededDecisions } from "./rules/helpers.js";
-import type { Entry, Tree } from "./types.js";
+import { ISO_DATE_RE, field, resolvedFlags, staleScopeWarnings, supersededDecisions } from "./rules/helpers.js";
+import type { Entry, StaleScopeWarning, Tree } from "./types.js";
 
 const MS_PER_DAY = 86_400_000;
 
@@ -37,12 +44,20 @@ export interface StalenessReport {
   readonly window_days: number;
   readonly stale: readonly StaleRow[];
   readonly open_flags: readonly OpenFlagRow[];
+  /**
+   * Criteria whose `scope` names a superseded decision. Clock-free, so it is
+   * the same in every window: it is here because M2-REVIEW.md section 2.2 made
+   * it a staleness-report warning when it stopped being ERR_STALE_REF, not
+   * because it has anything to do with the window.
+   */
+  readonly stale_scope: readonly StaleScopeWarning[];
   readonly counts: {
     readonly entries: number;
     readonly dated: number;
     readonly undated: number;
     readonly stale: number;
     readonly open_flags: number;
+    readonly stale_scope: number;
   };
 }
 
@@ -73,6 +88,7 @@ export function staleness(tree: Tree, now: string, windowDays: number): Stalenes
 
   const superseded = supersededDecisions(tree);
   const resolved = resolvedFlags(tree);
+  const stale_scope = staleScopeWarnings(tree);
   const isCurrent = (entry: Entry): boolean => {
     if (entry.kind === "decision") return !superseded.has(entry.id);
     if (entry.kind === "flag") return !resolved.has(entry.id);
@@ -119,12 +135,14 @@ export function staleness(tree: Tree, now: string, windowDays: number): Stalenes
     window_days: windowDays,
     stale,
     open_flags,
+    stale_scope,
     counts: {
       entries: tree.entries.length,
       dated,
       undated: tree.entries.length - dated,
       stale: stale.length,
       open_flags: open_flags.length,
+      stale_scope: stale_scope.length,
     },
   };
 }

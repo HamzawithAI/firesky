@@ -3,5 +3,6 @@
   "window_days": 30,
   "stale": [],
   "open_flags": [],
-  "counts": { "entries": 9, "dated": 6, "undated": 3, "stale": 0, "open_flags": 0 }
+  "stale_scope": [],
+  "counts": { "entries": 9, "dated": 6, "undated": 3, "stale": 0, "open_flags": 0, "stale_scope": 0 }
 }

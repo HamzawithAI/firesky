@@ -42,6 +42,25 @@ export interface DskError {
   readonly message: string;
 }
 
+/**
+ * A criterion whose `scope` names a superseded decision (M2-REVIEW.md 2.2).
+ *
+ * Not a `DskError`, on purpose: it carries no code, it never reaches the
+ * validator's JSON, and it can never turn `ok` false. It was ERR_STALE_REF
+ * until the F-036 ruling downgraded it, and the type boundary is what stops it
+ * drifting back.
+ */
+export interface StaleScopeWarning {
+  readonly kind: EntryKind;
+  readonly file: string;
+  readonly id: string;
+  readonly line: number;
+  /** The scoped id that is stale. */
+  readonly member: string;
+  /** The decision that superseded it. */
+  readonly superseded_by: string;
+}
+
 export interface Counts {
   readonly decisions: number;
   readonly flags: number;
@@ -89,3 +108,4 @@ export interface Rule {
 }
 
 export type { StalenessReport, StaleRow, OpenFlagRow } from "./staleness.js";
+export type { StatusReport } from "./status.js";

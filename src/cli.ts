@@ -2,8 +2,9 @@
 /**
  * dsk CLI entry point.
  *
- * M2 STATUS: `validate` (R18, R19), `staleness` (R20) and `render` (PROJECT.md
- * 6.2) are implemented. `init` lands at M4 and still exits 2 until then.
+ * STATUS: `validate` (R18, R19), `staleness` (R20), `render` (PROJECT.md 6.2)
+ * and `status` (R12) are implemented. `init` lands at M4 and still exits 2
+ * until then.
  *
  * Exit-code convention (D-018):
  *   0  validation ran and the tree is green ("ok": true)
@@ -20,6 +21,7 @@ import { appendViolations } from "./git.js";
 import { loadTree } from "./load.js";
 import { render } from "./render.js";
 import { staleness } from "./staleness.js";
+import { humanStatus, status } from "./status.js";
 import { validate } from "./validate.js";
 import type { StalenessReport, ValidateResult } from "./types.js";
 
@@ -32,6 +34,7 @@ const DEFAULT_STALENESS_DAYS = 30;
 const USAGE =
   "dsk 0.1.0\n" +
   "usage: dsk validate   [path] [--json]\n" +
+  "       dsk status     [path] [--json]\n" +
   "       dsk staleness  [path] [--json] [--window DAYS]\n" +
   "       dsk render     [path] [--out FILE]\n" +
   "       dsk init       (not implemented; M4)\n" +
@@ -133,6 +136,27 @@ function runStaleness(path: string | undefined, json: boolean, window: string | 
   return OK;
 }
 
+/**
+ * `dsk status` (R12). Clock-free and git-free: every answer is derived from
+ * pointers, so there is nothing here for a clock or a parent commit to change.
+ * It reports state, never validity — `dsk validate` owns that, and keeping them
+ * apart is what keeps validate's exit codes meaning valid and invalid only
+ * (D-018, F-046).
+ */
+function runStatus(path: string | undefined, json: boolean): number {
+  const root = resolve(path ?? ".");
+  if (!existsSync(root)) {
+    process.stderr.write(`dsk: no such path: ${root}\n`);
+    return NOT_IMPLEMENTED;
+  }
+  const report = status(loadTree(root, null));
+  if (json) process.stdout.write(JSON.stringify(report, null, 2) + "\n");
+  else process.stdout.write(humanStatus(report, root));
+  // A census, not a gate: exit 0 whenever it ran, for the same reason staleness
+  // does. A tree with warnings in it is not an invalid tree (M2-REVIEW 2.2).
+  return OK;
+}
+
 function runRender(path: string | undefined, out: string | undefined): number {
   const root = resolve(path ?? ".");
   if (!existsSync(root)) {
@@ -175,6 +199,7 @@ function main(argv: string[]): number {
   if (command === "validate") return runValidate(parsed.positionals[1], parsed.values.json === true);
   if (command === "staleness")
     return runStaleness(parsed.positionals[1], parsed.values.json === true, parsed.values.window);
+  if (command === "status") return runStatus(parsed.positionals[1], parsed.values.json === true);
   if (command === "render") return runRender(parsed.positionals[1], parsed.values.out);
 
   if (command === undefined || command === "help") {

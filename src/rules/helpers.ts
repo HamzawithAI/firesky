@@ -3,7 +3,7 @@
  * module per error code, and this file mints no code.
  */
 import { parseList } from "../parse.js";
-import type { Entry, Tree } from "../types.js";
+import type { Entry, StaleScopeWarning, Tree } from "../types.js";
 
 /** SCHEMA.md section 3: a prefix plus exactly three zero-padded digits. */
 export const ID_RE = /^(?:D|F|S|AC)-\d{3}$/;
@@ -88,11 +88,75 @@ export function resolvedFlags(tree: Tree): Set<string> {
 }
 
 /**
- * D-027, criteria met by derivation. NOT IMPLEMENTED YET — stub so the ruling's
- * tests report red by name rather than by module resolution (D-007).
+ * Which decision supersedes which (D-021), as target -> superseding id.
+ *
+ * `supersededDecisions` answers "is it superseded"; this answers "by what",
+ * which is what the reader needs when a warning or an error names a stale
+ * reference. Last writer wins if two entries name the same target, which the
+ * grammar does not forbid and no rule punishes.
  */
-export function metCriteria(_tree: Tree): Set<string> {
-  throw new Error("metCriteria is not implemented yet (M2-REVIEW section 2.4, D-027)");
+export function supersededBy(tree: Tree): Map<string, string> {
+  const by = new Map<string, string>();
+  for (const entry of tree.entries) {
+    if (entry.kind !== "decision") continue;
+    const raw = field(entry, "supersedes");
+    if (unset(raw)) continue;
+    for (const target of parseList(raw ?? "")) by.set(target, entry.id);
+  }
+  return by;
+}
+
+/**
+ * Criteria met by derivation (D-027, ruled by M2-REVIEW.md section 2.4): a
+ * criterion is met if and only if a sign-off names it in `scope:`. The third
+ * derivation in the kit, after supersession (D-021) and flag resolution
+ * (D-025), and written to the same shape deliberately.
+ *
+ * The criterion's own `status:` becomes advisory, correct at write time and
+ * never afterwards, because D-021 forbids editing a committed ledger line. The
+ * derivation has exactly two outcomes, met and open. `dropped` stays
+ * advisory-only in v0.1 by the same ruling, so a criterion written `dropped` is
+ * not met and therefore derives open, with the written word shown beside it
+ * rather than acted on (F-050). Retiring the field is a v0.2 grammar change.
+ */
+export function metCriteria(tree: Tree): Set<string> {
+  const met = new Set<string>();
+  for (const entry of tree.entries) {
+    if (entry.kind !== "signoff") continue;
+    for (const member of idMembers(entry, "scope")) if (member.startsWith("AC-")) met.add(member);
+  }
+  return met;
+}
+
+/**
+ * The criteria whose `scope` names a superseded decision (M2-REVIEW.md section
+ * 2.2). This used to be ERR_STALE_REF and is now a report warning: the signal
+ * survives, the brick does not.
+ *
+ * Sign-offs are deliberately absent. Section 2.1 exempts them forever, not
+ * merely downgrades them: a sign-off records approval of an entry as it stood
+ * at that moment, and a later supersession does not falsify that history, so
+ * there is nothing to warn about.
+ */
+export function staleScopeWarnings(tree: Tree): StaleScopeWarning[] {
+  const by = supersededBy(tree);
+  const warnings: StaleScopeWarning[] = [];
+  for (const entry of tree.entries) {
+    if (entry.kind !== "criterion") continue;
+    for (const member of idMembers(entry, "scope")) {
+      const superseder = by.get(member);
+      if (superseder === undefined) continue;
+      warnings.push({
+        kind: entry.kind,
+        file: entry.file,
+        id: entry.id,
+        line: entry.headingLine,
+        member,
+        superseded_by: superseder,
+      });
+    }
+  }
+  return warnings.sort((a, b) => a.file.localeCompare(b.file) || a.line - b.line || a.member.localeCompare(b.member));
 }
 
 /** ID-shaped members of a bracketed list field. Non-ID members are not links. */

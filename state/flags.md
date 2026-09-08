@@ -916,3 +916,36 @@ E4 expected outputs update under the ruling with each commit referencing the
 file and a flag. Recorded rather than glossed, because "three expected outputs
 changed and the suite stayed green" is exactly the sentence a weakened eval
 would also produce.
+
+### F-050: Two readings the F-036 ruling leaves to the builder
+status: open
+date: 2026-09-08
+owner: hamza
+raised-by: agent
+model: claude-opus-5
+resolution: none
+
+Raised by claude-opus-5 applying M2-REVIEW.md section 2, under CLAUDE.md build
+rule 8: two points the ruling does not settle, each answered with the smallest
+reversible reading and recorded rather than chosen silently.
+
+One, `dsk status` did not exist. Section 2.2 names it as one of the two surfaces
+that must carry the criteria stale-scope warning, alongside `render`, so
+applying the ruling in full required either building it or reporting the ruling
+half-applied. It is built here, in the pre-M3 series rather than at M3: it is
+pure, clock-free and git-free, it mints no schema and no error code, and it is
+the deterministic backend the M3 skill's `/status` reads, which is what lets S6
+grade against a scripted census instead of against prose. Reversible by deleting
+one file and one CLI branch.
+
+Two, D-027 says a criterion is met if and only if a sign-off names it, and that
+`dropped` stays advisory-only in v0.1, without saying what a criterion written
+`dropped` derives as. Reading applied, the smallest and the one D-025 already
+set: the derivation has exactly two outcomes, met and open, and `dropped` has
+none, so a dropped criterion derives open with its written word displayed beside
+it. The alternative, letting the written `dropped` survive as a third derived
+state, would make one status word authoritative and the other two advisory
+inside the same field, which is the inconsistency the v0.2 grammar cleanup
+exists to remove. Consequence to accept until then: a criterion deliberately
+dropped reads as open in `status` and `render`, with `written status: dropped`
+beside it. VAL-04's AC-003 is exactly that case and shows it.
