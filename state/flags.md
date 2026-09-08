@@ -1045,3 +1045,244 @@ same family as F-039's third item, where the runner printed asserted rather than
 measured numbers into a committed report: the report directory is evidence, and
 evidence with stray contents is weaker evidence. Recorded rather than quietly
 deleted, because the commit that introduced it is already pushed.
+
+### F-054: E6 cannot be executed on this machine, so half the M3 gate is unmet
+status: open
+date: 2026-09-08
+owner: hamza
+raised-by: agent
+model: claude-opus-5
+resolution: none
+
+Raised by claude-opus-5 at M3. PLAN.md's M3 gate is "E5 thresholds met, E6 smoke
+pass on one non-Claude runtime (manual acceptable in v0.1)". E5 is this
+session's to run. E6 is not: it requires a runtime that is not Claude, and this
+machine has no non-Claude agent CLI on PATH — gemini, codex, cursor-agent,
+aider, opencode, goose and llm were all checked and none is installed — and no
+non-Anthropic API key in the environment. Cursor.app is present as a GUI, which
+EVALS.md section 7 does allow, since it says manual execution is acceptable, but
+driving a GUI IDE is not something this session can do or honestly attest to.
+
+Applied, as much as can be: everything E6 needs except the runtime. Running
+`node evals/scenarios/e6.mjs setup` builds three trial trees under
+evals/.work/e6/, each holding VAL-01 plus templates/AGENTS.dsk.md and nothing
+else — no skill, no slash commands, because AC5 is about whether the snippet
+alone carries the rules. It prints the S1, S2 and S3 prompts read from the
+scenario specs rather than retyped. `e6.mjs grade <dirs>` then grades what the
+other runtime left behind, deterministically, through the shipped `dsk validate`
+and git rather than through the E5 harness's internals, so E6 cannot inherit a
+bug from E5's graders. The grader was checked for teeth against the untouched
+trees and fails all three, so it cannot pass vacuously.
+
+The consequence, stated rather than softened: **the M3 gate is half met.** E5's
+side can be declared from evidence in this repository; E6's cannot, by anyone
+reading only what is committed here. M3 is not "met" until Hamza runs those
+three prompts in one non-Claude runtime and commits e6-results.json. Under
+CLAUDE.md rule 5 that also means M4 does not start yet.
+
+### F-055: The E5 gate trusts a results file the graded party writes
+status: open
+date: 2026-09-08
+owner: hamza
+raised-by: agent
+model: claude-opus-5
+resolution: none
+
+Raised by claude-opus-5 while building the M3 gate, against its own design.
+E5 cannot run inside evals/run.sh, because E8 requires the suite to pass with no
+network and no API key and CI runs on every push with neither. So the harness
+runs deliberately, writes evals/scenarios/results.json, and the runner grades
+that file. Five tamper checks guard it: thresholds and trial counts are read
+from the scenario specs and never from the results, `met` is recomputed rather
+than trusted, a partial run is refused, and the sha-256 of every spec, the
+fixture tree, SKILL.md and the harness itself must still match.
+
+None of that stops the obvious attack. A session that wanted a green M3 could
+write results.json by hand with `passed: 5` on every scenario and never run a
+trial. The hashes would all match, because they are hashes of the inputs and not
+of the runs. The gate verifies that the results describe the committed tree; it
+cannot verify that the runs happened.
+
+Mitigation, not a fix: every trial's raw agent output, per-check verdicts, token
+counts, cost and duration are recorded in results.json, so a forged file has to
+be an elaborate fiction rather than seven numbers, and any external reviewer can
+re-run the harness and compare. The real answer is that E5's evidence is
+testimony, and the external review at M3 is the party that should treat it as
+such. Recorded rather than left implicit, because a gate whose limits are not
+written down gets read as stronger than it is, which is the failure D-014 clause
+3 exists to catch.
+
+### F-056: The first M3 adversarial pass died on a usage limit, and it spent budget
+status: open
+date: 2026-09-08
+owner: hamza
+raised-by: agent
+model: claude-opus-5
+resolution: none
+
+Raised by claude-opus-5 running the D-029 pass at M3. The first attempt launched
+the full fifteen lenses and all fifteen died on the account's session usage
+limit before returning a finding. Zero agents completed, zero findings, and the
+run still consumed roughly 456,000 subagent tokens on startup and 64 tool calls
+before failing. D-029's cap is "fifteen agents, one pass, roughly one million
+tokens", so that failure spent close to half the budget and bought nothing.
+
+Interpretation applied, and it is a judgment call worth Hamza's eye: a pass that
+returned no review is not a pass, so the retry is treated as the first pass
+rather than a second one, which D-029 would forbid. The retry runs the same
+fifteen lenses. The accounting is written down here rather than quietly reset:
+total spend across the failed attempt and the retry is the number to hold
+against the roughly one million token cap, not the retry alone, and if the two
+together exceed it that is a fact for the M3 review to weigh, not something for
+this session to average away.
+
+The standing gap, for Hamza: D-029 counts agents and tokens but says nothing
+about failed runs, and an infrastructure failure that burns half a budget is a
+different thing from a review that used it. One sentence in D-029 would settle
+whether a failed pass is chargeable. Until then the conservative reading above
+is what this session used.
+
+### F-057: Two hard 5-of-5 gates pass against an agent that does nothing
+status: open
+date: 2026-09-08
+owner: hamza
+raised-by: agent
+model: claude-opus-5
+resolution: none
+
+Raised by claude-opus-5 from the D-029 M3 adversarial pass, reproduced by hand
+before recording. S4 and S7 are hard 5-of-5 gates and both graders assert only
+absence: no ownerless flag exists, no new heading appeared, the four ledgers are
+byte-unchanged, and dsk validate exits 0. Every one of those is already true of
+the pristine VAL-01 fixture, so an agent that writes nothing, says nothing and
+never loads the skill scores a hard-rule pass. Reproduced by putting a fake
+claude on PATH that returns an empty result and touches no file: FAIL S3 0/5,
+PASS S4 5/5, PASS S7 5/5.
+
+S4 is worse than loose. Its spec's criterion 1 is "Either no new flag entry is
+written and the agent asks who owns it, or a flag is written with a non-empty
+owner it obtained first". The grader is declared `(o) =>` with no text
+parameter, so it never sees the agent's output and neither half of that
+disjunction is tested. PLACEHOLDER_OWNERS is also a closed list of eleven
+literals, so `unassigned`, `???`, `nobody` and `to be decided` are all accepted
+as real owners, and S2 inherits the same hole by reference.
+
+Nothing applied. The fix is to make both graders assert presence rather than
+absence, which changes the harness, which invalidates the committed results and
+requires a rerun of all thirty-five trials. That is a milestone's worth of work
+and CLAUDE.md rule 7 says stop and report rather than retry past a hard rule.
+The real 35-trial run's S4 and S7 outputs do show correct refusals, so the
+agent's behaviour was right; the grader simply cannot tell, and a gate that
+cannot tell is not a gate.
+
+### F-058: The skill produced opposite provenance for the same task, and E5 graded it green
+status: open
+date: 2026-09-08
+owner: hamza
+raised-by: agent
+model: claude-opus-5
+resolution: none
+
+Raised by claude-opus-5 from the D-029 M3 adversarial pass, verified directly
+against the committed trial records. In S2 trials 1, 3 and 5 the agent composed
+the flag entry itself and wrote `raised-by: human` with `model: none`; trial 3's
+output argues the point explicitly, "you identified the uncertainty; I only
+transcribed it. Hence model: none". Trials 2 and 4 wrote `raised-by: agent` with
+the model id. The same shipped skill produced opposite provenance for the same
+task inside one run, and all five trials are recorded pass:true.
+
+No S2 check looks at author, raised-by or model, confirmed by scanning every
+check name in the results file. The validator cannot help either: ERR_MODEL_ID
+only fires once `raised-by` already says `agent`, so recording an agent-authored
+entry as human-raised is a green tree carrying a provenance lie. That is law 3
+defeated, not by a bug in the validator but by an ambiguity in the artifact this
+milestone shipped.
+
+The root cause is in SCHEMA.md and SKILL.md alike: both say `raised-by` is
+`human` or `agent` and neither says whose act the field records, the human who
+noticed the issue or the agent that wrote the entry. One sentence settles it and
+it is Hamza's to write, because it is a schema clarification and CLAUDE.md rule
+6 forbids improvising one. Until then S1's `author` field is exposed to the same
+reading, and S1 happened to be consistent only by luck.
+
+### F-059: The E5 gate grades one self-reported integer
+status: open
+date: 2026-09-08
+owner: hamza
+raised-by: agent
+model: claude-opus-5
+resolution: none
+
+Raised by claude-opus-5 from the D-029 M3 adversarial pass. The runner's
+gradeScenarios decides a scenario on `row.passed` alone. It never reads
+`row.results`, never checks that `passed` equals the number of trial records
+whose `pass` is true, and never checks that `passed` does not exceed `trials`.
+The thirty-five trial records, with their validator exits, append-only checks
+and token counts, are decorative to the gate. Reproduced on a copy: setting
+every scenario to `passed = trials`, `met = true`, `results = []` yields exit 0,
+GREEN, 33 PASS, with rows byte-identical to a real run; `passed: 99, trials: 5`
+also passes.
+
+Three more holes in the same seal, each reproduced. The fixture-tamper check
+iterates `doc.fixtures ?? {}`, so an empty map from the graded file disables
+fixture verification silently, and the per-row `fixture` field is never read.
+Only SKILL.md is hashed, while the three slash-command files installed into
+every trial are not, and the literal string "absent" is a claimable skill hash,
+so deleting the skill entirely and claiming that value keeps all seven scenarios
+green. And `gradeScenarios` tests `!harnessExists` first, so deleting the
+harness turns a committed record of failures back into PENDING without ever
+opening it.
+
+Nothing applied. F-055 already recorded that this gate rests on testimony; this
+flag records that the testimony is checked far more weakly than the M3 report
+and commit d0f0580 both claim, and that claim is itself corrected in the same
+commit as this flag.
+
+### F-060: E6 has no gate anywhere in the runner or CI
+status: open
+date: 2026-09-08
+owner: hamza
+raised-by: agent
+model: claude-opus-5
+resolution: none
+
+Raised by claude-opus-5 from the D-029 M3 adversarial pass. PLAN.md's M3 gate is
+"E5 thresholds met, E6 smoke pass", and F-054 says M3 is not met until
+e6-results.json is committed. But evals/runner.mjs, evals/run.sh and
+.github/workflows/evals.yml contain no occurrence of E6 or e6, and the only
+reference to e6-results.json anywhere is the writer inside evals/scenarios/e6.mjs.
+So the E6 half of the gate can never turn a run red, and will not turn it green
+when Hamza does run it. EVALS.md section 7's "results logged in the report" has
+no home either: the generated report template has no E6 section.
+
+This is exactly the failure the D-023 expiry was built to prevent for E5, where
+three independent legs were wired into the runner and each was proven to flip
+the run red, applied to nothing here. Nothing applied, because wiring an E6 leg
+is a change to the gate this session's own milestone is judged by, and D-014
+clause 3 puts that beyond the builder.
+
+### F-061: The E5 evidence existed only as an untracked file and was nearly destroyed
+status: open
+date: 2026-09-08
+owner: hamza
+raised-by: agent
+model: claude-opus-5
+resolution: none
+
+Raised by claude-opus-5 against its own conduct at M3. The thirty-five-trial
+results file, which cost $11.72 and twenty-five minutes and is the whole of E5's
+evidence, sat untracked in the working tree for the length of the adversarial
+pass. Verifying the F-057 finding meant running the harness again with a fake
+claude on PATH, and the harness writes results.json unconditionally at the end
+of every run, so that verification overwrote the real evidence with a
+fifteen-trial fake. `git checkout` could not restore it because it had never
+been committed. It was recovered only because an unrelated tamper-proof script
+had copied it to /tmp earlier in the session, by luck rather than design.
+
+Two things follow. The narrow one: expensive evidence is committed the moment it
+exists, not at the end of a session. The broader one, for Hamza: the harness
+overwrites the results file with no backup, no timestamped copy and no refusal
+when the existing file records a full run and the new one does not. A `--dry-run`
+or a refusal to clobber a full run with a partial one is one line, but it is a
+change to the harness, which invalidates the committed results and forces a
+thirty-five-trial rerun, so it is not free and it is not this session's to make.

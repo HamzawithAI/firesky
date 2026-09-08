@@ -7,7 +7,7 @@ Six milestones, one session each (F4 box: six sessions across three weeks). Each
 | M0 | Scaffold and fixtures | Fixture inventory complete, CI runs red | gate met 7 Sep; D14.3 review applied and signed 7 Sep (M0-REVIEW.md, S-001 to S-003) |
 | M1 | Validator core | E1, E2, E3 green | E1/E2/E3 green 7 Sep, 22 of 22 fixtures PASS; gate met **contingent on Hamza accepting D-023** (F-033) |
 | M2 | Staleness, CI mode, render | E4 green, Action validates this repo | E4 green 8 Sep, 25 of 25 gated suites PASS, 34 unit tests; the shipped action validates this repo in CI. **Merge gating deferred to M5 with a trigger, not dropped** (F-047, M2-REVIEW section 4) |
-| M3 | Skill and AGENTS.md snippet | E5 thresholds met, E6 smoke pass | not started |
+| M3 | Skill and AGENTS.md snippet | E5 thresholds met, E6 smoke pass | Built and run: E5 reports 35 of 35 trials, 33 of 33 gated suites PASS. **GATE NOT MET.** The D-029 pass showed E5's graders do not establish the specs' criteria — an agent that does nothing passes S4 and S7, both hard 5-of-5 — and found a law-3 provenance breach inside the E5 evidence itself (F-057, F-058). E6 was never executed (F-054). |
 | M4 | Install path and degraded mode | E7 under 10 minutes, E8 green | not started |
 | M5 | Dogfood live on two projects | Both repos validate green, day-zero metrics logged | not started |
 
@@ -67,6 +67,72 @@ than glossed.
 2. Write the AGENTS.md snippet (R11) carrying the same rules for other runtimes.
 3. Build the E5 scenario harness (headless runs, see EVALS.md section 6) and run it.
 4. Gate: E5 thresholds met, E6 smoke pass on one non-Claude runtime (manual acceptable in v0.1).
+
+
+Delivered at M3: the L2 minimal skill (`/decide`, `/flag`, `/status`) shipped in
+`templates/` and installed into this repo's own `.claude/`; the R11 snippet
+`templates/AGENTS.dsk.md`, embedded byte-identically into this repo's
+`AGENTS.md`; the E5 harness, `evals/scenarios/harness.mjs`; and the E6 kit,
+`evals/scenarios/e6.mjs`. `/signoff` and `/drift` are R8 members that PROJECT.md
+8.1 and this plan both scope out of v0.1.
+
+The D-023 expiry is now live and did its job unprompted: creating the harness
+file turned leg 3 on by itself, which flipped the seven scenario suites from
+PENDING to FAIL and made the suite RED before a single trial had run. It went
+green only when real results were committed.
+
+E5 ran 35 headless trials against a disposable copy of VAL-01 with the skill
+installed and no AGENTS.md, so it grades the skill and not the snippet. All 35
+passed: 56,812 output tokens, $11.72, 409 seconds, zero permission denials.
+
+The runner never invokes an LLM, which E8 (AC4) requires and CI depends on. The
+harness runs deliberately, writes `evals/scenarios/results.json`, and the runner
+grades that file against the scenario specs. Its limits are written down in
+F-055 rather than left implicit.
+
+### The gate is not met, and the E5 green does not mean what it looks like
+
+The D-029 internal adversarial pass
+(`evals/reports/2026-09-08-M3-adversarial-pass.md`, 97 findings from 15 lenses)
+found the E5 gate unsound. Three findings decide it, each reproduced:
+
+1. **Two of the three hard 5-of-5 gates pass against an agent that does
+   nothing.** Substituting a fake `claude` that writes no file and returns an
+   empty result gives `PASS S4 5/5` and `PASS S7 5/5`. Both graders assert only
+   absence, and absence is already true of the pristine fixture. S4's grader
+   never receives the agent's text at all, so S4.md's "the agent asks who owns
+   it" is ungraded (F-057).
+2. **A law-3 breach sits inside the E5 evidence, ungraded.** In S2 trials 1, 3
+   and 5 the agent composed the flag itself and recorded `raised-by: human` with
+   `model: none`; trials 2 and 4 recorded `raised-by: agent` with the model id.
+   The same skill produced opposite provenance for the same task in one run, and
+   no S2 check looks at author, raised-by or model. The root cause is in the
+   shipped artifact: neither SKILL.md nor SCHEMA.md says whose act `raised-by`
+   records (F-058).
+3. **The runner grades one self-reported integer.** It reads `row.passed` and
+   never the 35 trial records beside it, never checks `passed` against
+   `results`, and the fixture-hash check is opt-in from the file being graded
+   (F-059).
+
+So the honest statement is: the 35 trials are real, the agent's observed
+behaviour was largely correct, and none of that is established by the gate that
+graded it. **M3's E5 half is not met either**, and repairing it is not this
+session's to do — CLAUDE.md rule 7 says stop and report rather than retry past a
+hard rule, and D-014 clause 3 says the builder does not grade its own milestone.
+
+Not delivered, and outside what this session can do: **E6**. It needs a runtime
+that is not Claude, and this machine has no non-Claude agent CLI and no
+non-Anthropic API key (F-054). Everything E6 needs except the runtime is built
+and its grader is proven to fail on untouched trees. Until Hamza runs the three
+prompts in one non-Claude runtime and commits `e6-results.json`, that half cannot be met. Nothing consumes it either: the
+runner, `run.sh` and the CI workflow contain no reference to E6, so the E6 half
+of the gate can neither go red nor go green (F-060). **M4 does not start**
+(CLAUDE.md rule 5).
+
+The M3 external review (D-014 clause 3) has not happened. Its declared inputs
+are F-040 and F-042 (M2-REVIEW section 6), the M1 adversarial pass artifacts and
+its roughly sixty unsurfaced findings (section 8), and this session's own flags
+F-048 to F-061, and the 97-finding pass report itself.
 
 ## M4. Install path and degraded mode (session 5)
 

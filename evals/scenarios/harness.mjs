@@ -132,7 +132,11 @@ function observe(dir, before) {
   } catch {
     /* left null; validateExit still records what happened */
   }
-  const headings = (text) => (text.match(/^### (\S+)/gm) ?? []).map((h) => h.slice(4));
+  /* `### D-002: Title` — the id is the first token with any trailing colon
+     stripped. Keeping the colon made every id fail its own shape test, which
+     the one-trial smoke run caught before the full run was paid for. */
+  const headings = (text) =>
+    (text.match(/^### (\S+)/gm) ?? []).map((h) => h.slice(4).replace(/:$/, ""));
   const appendOnly = LEDGERS.every((l) => {
     const b = before[l] ?? "";
     const h = now[l] ?? "";
