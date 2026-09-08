@@ -44,3 +44,27 @@ sign-off entries satisfy. Those flags keep their textual status: open, because
 D-021 forbids editing a committed ledger line and this scope is the closure
 (F-025). Deliberately not closed and still owned by Hamza: F-001, F-003 and
 F-023, which the review did not rule on, and F-025 to F-028, raised after it.
+
+### S-004
+actor: hamza
+role: owner
+date: 2026-09-08
+scope: [D-023, D-024, D-025]
+
+Hamza's explicit authorization of 8 Sep, in the prompt that instructed this
+session to apply M1-REVIEW.md. It locks the three decisions the M1 external
+review left proposed: D-023, the eval gate counting only suites whose harness
+exists, accepted under M1-REVIEW section 2.1 with the hard M3 expiry now written
+into EVALS.md section 6 and enforced in evals/runner.mjs; D-024, the dated
+grandfather that resolves F-030; and D-025, flag resolution by derivation, which
+resolves F-025. All three keep the textual status proposed, because D-021 forbids
+editing a committed ledger line, and this entry is the state transition that
+locks them (P4, law 4, F-025). Also approves the amendments made under them in
+this commit series: SCHEMA.md sections 0 and 2, EVALS.md sections 1 and 6, the
+runner's E5 gate, and the INV-17 date change recorded in F-034.
+
+Deliberately not covered, because the authorization named these three decisions
+and nothing else: the flags the review resolved rather than this sign-off, which
+are F-025, F-029, F-030, F-032 and F-033, and every flag raised after it, F-034
+to F-043. Under D-025 they therefore derive as open. Closing them is one further
+sign-off and it is Hamza's to give, not this session's to assume (F-043).

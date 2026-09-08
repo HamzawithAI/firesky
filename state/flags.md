@@ -744,3 +744,28 @@ be the first. Two exits, both Hamza's: append a sign-off naming F-002 and
 F-004, which is one entry and costs nothing, or give D-025 a dated cutoff the
 way D-024 has one. The first is cleaner, since the derivation is meant to be
 the record and a sign-off is exactly how a human says so.
+
+### F-043: The flags the M1 review resolved are not covered by any sign-off
+status: open
+date: 2026-09-08
+owner: hamza
+raised-by: agent
+model: claude-opus-5
+resolution: none
+
+Raised by claude-opus-5 while appending S-004. Hamza's authorization of 8 Sep
+names three decisions, D-023, D-024 and D-025, and nothing else, so S-004's
+scope is exactly those three. The M1 review also ruled on five flags, F-025 by
+D-025, F-029 by section 2.4, F-030 by D-024, F-032 by section 2.5 and F-033 by
+section 2.1, and this session raised ten more, F-034 to F-043. Under D-025 a
+flag is resolved if and only if a sign-off names it, so all fifteen derive as
+open, including F-030, which PLAN.md cites as M2's blocker and which the
+validator now demonstrably no longer reports.
+
+Nothing applied, and the omission is deliberate. Signing on Hamza's behalf for
+a scope he did not name is exactly the defect F-024 recorded and S-002 had to
+repair, and it is worse coming from the party whose own work the flags grade.
+One sign-off entry closes whichever of the fifteen Hamza judges closed. Until
+then the derived answer and the textual one disagree for F-030 alone, where the
+text says open and the validator says the condition is gone, and the honest
+reading is the derived one: open, because no human has said otherwise.
