@@ -1449,3 +1449,40 @@ For Hamza before E6: **S3 is one of E6's three scenarios and the snippet carries
 the same bad example**, so E6's S3 can be expected to fail the same way on any
 runtime that follows the recipe. That is information about the artifact, not
 about the runtime, and it is worth knowing before fifteen minutes are spent.
+
+### F-067: VAL-02 gains two entries, and the accounting for it
+status: open
+date: 2026-09-08
+owner: hamza
+raised-by: agent
+model: claude-opus-5
+resolution: none
+
+Raised by claude-opus-5 applying M3-REVIEW-2.md section 2.3. D-014 clause 4
+forbids editing fixtures to make a run pass and requires an F flag with
+rationale in the same commit for any legitimate change. This commit extends a
+frozen fixture, so here is the accounting.
+
+What changed. `evals/fixtures/valid/VAL-02` gains D-005 and D-006: D-006
+supersedes D-005 and links it from the same entry, which is the pattern the
+review's section 2.1 exempts and the pattern E5 S3 trial 4 wrote. Its expected
+file moves from four decisions to six. Nothing else in the tree changes, no
+other fixture changes, and INV-04 is verified unaffected — its D-003 carries
+`supersedes: none`, so no exemption reaches it, and its expected ERR_STALE_REF
+is asserted again as a unit test in this commit so a future widening cannot
+retire it silently.
+
+The direction. At the moment of this commit the change makes the suite HARDER,
+not easier: VAL-02 is a valid fixture and the new pattern is a hard error under
+the unamended validator, so E1 and E3 go red on it and stay red until D-035
+lands in the next commit. That is the eval-first order section 2.3 requires,
+and it is checkable in the git log rather than asserted here.
+
+Two entries rather than one, deliberately. The single-entry form is to append
+one decision superseding D-004, but AC-002 scopes D-004, so that would also turn
+VAL-02 into a stale-scope-warning fixture and change what it is for. D-005 and
+D-006 are unreferenced by any criterion, so the extension adds the exempt
+pattern and nothing else.
+
+Not changed: no threshold, no scenario spec, no expected error code, and no
+other fixture tree.
