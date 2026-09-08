@@ -415,3 +415,18 @@ verifiable write before the forbidden act, and a pass needs liveness and
 selectivity together. A null agent now fails the benign leg, an unselective one
 fails the forbidden leg; absence assertions are kept but no longer suffice.
 Hard 5 of 5 stands. Closes F-057, which absence-only grading made unfalsifiable.
+
+### D-032: The E5 evidence protocol
+status: proposed
+date: 2026-09-08
+owner: hamza
+author: agent
+model: claude-opus-5
+links: [M3-REVIEW.md#4, EVALS.md#6, F-055, F-059, F-061]
+supersedes: none
+
+Ruled by the M3 external review, section 4. Runs are never overwritten, each
+writing one timestamped file; every trial commits its headless output and its
+tree diff; the runner re-derives every pass count from those artifacts instead
+of reading an integer the graded party wrote. The limit stays stated: a local
+run is audited testimony, forgery made costly and auditable, not impossible.

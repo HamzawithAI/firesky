@@ -429,83 +429,224 @@ const e5Legs = [
 ];
 const e5Gated = e5Legs.some((l) => l.on);
 
-/* ------------------------------------------------------ E5, from results.json */
+/* ------------------------------------------------ E5, graded from artifacts */
 /*
  * The runner NEVER invokes an LLM. E8 (AC4) requires this suite to run with no
  * network and no API keys, and CI runs on every push with neither, so the
- * harness is run deliberately and writes its verdicts to
- * evals/scenarios/results.json. This grades that file.
+ * harness is run deliberately and commits its evidence; this grades that
+ * evidence offline.
  *
- * It grades it adversarially, because the file is written by the party being
- * graded:
- *   - the threshold and trial count come from the scenario SPEC, never from
- *     results.json, so the harness cannot lower its own bar;
- *   - `met` is recomputed here from passed vs the spec's threshold, so the
- *     harness's own verdict is advisory;
- *   - the sha-256 of every scenario spec, of the fixture tree, of SKILL.md and
- *     of the harness itself are recorded at run time and compared here, so
- *     editing a spec, a fixture, the skill or a grader after a green run
- *     invalidates the results instead of silently keeping them green (D-020);
- *   - a partial run (--only or --trials) is marked full_run:false and refused.
+ * D-032 (M3-REVIEW.md section 4) changed what "grades" means here. The old gate
+ * read one integer per scenario, `row.passed`, and never opened the thirty-five
+ * trial records beside it: setting `passed = trials` and `results = []`
+ * reproduced a byte-identical GREEN report (finding 4). Nothing the graded party
+ * writes is load-bearing any more.
+ *
+ *   - Thresholds, trial counts and the forbidden token come from the scenario
+ *     spec, which the inventory above has already cross-checked against
+ *     EVALS.md section 6. The results file cannot lower its own bar.
+ *   - EVERY TRIAL IS RE-GRADED. Its committed tree diff is applied to a freshly
+ *     seeded trial tree, and the same graders the harness ran are run over the
+ *     result. A scenario's pass count is the count of re-derived passes; the
+ *     recorded `pass`, `passed` and `met` are compared and reported as
+ *     agreement or disagreement, never used as the answer.
+ *   - Every artifact is verified against the sha-256 recorded at run time.
+ *   - Every input the run depended on is re-hashed: the harness, the graders,
+ *     SKILL.md, each slash-command file, the validator's own source, and each
+ *     fixture tree named by a scenario SPEC rather than by the results file
+ *     (an empty `fixtures` map used to disable the check silently, finding 5).
+ *   - A partial run is refused; duplicate scenario rows are refused.
+ *   - A results file that exists is ALWAYS graded, even with no harness on
+ *     disk. It used to be skipped in favour of PENDING, so a recorded 0/5 could
+ *     be turned green by deleting one file (finding 6).
+ *
+ * 4.4's known limit stands and is not papered over: a locally executed run is
+ * audited testimony. Re-grading makes a forged run expensive — thirty-five
+ * diffs that each have to reproduce their own verdict under the shipped
+ * validator — not impossible. F-055 stays open.
  */
-const RESULTS_PATH = join(EVALS, "scenarios", "results.json");
+const RESULTS_DIR = join(EVALS, "scenarios", "results");
 const sha16 = (text) => createHash("sha256").update(text).digest("hex").slice(0, 16);
 
-/** Threshold, kind and trial count, read from the spec and never from results. */
+/** The newest committed run. Timestamped ids sort lexicographically. */
+function latestResultsFile() {
+  if (!existsSync(RESULTS_DIR)) return null;
+  const files = readdirSync(RESULTS_DIR).filter((f) => f.endsWith(".json")).sort();
+  return files.length === 0 ? null : join(RESULTS_DIR, files[files.length - 1]);
+}
+
+/** Threshold, kind, trials and token, read from the spec and never from results. */
 function specGate(id) {
   const text = readFileSync(join(EVALS, "scenarios", `${id}.md`), "utf8");
   const fieldOf = (key) => (new RegExp(`^${key}:\\s*(.+)$`, "m").exec(text) ?? [])[1]?.trim();
   const threshold = fieldOf("threshold") ?? "";
   const need = Number((/^(\d+) of (\d+)$/.exec(threshold) ?? [])[1]);
-  return { need, trials: Number(fieldOf("trials")), kind: fieldOf("kind"), threshold, hash: sha16(text) };
+  return {
+    id,
+    need,
+    trials: Number(fieldOf("trials")),
+    kind: fieldOf("kind"),
+    threshold,
+    fixture: fieldOf("fixture"),
+    forbiddenToken: fieldOf("forbidden-token") ?? "",
+    hash: sha16(text),
+  };
 }
 
 const LEDGER_PATHS = LEDGERS.map((l) => `state/${l}`).concat(["state/state.yaml"]);
 const fixtureHash = (fixture) =>
   sha16(LEDGER_PATHS.map((f) => readFileSync(join(ROOT, fixture, f), "utf8")).join("\0"));
 
-function gradeScenarios() {
-  if (!harnessExists)
-    return specScenarios.map((id) => ({
-      id, kind: "scenario", status: "PENDING",
-      detail: "E5 harness lands at M3 (PLAN.md M3.3); spec only",
-    }));
+/**
+ * The same input hashes the harness records, recomputed from the tree now.
+ *
+ * A missing file yields a sentinel naming it rather than throwing or, worse,
+ * yielding a value a results file could claim. `absent` used to be both the
+ * sentinel and a legal hash string, so a results file asserting it let the
+ * milestone's entire deliverable be deleted with E5 still green (finding 7).
+ * Sentinels here contain spaces; a sha-256 prefix never does, so no results
+ * file can match one.
+ */
+function inputHashesNow() {
+  const hashOf = (p, what) => (existsSync(p) ? sha16(readFileSync(p, "utf8")) : `${what} is missing from the tree`);
+  const commandDir = join(ROOT, "templates", "claude", "commands");
+  const commands = existsSync(commandDir)
+    ? Object.fromEntries(readdirSync(commandDir).filter((f) => f.endsWith(".md")).sort()
+        .map((f) => [f, sha16(readFileSync(join(commandDir, f), "utf8"))]))
+    : {};
+  const walk = (d) => readdirSync(d, { withFileTypes: true }).flatMap((e) =>
+    e.isDirectory() ? walk(join(d, e.name)) : e.name.endsWith(".ts") ? [join(d, e.name)] : []);
+  const srcDir = join(ROOT, "src");
+  const srcFiles = existsSync(srcDir) ? walk(srcDir).sort() : [];
+  return {
+    harness_sha256: hashOf(join(EVALS, "scenarios", "harness.mjs"), "harness.mjs"),
+    graders_sha256: hashOf(join(EVALS, "scenarios", "graders.mjs"), "graders.mjs"),
+    skill_sha256: hashOf(join(ROOT, "templates", "claude", "skills", "dsk", "SKILL.md"), "SKILL.md"),
+    commands_sha256: commands,
+    validator_sha256: srcFiles.length === 0
+      ? "src/ is missing from the tree"
+      : sha16(srcFiles.map((f) => `${f.slice(ROOT.length + 1)}\0${readFileSync(f, "utf8")}`).join("\0")),
+  };
+}
 
-  if (!existsSync(RESULTS_PATH))
+/**
+ * One trial, re-graded from its committed artifacts (D-032 section 4.3).
+ *
+ * Seed a trial tree exactly as the harness does, apply the committed diff, run
+ * the same graders. The verdict this produces is the one that counts.
+ */
+function regradeTrial(gate, trial) {
+  const problems = [];
+  const bodies = {};
+  for (const kind of ["raw", "output", "diff"]) {
+    const meta = trial.artifacts?.[kind];
+    if (meta === undefined) { problems.push(`trial ${trial.trial}: no ${kind} artifact recorded`); continue; }
+    const p = join(ROOT, meta.path);
+    if (!existsSync(p)) { problems.push(`trial ${trial.trial}: ${meta.path} is missing`); continue; }
+    const body = readFileSync(p, "utf8");
+    if (sha16(body) !== meta.sha256) problems.push(`trial ${trial.trial}: ${meta.path} changed since the run`);
+    bodies[kind] = body;
+  }
+  if (problems.length > 0) return { pass: false, problems };
+
+  const dir = seedTrial(ROOT, gate.fixture, mkdtempSync(join(tmpdir(), "dsk-regrade-")));
+  try {
+    const before = readLedgers(dir);
+    if (bodies.diff.trim() !== "") {
+      const applied = spawnSync("git", ["-C", dir, "apply", "--whitespace=nowarn", "-"],
+        { input: bodies.diff, encoding: "utf8" });
+      if (applied.status !== 0)
+        return { pass: false, problems: [`trial ${trial.trial}: the committed diff does not apply to a fresh seed — ${(applied.stderr || "").trim().slice(0, 140)}`] };
+    }
+    let payload = null;
+    try {
+      payload = JSON.parse(bodies.raw);
+    } catch {
+      /* an unparseable payload is a CLI error, exactly as the harness read it */
+    }
+    const text = payload?.result ?? bodies.output;
+    const cliError = payload === null || payload.is_error === true;
+    const graded = gradeTrial(gate, observe(dir, before, CLI), text, cliError, "recorded CLI error");
+    if (graded.pass !== trial.pass)
+      problems.push(`trial ${trial.trial}: recorded pass=${trial.pass}, re-derived ${graded.pass}`);
+    return { pass: graded.pass, problems, checks: graded.checks };
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+}
+
+function gradeScenarios() {
+  const resultsPath = latestResultsFile();
+
+  if (resultsPath === null) {
+    /* PENDING survives only while there is genuinely nothing to grade. Once a
+       results file exists it is graded, harness present or not (finding 6). */
+    if (!e5Gated && !harnessExists)
+      return specScenarios.map((id) => ({
+        id, kind: "scenario", status: "PENDING",
+        detail: "E5 harness lands at M3 (PLAN.md M3.3); spec only",
+      }));
     return specScenarios.map((id) => ({
       id, kind: "scenario", status: "FAIL",
-      detail: "no evals/scenarios/results.json; run `node evals/scenarios/harness.mjs`",
+      detail: "no run under evals/scenarios/results/; run `node evals/scenarios/harness.mjs`",
+    }));
+  }
+
+  const graded = resultsPath.slice(ROOT.length + 1);
+  if (!cliBuilt)
+    return specScenarios.map((id) => ({
+      id, kind: "scenario", status: "NOT_IMPLEMENTED", detail: "dist/cli.js not built; cannot re-grade",
     }));
 
   let doc;
   try {
-    doc = JSON.parse(readFileSync(RESULTS_PATH, "utf8"));
+    doc = JSON.parse(readFileSync(resultsPath, "utf8"));
   } catch (e) {
-    return specScenarios.map((id) => ({ id, kind: "scenario", status: "FAIL", detail: `results.json unreadable: ${e.message}` }));
+    return specScenarios.map((id) => ({ id, kind: "scenario", status: "FAIL", detail: `${graded} unreadable: ${e.message}` }));
   }
 
-  const harnessHash = sha16(readFileSync(join(EVALS, "scenarios", "harness.mjs"), "utf8"));
-  const skillPath = join(ROOT, "templates", "claude", "skills", "dsk", "SKILL.md");
-  const skillHash = existsSync(skillPath) ? sha16(readFileSync(skillPath, "utf8")) : "absent";
+  const now = inputHashesNow();
   const global = [];
   if (doc.full_run !== true) global.push("results came from a partial run (--only or --trials)");
-  if (doc.harness_sha256 !== harnessHash) global.push("results predate the current harness.mjs; rerun it");
-  if (doc.skill_sha256 !== skillHash) global.push("results graded a different SKILL.md; rerun the harness");
-  for (const [fixture, want] of Object.entries(doc.fixtures ?? {})) {
-    if (fixtureHash(fixture) !== want) global.push(`${fixture} changed since the run; rerun the harness`);
-  }
+  for (const key of ["harness_sha256", "graders_sha256", "skill_sha256", "validator_sha256"])
+    if (doc[key] !== now[key]) global.push(`${key.replace(/_sha256$/, "")} changed since the run; rerun the harness`);
+  for (const [file, want] of Object.entries(now.commands_sha256))
+    if ((doc.commands_sha256 ?? {})[file] !== want) global.push(`templates/claude/commands/${file} changed since the run; rerun the harness`);
+  for (const file of Object.keys(doc.commands_sha256 ?? {}))
+    if (now.commands_sha256[file] === undefined) global.push(`the run used a command file that no longer exists: ${file}`);
 
+  const seen = new Set();
   return specScenarios.map((id) => {
     const gate = specGate(id);
-    const row = (doc.scenarios ?? []).find((s) => s.id === id);
-    if (row === undefined)
-      return { id, kind: "scenario", status: "FAIL", detail: "no result recorded for this scenario" };
+    const rows = (doc.scenarios ?? []).filter((s) => s.id === id);
+    if (rows.length === 0)
+      return { id, kind: "scenario", status: "FAIL", detail: `no result recorded for this scenario in ${graded}` };
+    if (rows.length > 1 || seen.has(id))
+      return { id, kind: "scenario", status: "FAIL", detail: `${rows.length} rows recorded for ${id}; first-wins is not a gate` };
+    seen.add(id);
+    const row = rows[0];
+
     const problems = [...global];
     if (row.spec_sha256 !== gate.hash) problems.push(`${id}.md changed since the run; rerun the harness`);
     if (row.trials !== gate.trials) problems.push(`ran ${row.trials} trials, the spec requires ${gate.trials}`);
-    // The gate, recomputed here from the spec. results.json's own `met` is not read.
-    const met = Number.isInteger(gate.need) && row.passed >= gate.need && row.trials === gate.trials;
-    const detail = `${row.passed}/${row.trials}, needs ${gate.threshold} (${gate.kind}), ` +
+    if (row.fixture !== gate.fixture) problems.push(`ran against ${row.fixture}, the spec names ${gate.fixture}`);
+    /* The fixture check is driven by the SPEC's fixture, so an empty `fixtures`
+       map in the results file disables nothing (finding 5). */
+    if (existsSync(join(ROOT, gate.fixture)) && (doc.fixtures ?? {})[gate.fixture] !== fixtureHash(gate.fixture))
+      problems.push(`${gate.fixture} is not the tree these results were graded against`);
+
+    const trials = Array.isArray(row.results) ? row.results : [];
+    if (trials.length !== gate.trials) problems.push(`${trials.length} trial records for ${gate.trials} trials`);
+
+    /* The gate: re-derived, not read. */
+    const regraded = trials.map((tr) => regradeTrial(gate, tr));
+    for (const r of regraded) problems.push(...r.problems);
+    const passed = regraded.filter((r) => r.pass).length;
+    if (row.passed !== passed) problems.push(`results.json claims ${row.passed} passes, the artifacts yield ${passed}`);
+
+    const met = Number.isInteger(gate.need) && passed >= gate.need && trials.length === gate.trials;
+    const detail =
+      `${passed}/${gate.trials} re-derived from artifacts, needs ${gate.threshold} (${gate.kind}), ` +
       `${row.output_tokens} output tokens, $${(row.cost_usd ?? 0).toFixed(2)}`;
     if (problems.length > 0)
       return { id, kind: "scenario", status: "FAIL", detail: `${detail}; ${problems.join("; ")}` };
@@ -513,6 +654,7 @@ function gradeScenarios() {
   });
 }
 
+const e5ResultsFile = latestResultsFile();
 const scenarioResults = gradeScenarios();
 
 const all = [...fixtureResults, ...e4Results, ...scenarioResults];
@@ -569,7 +711,15 @@ code (F-046). Fixture, clock and windows are derived from EVALS.md section 5.
 |---|---|---|---|
 ${e4Results.map(row).join("\n")}
 
-## Scenarios
+## Scenarios (E5, graded from committed artifacts)
+
+${e5ResultsFile === null ? "No run under `evals/scenarios/results/`." : `Graded run: \`${e5ResultsFile.slice(ROOT.length + 1)}\`.`}
+Every pass count below is **re-derived** (D-032 section 4.3): each trial's
+committed tree diff is applied to a freshly seeded trial, the same graders the
+harness ran are run over the result, and the count is the count of re-derived
+passes. The integers in the results file are compared against that and reported
+as disagreement, never used as the answer. Thresholds come from the scenario
+specs, which the inventory has already reconciled with EVALS.md section 6.
 
 | ID | Kind | Status | Detail |
 |---|---|---|---|

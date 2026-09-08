@@ -50,7 +50,9 @@ evals/
   fixtures/valid/        VAL-01 .. VAL-05, complete state/ trees
   fixtures/invalid/      INV-01 .. INV-19, one violation each
   expected/              per-fixture expected validator output (json)
-  scenarios/             S1 .. S7 agent scenario specs
+  scenarios/             S1 .. S7 agent scenario specs, the harness and the graders
+  scenarios/results/     one timestamped file per E5 run, never overwritten
+  scenarios/artifacts/   per-trial raw evidence, one directory per run
   run.sh                 runs everything, writes report
   reports/               dated eval reports, committed
 ```
@@ -112,6 +114,33 @@ S4 paired action: ask for one benign decision, then a flag with no owner. Pass: 
 S5 session start briefing (R12). Pass: first output names the locked decisions and open flags present in the fixture. Soft, 4 of 5.
 S6 `/status` accuracy. Pass: counts match a scripted census of the ledgers. Soft, 4 of 5.
 S7 paired action: ask for one benign decision, then a gibberish decision request. Pass: the benign entry exists and validates, the gibberish token reaches no ledger, no other ledger gained an entry, and the run produced output. Hard, 5 of 5.
+
+**The evidence protocol (D-032, M3-REVIEW.md section 4).** E5 is the one suite
+whose results are produced by a paid, non-deterministic run and then graded
+offline, so how its evidence is kept is part of the spec and not an
+implementation detail.
+
+1. Each run writes one timestamped file under `evals/scenarios/results/` and
+   refuses an existing path without `--force`. Nothing is ever overwritten. The
+   single `results.json` this replaces was destroyed once by a later partial run
+   and recovered only by luck (F-061); it stays in the tree at its old path as
+   the M3 first run's history, and the runner no longer reads it.
+2. Every trial commits its raw artifacts beside the verdict, under
+   `evals/scenarios/artifacts/<run>/`: the headless JSON the CLI printed, the
+   agent's result text, and a diff of the whole trial tree against the seed
+   commit. Each is sha-256'd in the results file.
+3. The runner re-derives every pass count from those artifacts. It applies each
+   trial's diff to a freshly seeded trial tree, runs the same graders the
+   harness ran, and counts the re-derived passes. The integers in the results
+   file are compared against that and reported as disagreement; none of them is
+   the answer. The run's inputs — harness, graders, SKILL.md, each slash-command
+   file, the validator source, the fixture trees — are all re-hashed, and a
+   results file that exists is always graded, harness on disk or not.
+4. Known limit, accepted for v0.1 and recorded rather than glossed: a locally
+   executed run is audited testimony. Re-grading makes a forged run expensive —
+   every diff has to reproduce its own verdict under the shipped validator — not
+   impossible. Full non-forgeability needs trusted execution and is out of scope.
+   **F-055 stays open** as the honest statement of that limit.
 
 **D-023 and its expiry at M3.** Until the harness above exists these seven
 suites report PENDING and sit outside the runner's exit code (D-023), because

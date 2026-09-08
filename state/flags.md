@@ -1352,3 +1352,33 @@ grading covers four ledger files rather than the tree (findings 19, 23, 31), and
 S5's and S6's free-text clauses remain word-presence tests (findings 20, 21, 32,
 33, 42, 43). The review ruled on S4 and S7, and widening beyond its ruling is
 how a builder ends up regrading itself.
+
+### F-064: The E5 tamper seal now covers the validator, and that has a price
+status: open
+date: 2026-09-08
+owner: hamza
+raised-by: agent
+model: claude-opus-5
+resolution: none
+
+Raised by claude-opus-5 implementing D-032. The review's section 4 does not
+enumerate which inputs the seal covers, and the previous seal covered the
+scenario specs, the fixture tree and SKILL.md only. Findings 7 and 10 name two
+graded inputs it missed: the three slash-command files installed into every
+trial, one of which defines the `/status` S6's prompt invokes, and the validator
+itself, which is the oracle for five of the seven scenarios. Both are now
+sealed, along with graders.mjs.
+
+The judgment call, disclosed because it is one. Sealing the validator means
+**any change under `src/` invalidates a committed E5 run**, and revalidating
+costs a full thirty-five-trial run at roughly twelve dollars and seven minutes.
+M4 is the install path and degraded mode and should not touch `src/`, so the
+expected cost is zero; if it does touch it, the rerun is real money and real
+time, and the alternative would be reading a green E5 that was graded by a
+validator no longer in the tree.
+
+The smallest reversible interpretation, per CLAUDE.md rule 8: seal it, because a
+false green is the failure mode this whole review exists to close, and record
+the cost here so Hamza can downgrade the validator hash to advisory with one
+line if M4 makes it expensive. What is NOT sealed, deliberately: `dist/`, which
+is a build product and would differ per machine, and `node_modules`.
