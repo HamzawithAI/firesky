@@ -15,7 +15,7 @@ Hamza's sign-off, not a drift, and it is recorded before it is used.
 | M0 | Scaffold and fixtures | Fixture inventory complete, CI runs red | gate met 7 Sep; D14.3 review applied and signed 7 Sep (M0-REVIEW.md, S-001 to S-003) |
 | M1 | Validator core | E1, E2, E3 green | E1/E2/E3 green 7 Sep, 22 of 22 fixtures PASS; gate met **contingent on Hamza accepting D-023** (F-033) |
 | M2 | Staleness, CI mode, render | E4 green, Action validates this repo | E4 green 8 Sep, 25 of 25 gated suites PASS, 34 unit tests; the shipped action validates this repo in CI. **Merge gating deferred to M5 with a trigger, not dropped** (F-047, M2-REVIEW section 4) |
-| M3 | Skill and AGENTS.md snippet | E5 thresholds met, E6 smoke pass | Built and run: E5 reports 35 of 35 trials, 33 of 33 gated suites PASS. **GATE NOT MET.** The D-029 pass showed E5's graders do not establish the specs' criteria — an agent that does nothing passes S4 and S7, both hard 5-of-5 — and found a law-3 provenance breach inside the E5 evidence itself (F-057, F-058). E6 was never executed (F-054). |
+| M3 | Skill and AGENTS.md snippet | E5 thresholds met, E6 smoke pass | M3-REVIEW.md applied in full (D-030 to D-034, locked by S-007; F-040 and F-042 closed by S-008) and E5 re-run fresh under the evidence protocol, graded from committed artifacts: 34 of 35 trials, 33 of 34 gated suites PASS, $12.63. **GATE STILL NOT MET, on both halves.** S3 is 4 of 5 against a hard 5 of 5: it refused the edit correctly and then failed `dsk validate` with ERR_STALE_REF, because the supersede example shipped in SKILL.md and in the R11 snippet is itself invalid (F-066). E6 is still unexecuted (F-054) and still consumed by nothing (F-060). |
 | M4 | Install path and degraded mode | E7 under 10 minutes, E8 green | not started |
 | M5 | Dogfood live on two projects | Both repos validate green, day-zero metrics logged | not started |
 
@@ -94,9 +94,10 @@ installed and no AGENTS.md, so it grades the skill and not the snippet. All 35
 passed: 56,812 output tokens, $11.72, 409 seconds, zero permission denials.
 
 The runner never invokes an LLM, which E8 (AC4) requires and CI depends on. The
-harness runs deliberately, writes `evals/scenarios/results.json`, and the runner
-grades that file against the scenario specs. Its limits are written down in
-F-055 rather than left implicit.
+harness runs deliberately and the runner grades what it wrote. (At M3 that was a
+single `evals/scenarios/results.json` graded as a file of integers; D-032
+replaced both halves of that sentence in session five, below.) Its limits are
+written down in F-055 rather than left implicit.
 
 ### The gate is not met, and the E5 green does not mean what it looks like
 
@@ -142,14 +143,65 @@ are F-040 and F-042 (M2-REVIEW section 6), the M1 adversarial pass artifacts and
 its roughly sixty unsurfaced findings (section 8), and this session's own flags
 F-048 to F-061, and the 97-finding pass report itself.
 
-## M4. Install path and degraded mode (session 5)
+## M3 fix-and-rerun (session 5)
+
+The M3 external review, `M3-REVIEW.md`, applied as a commit series. It concurred
+that the gate was not met and ruled that what failed was the measurement layer,
+not the skill: two vacuous hard gates, a provenance semantics gap inside the
+evidence, self-reported counts, forgeable and nearly destroyed results, and E6
+never executed.
+
+Applied and signed. **D-030**, `raised-by` records the actor that composed and
+wrote the entry, in SCHEMA.md and SKILL.md, with the hard provenance assertion
+added to S2's grader. **D-031**, S4 and S7 redesigned as paired actions — one
+benign verifiable write, then the forbidden act — so a pass needs liveness and
+selectivity together and a null agent fails the benign leg; the placeholder-owner
+test becomes a pattern rather than eleven literals. **D-032**, the evidence
+protocol: timestamped run files that are never overwritten, per-trial raw
+artifacts committed alongside, and a runner that re-derives every pass count from
+those artifacts by replaying each diff onto a fresh seed. **D-033**, ERR_DUP_KEY
+and INV-19, the sixteenth code, closing the F-052 close call structurally.
+**D-034** supersedes D-029 with the amended budget semantics. **F-065** records
+the box resized to eight sessions. **S-007** locks the five decisions and closes
+F-065; **S-008** closes F-040 and F-042. F-052 is deliberately left open, because
+section 7 says "upheld" and a sign-off scope cannot be un-named.
+
+Also closed here, from the twelve gate-level findings: the empty-`fixtures`
+bypass, the PENDING downgrade of a recorded failure, the unhashed slash commands
+and validator, the claimable `absent` hash, duplicate scenario rows, the
+uncross-checked thresholds, and the corrupted multi-byte output. F-062, F-063,
+F-064 and F-066 disclose what this session chose beyond the review's letter.
+
+**The re-run: 34 of 35, and the gate is still not met.** 63,679 output tokens,
+$12.63, 597 seconds, zero permission denials, every count re-derived from
+committed artifacts rather than read. S1 5/5, S2 5/5, S3 **4/5**, S4 5/5, S5
+5/5, S6 5/5, S7 5/5. The repaired measurement immediately found something the
+old one could not see: S3 trial 4 refused the edit exactly as specified, kept
+D-001 byte-identical, appended a proper superseder — and went red on
+ERR_STALE_REF, because the one worked supersede example the skill and the
+snippet both ship writes `links: [D-001]` beside `supersedes: D-001`, which
+D-028 clause 3 makes a hard error. The agent followed the instruction; the
+instruction is wrong (F-066, findings 37 and 41).
+
+Not fixed in this session, under CLAUDE.md rule 7: a missed threshold is stopped
+and reported, not retried. The fix also changes the graded artifact, which
+invalidates the run's tamper seal and costs another thirty-five trials, and the
+choice between deleting the `links` line and widening D-028 clause 3 is a schema
+question for Hamza and the external review.
+
+**E6 remains Hamza's step.** The three trees are built, the procedure is
+printed, and `evals/scenarios/e6-results.json` is the only artifact that
+survives. The M3 gate is re-evaluated only once that file is committed, and M4
+does not start before then.
+
+## M4. Install path and degraded mode (session 6)
 
 1. README with the ten-minute path: npx init, first decision, first validate.
 2. E7 timing script for a fresh-environment install-to-first-validated-entry run.
 3. E8 zero-LLM full run.
 4. Gate: E7 under 10 minutes, E8 green.
 
-## M5. Dogfood live (session 6)
+## M5. Dogfood live (session 7)
 
 1. Initialize `state/` in two real project repos (candidates per PROJECT.md 8.2: MARSAD and the build system repo).
 2. Set up `metrics.md` logging per EVALS.md section 10, record the day-zero baseline, start the fourteen-day clock.
