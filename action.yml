@@ -1,0 +1,43 @@
+name: "dsk validate"
+description: "Validate a state/ decision ledger tree. Deterministic, zero network, zero LLM (R22)."
+branding:
+  icon: check-square
+  color: blue
+
+inputs:
+  path:
+    description: "Directory holding state/. Defaults to the repository root."
+    required: false
+    default: "."
+  staleness:
+    description: "Also print the staleness report for this window, in days. Empty to skip."
+    required: false
+    default: ""
+
+runs:
+  using: composite
+  steps:
+    # The append-only check (D12) compares HEAD against its parent. actions/checkout
+    # defaults to a shallow clone with no HEAD~1, and the check would then decline
+    # to run and report nothing — a silent non-application, which F-031 flagged.
+    # This says so out loud rather than passing quietly.
+    - name: check the git history is deep enough for the append-only check
+      shell: bash
+      run: |
+        if ! git -C "${{ inputs.path }}" rev-parse --verify -q HEAD~1 >/dev/null; then
+          echo "::warning title=dsk::HEAD has no parent in this checkout, so the append-only check will not apply. Set fetch-depth: 2 on actions/checkout."
+        fi
+
+    - name: build dsk
+      shell: bash
+      working-directory: ${{ github.action_path }}
+      run: npm ci --silent && npm run --silent build
+
+    - name: dsk validate
+      shell: bash
+      run: node "${{ github.action_path }}/dist/cli.js" validate "${{ inputs.path }}"
+
+    - name: dsk staleness
+      if: inputs.staleness != ''
+      shell: bash
+      run: node "${{ github.action_path }}/dist/cli.js" staleness --window "${{ inputs.staleness }}" "${{ inputs.path }}"

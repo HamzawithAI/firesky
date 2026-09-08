@@ -6,6 +6,10 @@ on:
   pull_request:
   workflow_dispatch:
 
+# fetch-depth: 2 everywhere the git-level check can run. actions/checkout
+# defaults to depth 1, which leaves no HEAD~1, and the append-only check then
+# declines to run and reports nothing — a silent non-application rather than a
+# failure (F-031, sixth item). The dogfood job below fails loudly instead.
 jobs:
   inventory:
     name: fixture inventory matches the spec
@@ -32,20 +36,40 @@ jobs:
       - run: npm ci
       - run: npm run typecheck
 
-  evals:
-    name: eval suite
+  unit:
+    name: unit tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
       - uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
       - run: npm ci
-      # RED AT M0 BY DESIGN. Fixtures and expected outputs exist and fail
-      # before feature code exists (D-007, EVALS.md section 1.1). This job
-      # turns green when the M1 validator lands, with no change to this file
-      # and no change to any fixture or threshold (D-014 clause 4).
+      # EVALS.md section 1.3 makes test/ the permanent home for
+      # implementation-level regressions that the frozen fixture inventory
+      # cannot hold. Nothing ran them until M2, so every one of them gated
+      # nothing: a lens reverted the M1 symlink fix on a clean copy and every CI
+      # job stayed green while the unit suite went red (F-039, first item).
+      - run: npm test
+
+  evals:
+    name: eval suite
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      # Green from M1. E1, E2 and E3 pass on 22 fixtures and E4 on three window
+      # configurations; the seven E5 suites report PENDING until their harness
+      # lands at M3, and the runner prints that gate's state on every run.
       - run: bash evals/run.sh
       - name: upload eval report
         if: always()
@@ -53,3 +77,53 @@ jobs:
         with:
           name: eval-report
           path: evals/reports/
+
+  dogfood:
+    name: the action validates this repository
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      # The M2 gate: this repository carries its own state/ ledgers (build rule
+      # 2) and is validated by the very Action the kit ships, from this
+      # checkout, not by a bespoke script. Until D-024 resolved F-030 this job
+      # could not have been green: dsk validate . reported twenty
+      # ERR_MODEL_ID errors on this repo's own ledger.
+      - name: dsk validate . via the shipped action
+        uses: ./
+        with:
+          path: "."
+
+      # An append-only check that quietly does not apply is worse than no check,
+      # because the job still reports success. This asserts the precondition
+      # rather than trusting the checkout.
+      - name: the append-only check must actually have applied
+        run: |
+          git rev-parse --verify -q HEAD~1 >/dev/null || {
+            echo "::error title=dsk::no HEAD~1 in this checkout; the append-only check did not run"
+            exit 1
+          }
+          echo "HEAD~1 present: $(git rev-parse --short HEAD~1)"
+
+      - name: render smoke
+        run: |
+          npm ci --silent && npm run --silent build
+          node dist/cli.js render . --out state.html
+          test -s state.html
+          grep -q "decision state" state.html
+          # A view that reaches the network, or runs script, is not the static
+          # read-only page PROJECT.md 6.2 asks for.
+          ! grep -qi "<script" state.html
+          ! grep -qE "https?://" state.html
+          echo "render: $(wc -c < state.html) bytes, self-contained"
+
+      - name: upload the rendered state
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: state-html
+          path: state.html

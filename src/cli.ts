@@ -62,7 +62,19 @@ function runValidate(path: string | undefined, json: boolean): number {
   }
   const result = validate(root);
   if (json) process.stdout.write(JSON.stringify(result, null, 2) + "\n");
-  else process.stdout.write(humanReport(result, root));
+  else {
+    process.stdout.write(humanReport(result, root));
+    /* An append-only check that quietly did not apply is worse than no check,
+       because the run still reports success. The JSON contract is frozen at
+       SCHEMA.md section 5, so this goes to stderr rather than into it (F-031). */
+    if (appendViolations(root) === null) {
+      process.stderr.write(
+        "dsk: note, the git-level append-only check did not apply here. It needs the\n" +
+          "     validated directory to be a git repository root with a parent commit.\n" +
+          "     In CI, set fetch-depth: 2 on actions/checkout.\n",
+      );
+    }
+  }
   return result.ok ? OK : FOUND_ERRORS;
 }
 
