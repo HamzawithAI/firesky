@@ -33,11 +33,14 @@ date: 2026-09-08
 owner: hamza
 author: agent
 model: <your exact model id>
-links: [D-001]
+links: []
 supersedes: D-001
 
 Reverses D-001. At most five lines of rationale.
 ```
+
+`supersedes:` alone carries the relationship. Naming `D-001` in `links:` as well
+is legal but redundant, so do not add it by habit.
 
 **2. Write only through the schema, and never repair silently.** If a request
 cannot be turned into a valid entry, write nothing and say what is missing. Do

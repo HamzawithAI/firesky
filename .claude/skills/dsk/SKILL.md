@@ -79,13 +79,18 @@ date: 2026-09-08
 owner: hamza
 author: agent
 model: claude-opus-5
-links: [D-001]
+links: []
 supersedes: D-001
 
 Reverses D-001. Week numbers match how the team already reports.
 ```
 
 D-001 stays byte-identical forever. The derivation makes it superseded.
+
+`supersedes:` alone carries the relationship, so the entry does not also need
+`links: [D-001]`. Writing the link as well is legal — D-035 exempts a `links`
+member the same entry supersedes — but it is redundant, and the redundant form
+is what this example used to teach.
 
 ## /flag — raise an open question
 
