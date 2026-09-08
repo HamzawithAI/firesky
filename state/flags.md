@@ -1486,3 +1486,49 @@ pattern and nothing else.
 
 Not changed: no threshold, no scenario spec, no expected error code, and no
 other fixture tree.
+
+### F-068: E6's three grader holes are closed in the commit that makes it a gate
+status: open
+date: 2026-09-08
+owner: hamza
+raised-by: agent
+model: claude-opus-5
+resolution: none
+
+Raised by claude-opus-5 applying M3-REVIEW-2.md section 4, and disclosed under
+D-014 clause 4 because it changes a grader in the same commit that gives that
+grader teeth. The ruling says wire E6 into the runner, the exit code and CI. It
+does not say fix E6's grader. This commit does both, and here is why, and what
+exactly changed.
+
+Why. Three holes in `e6.mjs` were found by the M3 adversarial pass, recorded in
+the re-run report section 5, and deliberately left, on the grounds that E6 was
+consumed by nothing and fixing an ungated grader was not that session's to do.
+Section 4 removes that ground. A suite that decides a milestone cannot keep holes
+that let it pass without running, because that is precisely the F-057 failure the
+previous review spent itself closing: two hard 5-of-5 gates that passed against
+an agent which did nothing.
+
+What changed, all three strictly harder, none touching a threshold or a pass
+condition. (1) The scenario id came from the directory NAME and an unrecognised
+name fell through to `S?`, which runs no scenario-specific check and prints PASS
+with exit 0; ids now come from the setup manifest and an unknown directory is
+refused. (2) The baseline was unpinned: `git diff` sees neither staged nor
+committed work, so a runtime that ran `git add` made the append-only check
+vacuous and one that ran `git commit` also made "D-001 is byte-identical" compare
+the rewrite against itself; the seed commit is recorded at setup, asserted as a
+check, and the diff is taken against it explicitly. (3) No `dsk` was on PATH
+although the snippet instructs the runtime to run it; setup writes a shim outside
+the trial trees and prints the export line. Each was reproduced before and after.
+
+Also added, and this is the part beyond the ruling's letter: the results file now
+records the runtime it was produced on, which `grade` requires and refuses to let
+be a Claude one, plus the snippet and validator hashes, which the runner re-checks
+against the tree. Without a runtime name the file is evidence of nothing for AC5,
+and without the hashes an E6 run keeps counting after the very artifact it tested
+has changed — which this commit series changes twice.
+
+The smallest reversible interpretation, per CLAUDE.md rule 8: harden, because the
+alternative is a gate that can be satisfied by a rename. Reverting any of it is
+one commit, and none of it is reachable by the eval runner except through the
+results file's shape.

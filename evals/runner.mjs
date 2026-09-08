@@ -657,7 +657,101 @@ function gradeScenarios() {
 const e5ResultsFile = latestResultsFile();
 const scenarioResults = gradeScenarios();
 
-const all = [...fixtureResults, ...e4Results, ...scenarioResults];
+/* ---------------------------------------------------- E6, cross-runtime (AC5) */
+/*
+ * E6 enters the suite and the exit code here (M3-REVIEW-2.md section 4, closing
+ * F-060). Until that ruling, `E6` appeared nowhere in this file, in run.sh or in
+ * the workflow, so half of M3's gate could neither redden nor green — the gate
+ * existed in PLAN.md and in nothing executable.
+ *
+ * ABSENT OR UNGRADED IS A FAIL, NOT A PENDING. The ruling is explicit about
+ * why the D-023 precedent does not transfer: that pattern protected an earlier
+ * gate from a suite belonging to a FUTURE milestone, and E6 belongs to this one.
+ * A red suite while the gate is unmet is the truthful state, and it clears when
+ * the results file lands and grades.
+ *
+ * What is checked, and what is trusted. Execution is manual by EVALS.md section
+ * 7, so unlike E5 there is nothing to re-derive: the trial trees live under a
+ * gitignored `.work/` and the only artifact that survives is the results file.
+ * This is weaker evidence than E5's and is graded as such rather than dressed up
+ * — see the known limit in EVALS.md section 7. What can be checked is checked:
+ *   - the file exists, parses, and names a runtime that is not Claude;
+ *   - it covers exactly the scenarios EVALS.md section 7 names, one row each;
+ *   - each row's `pass` is RE-DERIVED from its own checks rather than read, so a
+ *     hand-edited `pass: true` beside a failing check is reported;
+ *   - the snippet and the validator are re-hashed, so an E6 run stops counting
+ *     the moment the artifact it tested or the oracle that graded it changes.
+ *     This series changes both, which is precisely why the check exists.
+ */
+const E6_RESULTS = join(EVALS, "scenarios", "e6-results.json");
+
+/** E6's scenario set, derived from EVALS.md section 7, never typed here. */
+const e6Scenarios = (() => {
+  const m = /Scenarios S(\d) to S(\d) executed on one non-Claude runtime/.exec(evalsDoc);
+  if (m === null) return null;
+  const out = [];
+  for (let n = Number(m[1]); n <= Number(m[2]); n++) out.push(`S${n}`);
+  return out;
+})();
+
+function gradeE6() {
+  const id = "E6";
+  const kind = "cross-runtime";
+  if (e6Scenarios === null)
+    return [{ id, kind, status: "FAIL", detail: "EVALS.md section 7 does not name E6's scenario range" }];
+  if (!existsSync(E6_RESULTS))
+    return [{
+      id, kind, status: "FAIL",
+      detail: "evals/scenarios/e6-results.json is absent; E6 is due at this gate " +
+        "(M3-REVIEW-2.md section 4). Run `node evals/scenarios/e6.mjs setup`, then grade and commit the file.",
+    }];
+
+  let doc;
+  try {
+    doc = JSON.parse(readFileSync(E6_RESULTS, "utf8"));
+  } catch (e) {
+    return [{ id, kind, status: "FAIL", detail: `e6-results.json unreadable: ${e.message}` }];
+  }
+
+  const problems = [];
+  const runtime = (doc.runtime ?? "").trim();
+  if (runtime === "") problems.push("no runtime recorded; AC5 is a claim about a specific runtime");
+  else if (/claude/i.test(runtime)) problems.push(`runtime '${runtime}' is not a non-Claude runtime`);
+
+  const now = inputHashesNow();
+  const snippetPath = join(ROOT, "templates", "AGENTS.dsk.md");
+  const snippetNow = existsSync(snippetPath) ? sha16(readFileSync(snippetPath, "utf8")) : "the snippet is missing from the tree";
+  if (doc.snippet_sha256 !== snippetNow) problems.push("templates/AGENTS.dsk.md changed since the run; rerun E6");
+  if (doc.validator_sha256 !== now.validator_sha256) problems.push("the validator changed since the run; rerun E6");
+
+  const rows = Array.isArray(doc.results) ? doc.results : [];
+  const covered = rows.map((r) => r.id);
+  for (const want of e6Scenarios)
+    if (covered.filter((c) => c === want).length !== 1)
+      problems.push(`${covered.filter((c) => c === want).length} rows for ${want}, expected exactly 1`);
+  for (const got of new Set(covered))
+    if (!e6Scenarios.includes(got)) problems.push(`unexpected scenario ${got}`);
+
+  /* Re-derived, not read: the same discipline D-032 imposes on E5's integers. */
+  let passed = 0;
+  for (const r of rows) {
+    const checks = Array.isArray(r.checks) ? r.checks : [];
+    if (checks.length === 0) { problems.push(`${r.id}: no checks recorded`); continue; }
+    const derived = checks.every((c) => c.ok === true);
+    if (derived !== r.pass) problems.push(`${r.id}: recorded pass=${r.pass}, its own checks yield ${derived}`);
+    if (derived) passed++;
+    else for (const c of checks.filter((c) => c.ok !== true)) problems.push(`${r.id}: ${c.name} — ${c.detail}`);
+  }
+
+  const detail = `${passed}/${e6Scenarios.length} scenarios on '${runtime || "unnamed"}', ` +
+    `graded ${doc.generated ?? "undated"}`;
+  if (problems.length > 0) return [{ id, kind, status: "FAIL", detail: `${detail}; ${problems.join("; ")}` }];
+  return [{ id, kind, status: "PASS", detail }];
+}
+
+const e6Results = gradeE6();
+
+const all = [...fixtureResults, ...e4Results, ...scenarioResults, ...e6Results];
 const tally = all.reduce((a, r) => ((a[r.status] = (a[r.status] ?? 0) + 1), a), {});
 const pending = all.filter((r) => r.status === "PENDING").length;
 /* With the expiry on, PENDING is simply not PASS, so it counts against the run. */
@@ -724,6 +818,20 @@ specs, which the inventory has already reconciled with EVALS.md section 6.
 | ID | Kind | Status | Detail |
 |---|---|---|---|
 ${scenarioResults.map(row).join("\n")}
+
+## E6, cross-runtime smoke (AC5)
+
+Wired into this runner and this exit code by M3-REVIEW-2.md section 4, closing
+F-060. An absent or ungraded \`evals/scenarios/e6-results.json\` is a **FAIL**,
+not a PENDING: the D-023 pattern protected earlier gates from suites belonging to
+future milestones, and E6 belongs to this one. Execution is manual (EVALS.md
+section 7), so what is checked here is the results file: the runtime it names,
+the snippet and validator hashes it was produced under, one row per scenario, and
+each row's verdict re-derived from its own checks.
+
+| ID | Kind | Status | Detail |
+|---|---|---|---|
+${e6Results.map(row).join("\n")}
 
 ## Error-code coverage
 

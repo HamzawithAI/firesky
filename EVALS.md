@@ -159,6 +159,37 @@ fails closed. Every run prints the gate's state and each leg, green or red.
 
 Scenarios S1 to S3 executed on one non-Claude runtime using only the AGENTS.md snippet. Manual execution and grading acceptable in v0.1, results logged in the report.
 
+**E6 is in the suite and in the exit code (M3-REVIEW-2.md section 4, closing
+F-060).** Until that ruling the string `E6` appeared nowhere in `evals/runner.mjs`,
+`evals/run.sh` or the CI workflow, so half of M3's gate could neither redden nor
+green: it existed in PLAN.md and in nothing executable. It now runs on every
+eval run. **An absent or ungraded `evals/scenarios/e6-results.json` is a FAIL,
+not a PENDING**, and the D-023 precedent does not transfer — that pattern
+protected earlier gates from suites belonging to a *future* milestone, and E6
+belongs to this one. A red suite while the gate is unmet is the truthful state,
+and it clears when the results file lands and grades.
+
+The kit is `evals/scenarios/e6.mjs`. `setup` builds one tree per scenario from
+VAL-01 plus `templates/AGENTS.dsk.md` and nothing else — no skill, no slash
+commands, because AC5 is about whether the snippet alone carries the rules — puts
+a `dsk` shim on PATH outside those trees, pins each seed commit, and prints the
+prompts read from the scenario specs. `grade --runtime "<name>"` grades what the
+other runtime left behind, through the shipped `dsk validate` and git rather than
+through the E5 graders, so E6 cannot inherit an E5 bug. The runner then checks
+the committed results file: the runtime it names is recorded and is not Claude,
+the scenarios of this section are covered exactly once each, every row's verdict
+is re-derived from that row's own checks rather than read, and the snippet and
+validator hashes still match the tree.
+
+Known limit, accepted for v0.1 and recorded rather than glossed: E6's evidence is
+weaker than E5's and is not made to look otherwise. Execution is manual, the
+trial trees live under a gitignored `.work/`, and nothing about the run can be
+replayed from what is committed — the results file is the whole artifact. E5's
+protocol re-derives every verdict from committed diffs; E6's cannot, and the
+grader traps it closes (F-068) reduce the ways a run can pass without happening,
+they do not make it reproducible. AC5's evidential weight is exactly one
+attested manual run on one named runtime.
+
 ## 8. E7 and E8, install and degraded mode
 
 E7: scripted fresh-environment run, `npx` init to first validated decision entry, wall-clock under 10 minutes (AC3). E8: full validator suite executed with no network and no API keys present (AC4).
