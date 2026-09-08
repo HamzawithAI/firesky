@@ -169,3 +169,59 @@ closed. Its substance is answered — ERR_DUP_KEY and INV-19 close the close cal
 it recorded — but a sign-off scope is permanent and cannot be un-named, so
 naming a flag the ruling did not name is the one mistake here that no later
 append could correct. It stays open, and one line from Hamza closes it.
+
+### S-009
+actor: hamza
+role: owner
+date: 2026-09-08
+scope: [D-035]
+
+Hamza's explicit authorization of 8 Sep, in the prompt instructing this session
+to apply M3-REVIEW-2.md: "I explicitly authorize sign-offs with actor hamza
+covering D-035 and the closures of F-052 and F-066." This entry is the decision
+half; S-010 is the closure half, split by role as S-007 and S-008 were.
+
+It locks D-035, the same-entry supersedes exemption to ERR_STALE_REF, which the
+second M3 external review left proposed in its section 2.1. The decision keeps
+the textual status proposed, because D-021 forbids editing a committed ledger
+line, and this entry is the state transition that locks it (P4, law 4, F-025).
+
+It also approves the amendments made under it in this commit series: SCHEMA.md
+section 0 amendment 17 and section 3 clause 4; EVALS.md's fifth-amendment
+paragraph, the VAL-02 sentence in section 3, the finding-12 known limit in
+section 6 and the E6 gating and limit paragraphs in section 7; the VAL-02
+extension and its expected file, disclosed in F-067; the E6 grader hardening
+disclosed in F-068; and the supersede example dropping its redundant `links`
+line on all four shipped surfaces.
+
+Deliberately not covered, because the authorization named D-035 and two closures
+and nothing else: F-067, F-068 and every flag this session raises after them,
+which stay open for Hamza; F-054 and F-060, which E6 governs and which this
+series wires up rather than satisfies; F-055 and F-064, which their own rulings
+require to stay open; and F-065, already closed by S-007.
+
+### S-010
+actor: hamza
+role: reviewer
+date: 2026-09-08
+scope: [F-052, F-066]
+
+The closures Hamza's authorization of 8 Sep names, in the same sentence as
+D-035, and which M3-REVIEW-2.md sections 6 and 2 rule on.
+
+F-052, closed under section 6: "Its close call is structurally handled by
+D-033's ERR_DUP_KEY, implemented and green. Closure is authorized into the next
+sign-off scope alongside F-066." This is that scope. S-008 deliberately left it
+open because M3-REVIEW.md section 7 said only "upheld" and a sign-off scope
+cannot be un-named once appended; the ruling that closes it arrived one review
+later, and the conservative reading cost exactly one line.
+
+F-066, closed under section 2. The flag recorded that S3 failed a hard 5-of-5
+gate because the kit's own supersede example was invalid under its own schema.
+D-035 makes the pattern legal, the example on all four surfaces stops teaching
+the redundant link, VAL-02 carries the pattern as a frozen valid case, and four
+unit tests now lift the example out of each shipped surface and validate it, so
+the class of defect is graded rather than merely fixed.
+
+Both keep their textual status open, because D-021 forbids editing a committed
+ledger line and this scope is the closure (D-025).

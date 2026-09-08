@@ -32,6 +32,16 @@ section 6 gains the evidence protocol of D-032 (section 4) and states that its
 thresholds are the ones that bind, cross-checked against every scenario spec on
 every run.
 
+Amended a fifth time after the second M3 external review (M3-REVIEW-2.md,
+committed in this repository, locked by sign-off S-009). No fixture is added or
+removed and the inventory stays at VAL-01..VAL-05 and INV-01..INV-19. The
+amendments are: VAL-02 gains the same-entry supersedes pattern D-035 exempts,
+disclosed in F-067 (section 2.3, this document's section 3); section 6 records
+the one thing v0.1 does not grade automatically, slash-command expansion
+(section 5); and section 7 puts E6 into the runner and the exit code, where an
+absent results file is a FAIL rather than a PENDING, with E6's evidential limit
+written down beside it (section 4).
+
 ## 1. Philosophy
 
 1. Eval-first: fixtures and expected outputs exist and fail before feature code exists.
@@ -141,6 +151,15 @@ implementation detail.
    every diff has to reproduce its own verdict under the shipped validator — not
    impossible. Full non-forgeability needs trusted execution and is out of scope.
    **F-055 stays open** as the honest statement of that limit.
+
+**Second known limit, on what E5 does not grade (M3-REVIEW-2.md section 5,
+finding 12).** Slash-command registration was verified manually and end to end
+in the M3 session — the three commands load in a fresh session and expand — and
+v0.1 builds no automated grader for interactive command expansion, so what the
+scenarios establish is that the skill's rules are followed, never that `/decide`,
+`/flag` and `/status` resolve as commands. The trials install the command files
+and seal their hashes, and S6's prompt exercises `/status` end to end when a
+session expands it, but nothing in this suite fails if expansion breaks.
 
 **D-023 and its expiry at M3.** Until the harness above exists these seven
 suites report PENDING and sit outside the runner's exit code (D-023), because
