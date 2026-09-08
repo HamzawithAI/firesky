@@ -40,7 +40,12 @@ export function provenanceOf(entry: Entry): Provenance {
   const authorKey = entry.kind === "decision" ? "author" : entry.kind === "flag" ? "raised-by" : null;
   const author = authorKey === null ? undefined : field(entry, authorKey);
   const authorMissing = authorKey !== null && (author === undefined || !AUTHOR_WORDS.has(author));
-  const dateMissing = field(entry, "date") === undefined;
+  // An empty `date:` value is an absent one, the way `unset` already reads an
+  // empty `model:` or `supersedes:`. SCHEMA.md does not settle it, so this takes
+  // the reading already used everywhere else in the codebase (F-038). It fails
+  // safe: such an entry is red under ERR_PROVENANCE either way.
+  const date = field(entry, "date");
+  const dateMissing = date === undefined || date === "";
   // Criteria carry neither field, so the concept does not apply to them at all.
   const present = entry.kind === "criterion" ? true : !authorMissing && !dateMissing;
   return { authorKey, author, authorMissing, dateMissing, present };

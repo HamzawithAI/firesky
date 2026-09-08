@@ -12,7 +12,10 @@ export const rule: Rule = {
     const errors: DskError[] = [];
     for (const entry of tree.entries) {
       const date = field(entry, "date");
-      if (date === undefined || ISO_DATE_RE.test(date)) continue;
+      // Empty reads as absent, so it is ERR_PROVENANCE's, not this rule's. That
+      // keeps the two codes from firing on one entry, which is the split
+      // M0-REVIEW 4.5 drew and F-038 found unenforced on the empty-value path.
+      if (date === undefined || date === "" || ISO_DATE_RE.test(date)) continue;
       errors.push({
         code: "ERR_DATE",
         file: entry.file,

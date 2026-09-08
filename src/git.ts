@@ -13,6 +13,16 @@
  * every fixture run would silently diff this repo's own history instead
  * (F-029 records the preamble question this same check raises).
  *
+ * The prefix test is LINE-aware, not byte-aware (F-037). `head.startsWith(base)`
+ * alone is a byte test, and when the parent blob has no trailing newline its
+ * final line is a proper byte prefix of any longer line — so `owner: hamza`
+ * could be rewritten to `owner: hamza-NO-WAIT-mallory` in place and the check
+ * passed, with `dsk validate` reporting the tree valid and exiting 0. That
+ * defeats law 5 and D12 in the one check that enforces them. No fixture ends a
+ * ledger without a trailing newline, which is why the M1 gate went green over
+ * it. Found by the M1 adversarial pass, regression-tested in
+ * test/git-guard.test.mjs before this fix.
+ *
  * The comparison must canonicalise both sides. `git rev-parse --show-toplevel`
  * always prints the realpath, while `path.resolve` does not follow symlinks, so
  * comparing them directly made the guard misfire on any path with a symlinked
@@ -37,6 +47,20 @@ function canonical(path: string): string {
   } catch {
     return resolve(path);
   }
+}
+
+/**
+ * True when `head` is `base` plus zero or more whole appended lines.
+ *
+ * A committed line must survive intact, so a partial final line does not count
+ * as a prefix: when `base` does not end in a newline, `head` must either equal
+ * it or continue it at a line boundary. Terminating an unterminated final line
+ * without changing its content is an append, since no committed line changes.
+ */
+export function isAppendOf(base: string, head: string): boolean {
+  if (base === "") return true;
+  if (head === base) return true;
+  return head.startsWith(base.endsWith("\n") ? base : base + "\n");
 }
 
 /** 1-based line, in HEAD's numbering, where `base` stops matching `head`. */
@@ -68,7 +92,7 @@ export function appendViolations(root: string): AppendViolation[] | null {
     // append from nothing, and one deleted in HEAD fails the prefix test.
     const b = base.status === 0 ? base.stdout : "";
     const h = head.status === 0 ? head.stdout : "";
-    if (h.startsWith(b)) continue;
+    if (isAppendOf(b, h)) continue;
     found.push({ file: ledger.file, line: firstDivergentLine(b, h) });
   }
   return found;
