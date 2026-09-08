@@ -1587,3 +1587,136 @@ For Hamza, the two ways to close this: pay for one full run before the M3 gate i
 re-evaluated, or rule that per-scenario union grading is acceptable and accept the
 cherry-picking exposure with a mitigation, such as the runner printing how many
 committed runs cover each scenario.
+
+### F-070: The internal adversarial pass overran the D-034 cap, and its remainder is filed here
+status: open
+date: 2026-09-08
+owner: hamza
+raised-by: agent
+model: claude-opus-5
+resolution: none
+
+Raised by claude-opus-5 on its own conduct. D-034 caps the internal adversarial
+pass at fifteen agents, one pass, roughly one million tokens, and says a pass
+approaching the cap stops and files the remainder as open flags rather than
+finishing large. This pass spent **1,730,637 tokens across fifteen agents** — the
+agent count held, the token cap did not, by roughly seventy percent. D-034 says
+the M3 overrun was accepted once and is explicitly not precedent, so this is a
+second overrun and it is recorded as a breach rather than as a footnote. The
+cause is that the script capped agents and not tokens, which is a design error I
+made and not a surprise: ten read-only lenses over a six-commit series at high
+reasoning effort was never going to fit inside a million. No further pass runs
+this session.
+
+What it produced: 38 findings, 2 confirmed under adversarial verification, 3
+refuted, **33 unverified under the cap and therefore filed here as open**, per
+D-034's own instruction that unverified findings are written down rather than
+re-derived by fan-out.
+
+**Confirmed and fixed in this session** (both in E6, both gate-soundness, neither
+touching sealed evidence because `e6.mjs` is not an E5-sealed input):
+
+1. E6 sealed `validator_sha256` from `src/**/*.ts` while grading through
+   `dist/cli.js`. Nothing automated invokes `e6.mjs`, so `run.sh`'s mandatory
+   rebuild never covered it, and `existsSync(CLI)` was the only guard. Reproduced
+   by the verifier: the same seal over the same trees gave 3/3 PASS against a
+   stale binary and 2/3 FAIL after `npm run build`. `e6.mjs` now runs the build
+   itself, exactly as `run.sh` does and for the same stated reason.
+2. `manifest.snippet_sha256` was written at setup and never read; `grade`
+   recomputed the snippet hash from disk, so a snippet edited between setup and
+   grade was sealed as the snippet that was tested. It is read back now and a
+   mismatch refuses to grade.
+
+**Unverified, filed as open, in the pass's own words.** Rule-level, in code this
+session must not touch, because any `src/` change invalidates the fresh S3 run's
+validator seal (F-064): D-035's exemption reads `supersedes:` from any entry
+kind, so a flag or criterion carrying a `links:` and a `supersedes:` key neither
+is in its grammar can silence ERR_STALE_REF on itself; an entry naming its own id
+in `supersedes:` marks itself superseded and falls through D-028 clause 2.3, so
+every stale link on it goes unreported, which predates D-035; `supersedes`
+accepts a multi-id list although SCHEMA.md says "none or one D id", and nothing
+enforces the grammar; and `supersededDecisions` does not check the kind of the
+target, so `supersedes: F-001` on a decision makes a flag count as superseded for
+ERR_STALE_REF while `dsk status` still lists it open.
+
+In this session's own new code: `regrade.mjs` copies the runner's
+`inputHashesNow()` instead of sharing it and the copy already omits
+`commands_sha256`, so its seal table can print all-same while a slash-command file
+has changed; its change baseline is `s.passed`, an integer the graded party wrote;
+a results file with zero scenarios yields a vacuous all-clear at exit 0; a
+scenario whose spec no longer exists crashes with exit 1, the same code the
+header reserves for "verdict changes found". In `earlierCoverage`: it discards
+every `problems` entry the replay returns, so a missing or tampered artifact
+reads as an ordinary failed trial and the sentence can still say "with every seal
+intact"; the denominator is read off the older results file rather than derived
+from the spec; it never checks `full_run`; its stale-seal list omits
+`commands_sha256` and the fixture hash; and a duplicate-row or unparseable older
+run makes it print "no committed run covers it", which is false. In `e6.mjs`: the
+manifest is an unsealed plain file in the gitignored work tree, so editing one
+field turns a committed trial into a PASS; a tree missing a ledger file crashes
+the grader with an unhandled ENOENT and loses every result; and `dirs` drops any
+positional argument whose string equals the `--runtime` value, so a scenario can
+be silently omitted while only PASS rows print.
+
+Pre-existing and outside this series, listed because the pass found them and a
+flag is where findings go: the four-surface byte-identity is asserted in two
+committed files and enforced by nothing; the shipped skill template now cites
+this repo's internal decision id `D-035`, which is a project-specific reference
+in a file copied into user projects; and `evals/expected/README.md` still states
+the ERR_STALE_REF rule in a form D-028 and D-035 have both overtaken.
+
+Three findings were refuted by adversarial verification and are recorded as
+refuted rather than dropped: that a hand-written `e6-results.json` with checks
+named anything clears the gate (true mechanically, but it is the documented limit
+of a manual suite, disclosed in EVALS.md section 7); that the E6 grader not
+checking the trial tree still holds only the snippet is a hole (the reproduction's
+decoration was causally irrelevant); and a duplicate of confirmed finding 1 whose
+stated consequence did not hold.
+
+### F-071: What this session got wrong in its own committed text, and corrected
+status: open
+date: 2026-09-08
+owner: hamza
+raised-by: agent
+model: claude-opus-5
+resolution: none
+
+Raised by claude-opus-5 from the honesty lens of the F-070 pass, on this
+session's own writing. Four statements were stronger than the evidence, each
+verified against the repository before correcting. They are listed here because
+a correction that leaves no record is how the record stops being trustworthy.
+
+1. **"Six unit tests."** `test/d035-same-entry-supersedes.test.mjs` has ten: six
+   boundary tests plus four generated by the shipped-surface loop. PLAN.md said
+   six twice, once as "six ... including four", which cannot be right under any
+   reading. `node --test` prints `# tests 10`, and the whole suite went 59 → 69.
+   PLAN.md corrected to ten, with the split named.
+2. **"SKILL.md changed by deleting one line from one example."** The diff is
+   `6 insertions, 1 deletion` per copy: the `links:` line was replaced, not
+   deleted, and a four-line paragraph about D-035 was added. That sentence is
+   load-bearing — it is the argument for accepting six re-graded scenarios under
+   a changed skill — so understating it matters more than its size. Corrected in
+   the report's errata section rather than by rewriting committed evidence.
+3. **"E6 existed in PLAN.md and in nothing executable."** False in both halves.
+   `evals/scenarios/e6.mjs` was a working 7,673-byte kit at `c291d5f` and EVALS.md
+   carried a whole section 7. What was true is the narrower thing F-060 always
+   said: the runner, `run.sh` and the workflow contained zero references, so
+   nothing consumed its result. EVALS.md section 7 corrected to say that.
+4. **PLAN.md's session numbering** still called M4 session 6 and M5 session 7 in
+   its headings while the paragraph the same commit added called this session the
+   sixth. Corrected to 7 and 8.
+
+**Not corrected, deliberately, and both are real.** SKILL.md and the R11 snippet
+tell an agent that an in-place edit "fails validation" and that "a git-level
+check fails the build on any in-place edit". `dsk validate` reports valid and
+exits 0 on an uncommitted in-place edit, and on any repository with no `HEAD~1` —
+which includes every E5 and E6 trial tree, since both harnesses make exactly one
+commit. The check fires on the commit, not on the edit. The sentence should say
+so. It is not fixed here because changing SKILL.md changes the E5 skill seal and
+invalidates the S3 run sealed an hour ago, and because it is a v0.1 wording
+question for Hamza and the next review rather than a fix to slip in at the end of
+a session. Second: README.md has not been touched since the first commit and
+still says the validator does not exist and every fixture reports
+NOT_IMPLEMENTED, with a fixture count of 20 against the real 24. PLAN.md schedules
+the README rewrite at M4; until then it is the first thing a reader sees and it
+is false.

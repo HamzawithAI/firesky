@@ -243,6 +243,36 @@ const argOf = (name) => {
 const [, , cmd] = process.argv;
 const dirs = process.argv.slice(3).filter((a) => !a.startsWith("--") && a !== argOf("--runtime"));
 
+/**
+ * Build before doing anything, exactly as `evals/run.sh` does and for exactly the
+ * same reason (F-070, confirmed by this session's adversarial pass).
+ *
+ * E6 grades through `dist/cli.js` and seals a hash of `src/**` + '/*' + `.ts`. Nothing
+ * automated invokes this script, so run.sh's mandatory rebuild never covered it,
+ * and `existsSync(CLI)` was the only guard: an edit to src that was never
+ * compiled produced a results file sealed with source that did not build the
+ * binary that graded it. Reproduced: the same seal over the same trial trees
+ * gave 3/3 PASS against a stale dist and 2/3 FAIL after `npm run build`. Since
+ * M3-REVIEW-2.md section 4 made E6 exit-code-bearing, that is a gate hole, and
+ * the src-hash-as-proxy-for-dist reasoning only holds if the build is forced here.
+ */
+function ensureBuild() {
+  if (!existsSync(join(ROOT, "node_modules", "typescript"))) {
+    process.stderr.write(
+      "e6: no local TypeScript; grading the existing dist/ as-is. The validator hash this\n" +
+        "    run seals is computed from src/, so make sure dist/ was built from it.\n",
+    );
+    return;
+  }
+  const built = spawnSync("npm", ["run", "--silent", "build"], { cwd: ROOT, encoding: "utf8" });
+  if (built.status !== 0) {
+    process.stderr.write(`e6: the TypeScript build failed. Refusing to grade a stale dist/.\n${built.stderr ?? ""}`);
+    process.exit(2);
+  }
+}
+
+ensureBuild();
+
 if (!existsSync(CLI)) {
   process.stderr.write("e6: dist/cli.js is absent. Run `npm run build` first.\n");
   process.exit(2);
@@ -272,6 +302,21 @@ if (cmd === "setup") {
     process.exit(2);
   }
   const manifest = JSON.parse(read(MANIFEST));
+  /* The snippet the trees actually carry is the one setup wrote, and the results
+     file seals the one on disk at grade time. Those are the same file at two
+     moments, and nothing compared them: a snippet edited in between was sealed as
+     "the snippet that was tested" when it was not (F-070). The manifest pin was
+     written and never read; it is read now. */
+  const snippetNow = sha16(read(SNIPPET));
+  if (manifest.snippet_sha256 !== snippetNow) {
+    process.stderr.write(
+      `e6: templates/AGENTS.dsk.md changed after setup built these trees\n` +
+        `    (setup ${manifest.snippet_sha256}, now ${snippetNow}).\n` +
+        `    The trees carry the old snippet and the results file would seal the new one.\n` +
+        `    Re-run \`node evals/scenarios/e6.mjs setup\` and redo the trials.\n`,
+    );
+    process.exit(2);
+  }
   /* Hole 1: the id comes from the manifest, so a directory this setup did not
      build is refused rather than graded as `S?` with no scenario checks. */
   const results = dirs.map((d) => {

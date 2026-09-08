@@ -23,7 +23,7 @@ it is used, not after.
 | M0 | Scaffold and fixtures | Fixture inventory complete, CI runs red | gate met 7 Sep; D14.3 review applied and signed 7 Sep (M0-REVIEW.md, S-001 to S-003) |
 | M1 | Validator core | E1, E2, E3 green | E1/E2/E3 green 7 Sep, 22 of 22 fixtures PASS; gate met **contingent on Hamza accepting D-023** (F-033) |
 | M2 | Staleness, CI mode, render | E4 green, Action validates this repo | E4 green 8 Sep, 25 of 25 gated suites PASS, 34 unit tests; the shipped action validates this repo in CI. **Merge gating deferred to M5 with a trigger, not dropped** (F-047, M2-REVIEW section 4) |
-| M3 | Skill and AGENTS.md snippet | E5 thresholds met, E6 smoke pass | M3-REVIEW-2.md applied in full (D-035 locked by S-009; F-052 and F-066 closed by S-010). F-066 fixed at its root: the exemption, the example on four surfaces, a frozen fixture and six unit tests. **E5 is 35 of 35 by verdict and RED by gate**, on mixed provenance the protocol cannot represent (F-069): six scenarios re-graded from run 2026-09-08T14-46-24Z's artifacts under the amended validator, every verdict outside S3 unchanged, and S3 re-run fresh at 5 of 5, $1.80. E6 is now wired into the runner, the exit code and CI, and is red because it is unexecuted (F-054; F-060 closed as to wiring). **GATE STILL NOT MET**, and this session does not re-evaluate it. |
+| M3 | Skill and AGENTS.md snippet | E5 thresholds met, E6 smoke pass | M3-REVIEW-2.md applied in full (D-035 locked by S-009; F-052 and F-066 closed by S-010). F-066 fixed at its root: the exemption, the example on four surfaces, a frozen fixture and ten unit tests. **E5 is 35 of 35 by verdict and RED by gate**, on mixed provenance the protocol cannot represent (F-069): six scenarios re-graded from run 2026-09-08T14-46-24Z's artifacts under the amended validator, every verdict outside S3 unchanged, and S3 re-run fresh at 5 of 5, $1.80. E6 is now wired into the runner, the exit code and CI, and is red because it is unexecuted (F-054; F-060 closed as to wiring). **GATE STILL NOT MET**, and this session does not re-evaluate it. |
 | M4 | Install path and degraded mode | E7 under 10 minutes, E8 green | not started |
 | M5 | Dogfood live on two projects | Both repos validate green, day-zero metrics logged | not started |
 
@@ -213,9 +213,9 @@ Applied and signed. **D-035**, the same-entry supersedes exemption: a `links`
 member is exempt from ERR_STALE_REF when the same entry's `supersedes:` names the
 same id, per member and no wider. The worked example drops the redundant `links`
 line on all four shipped surfaces, VAL-02 carries the exempt pattern as D-005 and
-D-006 (F-067), and six unit tests hold the boundary — including four that lift
-the example out of each shipped surface and validate it, so the class of defect
-that produced F-066 is graded rather than merely fixed. **S-009** locks D-035;
+D-006 (F-067), and ten unit tests hold it: six on the boundary of the exemption,
+and four that lift the example out of each shipped surface and validate it, so
+the class of defect that produced F-066 is graded rather than merely fixed. **S-009** locks D-035;
 **S-010** closes F-052 and F-066, the closure S-008 could not make because
 M3-REVIEW.md had said only "upheld".
 
@@ -250,14 +250,14 @@ is exactly the cost F-064 disclosed when it sealed the validator.
 PATH line the snippet's instructions need. The M3 gate is re-evaluated only once
 `evals/scenarios/e6-results.json` is committed, and M4 does not start before then.
 
-## M4. Install path and degraded mode (session 6)
+## M4. Install path and degraded mode (session 7)
 
 1. README with the ten-minute path: npx init, first decision, first validate.
 2. E7 timing script for a fresh-environment install-to-first-validated-entry run.
 3. E8 zero-LLM full run.
 4. Gate: E7 under 10 minutes, E8 green.
 
-## M5. Dogfood live (session 7)
+## M5. Dogfood live (session 8)
 
 1. Initialize `state/` in two real project repos (candidates per PROJECT.md 8.2: MARSAD and the build system repo).
 2. Set up `metrics.md` logging per EVALS.md section 10, record the day-zero baseline, start the fourteen-day clock.

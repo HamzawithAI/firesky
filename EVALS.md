@@ -181,8 +181,8 @@ Scenarios S1 to S3 executed on one non-Claude runtime using only the AGENTS.md s
 **E6 is in the suite and in the exit code (M3-REVIEW-2.md section 4, closing
 F-060).** Until that ruling the string `E6` appeared nowhere in `evals/runner.mjs`,
 `evals/run.sh` or the CI workflow, so half of M3's gate could neither redden nor
-green: it existed in PLAN.md and in nothing executable. It now runs on every
-eval run. **An absent or ungraded `evals/scenarios/e6-results.json` is a FAIL,
+green: the kit existed and ran, this section specified it, and nothing consumed
+its result. It now runs on every eval run. **An absent or ungraded `evals/scenarios/e6-results.json` is a FAIL,
 not a PENDING**, and the D-023 precedent does not transfer — that pattern
 protected earlier gates from suites belonging to a *future* milestone, and E6
 belongs to this one. A red suite while the gate is unmet is the truthful state,
