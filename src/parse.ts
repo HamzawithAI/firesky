@@ -7,7 +7,7 @@
  * which is what keeps a titled-but-empty ledger such as VAL-01's `criteria.md`
  * legal.
  */
-import type { Entry, EntryKind, Field } from "./types.js";
+import type { DuplicateKey, Entry, EntryKind, Field } from "./types.js";
 
 const HEADING = "### ";
 const FIELD_RE = /^([A-Za-z][A-Za-z0-9_-]*):[ \t]?(.*)$/;
@@ -33,6 +33,11 @@ export function parseLedger(file: string, kind: EntryKind, text: string): Entry[
     i++;
 
     const fields = new Map<string, Field>();
+    // Last writer wins, which is what a line-oriented parser has to do, and is
+    // exactly why the repetition is recorded: the occurrence that loses would
+    // otherwise disappear, taking a rule's precondition with it (ERR_DUP_KEY,
+    // D-033). The parser still does not repair anything; it reports.
+    const duplicateKeys: DuplicateKey[] = [];
     while (i < lines.length) {
       const line = lines[i] ?? "";
       if (line.trim() === "" || line.startsWith(HEADING)) break;
@@ -40,7 +45,10 @@ export function parseLedger(file: string, kind: EntryKind, text: string): Entry[
       // A non-matching line inside the field block is left unparsed rather than
       // guessed at. No rule asserts on it, and inventing one would be R9's
       // "silently fixed" failure in the validator itself.
-      if (m && m[1] !== undefined) fields.set(m[1], { value: (m[2] ?? "").trim(), line: i + 1 });
+      if (m && m[1] !== undefined) {
+        if (fields.has(m[1])) duplicateKeys.push({ key: m[1], line: i + 1 });
+        fields.set(m[1], { value: (m[2] ?? "").trim(), line: i + 1 });
+      }
       i++;
     }
 
@@ -52,7 +60,7 @@ export function parseLedger(file: string, kind: EntryKind, text: string): Entry[
       i++;
     }
 
-    entries.push({ kind, file, id, title, headingLine, fields, prose });
+    entries.push({ kind, file, id, title, headingLine, fields, duplicateKeys, prose });
   }
 
   return entries;

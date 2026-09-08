@@ -18,6 +18,7 @@ import { rule as date } from "./date.js";
 import { rule as inplaceEdit } from "./inplace-edit.js";
 import { rule as rationale } from "./rationale.js";
 import { rule as scope } from "./scope.js";
+import { rule as dupKey } from "./dup-key.js";
 import type { Rule } from "../types.js";
 
 export const RULES: readonly Rule[] = [
@@ -36,4 +37,5 @@ export const RULES: readonly Rule[] = [
   inplaceEdit,
   rationale,
   scope,
+  dupKey,
 ];

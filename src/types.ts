@@ -16,6 +16,18 @@ export interface Field {
 }
 
 /**
+ * A key that appeared more than once in one entry's field block (ERR_DUP_KEY,
+ * D-033). The parser keeps the last occurrence, which is why the repetition has
+ * to be reported: whichever occurrence a line-oriented parser keeps, the other
+ * one is a rule silently disabled.
+ */
+export interface DuplicateKey {
+  readonly key: string;
+  /** 1-based line of the repeated occurrence, not of the first one. */
+  readonly line: number;
+}
+
+/**
  * One ledger entry: a `### ` heading, its `key: value` block, and its prose.
  * Malformed entries are still entries — SCHEMA.md section 5 counts them.
  */
@@ -29,6 +41,8 @@ export interface Entry {
   /** 1-based line of the `### ` heading. Every error anchors here (F-008). */
   readonly headingLine: number;
   readonly fields: ReadonlyMap<string, Field>;
+  /** Keys the field block repeated, in the order they were repeated. Feeds ERR_DUP_KEY. */
+  readonly duplicateKeys: readonly DuplicateKey[];
   /** Non-empty prose lines after the field block. Feeds ERR_RATIONALE. */
   readonly prose: readonly string[];
 }
