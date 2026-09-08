@@ -79,3 +79,13 @@ test("a dateless agent decision reports the missing provenance only, not the mod
 test("a non-ISO-dated agent flag reports the date only: it is not provably post-cutoff", () => {
   assert.deepEqual(codesFor("F-001", { flags: flag("07/09/2026") }), ["ERR_DATE"]);
 });
+
+/* --------------------------- F-038, the empty-value half of the same defect */
+
+test("an empty date value is an absent one: provenance only, no date, no model id", () => {
+  assert.deepEqual(codesFor("D-001", { decisions: decision("", "model: none\n") }), ["ERR_PROVENANCE"]);
+});
+
+test("an empty date value on a flag reports provenance only", () => {
+  assert.deepEqual(codesFor("F-001", { flags: flag("") }), ["ERR_PROVENANCE"]);
+});

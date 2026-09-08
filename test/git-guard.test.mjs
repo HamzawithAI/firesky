@@ -77,3 +77,32 @@ test("a directory that is not a repo root still yields null (the guard's real jo
     rmSync(base, { recursive: true, force: true });
   }
 });
+
+/**
+ * Regression for F-037: the prefix test must be line-aware.
+ *
+ * `h.startsWith(b)` is a BYTE prefix. When the parent blob has no trailing
+ * newline its final line is a proper byte prefix of any longer line, so the
+ * last committed line could be rewritten in place and the check passed. That
+ * defeats law 5 and D12 in the one check that enforces them. Reproduced end to
+ * end before the fix: a ledger ending `owner: hamza` with no newline, extended
+ * to `owner: hamza-NO-WAIT-mallory`, validated green with exit 0.
+ */
+import { isAppendOf } from "../dist/git.js";
+
+test("a partial final line is not an append, however the blob ends (F-037)", () => {
+  // The attack: the parent blob's last line has no terminator.
+  assert.equal(isAppendOf("a\nowner: hamza", "a\nowner: hamza-NO-WAIT-mallory\n"), false);
+  // A real append after an unterminated final line stays legal.
+  assert.equal(isAppendOf("a\nowner: hamza", "a\nowner: hamza\nb: c\n"), true);
+  // Terminating the final line without changing its content is legal.
+  assert.equal(isAppendOf("a\nowner: hamza", "a\nowner: hamza\n"), true);
+  // No change at all is legal.
+  assert.equal(isAppendOf("a\nowner: hamza", "a\nowner: hamza"), true);
+  // The ordinary terminated cases are unchanged.
+  assert.equal(isAppendOf("a\nb\n", "a\nb\nc\n"), true);
+  assert.equal(isAppendOf("a\nb\n", "a\nB\nc\n"), false);
+  assert.equal(isAppendOf("a\nb\n", "a\n"), false);
+  // A ledger added in HEAD is an append from nothing.
+  assert.equal(isAppendOf("", "a\nb\n"), true);
+});
