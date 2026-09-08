@@ -230,30 +230,90 @@ const fixtureResults = [
   ...specValid.map((id) => runFixture(id, "valid")),
   ...specInvalid.map((id) => runFixture(id, "invalid")),
 ];
-/* E5 scenarios need the headless harness PLAN.md builds at M3. Until that file
-   exists they report PENDING and sit outside the exit code (D-023). They are
-   never hidden: the verdict line names the count every run. */
+/* Names the report file. Defaults to "adhoc", never to a milestone name. It used
+   to default to "M0", which meant the documented `bash evals/run.sh` overwrote
+   the committed M0 red-gate report with whatever the current tree produces —
+   silently destroying the evidence that D-007's eval-first order was honoured.
+   Naming a milestone report is now a deliberate act. Found by the M1
+   adversarial pass. It also selects the D-023 expiry below, so it is read before
+   the scenarios are graded, not just when the report is written. */
+const milestone = process.env.DSK_MILESTONE ?? "adhoc";
+
+/* ------------------------------------------------ D-023 and its M3 expiry */
+/*
+ * D-023 lets the seven unbuilt E5 suites report PENDING outside the exit code,
+ * because PLAN.md gates M1 on E1, E2 and E3 while EVALS.md puts the E5 harness
+ * at M3, which made the M1 gate literally unsatisfiable otherwise. F-033
+ * records the real objection to that: the predicate was changed by the party it
+ * grades. M1-REVIEW.md section 2.1 accepted it WITH A HARD EXPIRY — from the M3
+ * gate onward E5 enters the exit code at its thresholds, and a PENDING scenario
+ * at M3 is a failure — and instructed that the expiry be written into the runner
+ * so it cannot be forgotten. This is that.
+ *
+ * Three independent legs turn the gate on, because one leg is one thing to
+ * forget:
+ *   1. DSK_MILESTONE names M3 or later.
+ *   2. PLAN.md's own M3 row no longer reads "not started".
+ *   3. The harness file exists, so there is nothing left to wait for.
+ * Leg 2 fails CLOSED: if the M3 row cannot be found at all, the gate is on. A
+ * false red is a report; a false green is the failure mode this expiry exists
+ * to prevent.
+ *
+ * The thresholds themselves (4 of 5 soft, 5 of 5 hard, EVALS.md section 6) are
+ * the M3 harness's job. This file's job is that PENDING can never be green from
+ * M3 onward.
+ */
+const E5_GATED_FROM = 3;
+
+function milestoneNumber(name) {
+  const m = /^M(\d+)$/.exec(name.trim());
+  return m === null ? null : Number(m[1]);
+}
+
+/** Reads PLAN.md's milestone table. Returns true when M3 is no longer pending. */
+function planSaysM3Started() {
+  let planDoc;
+  try {
+    planDoc = read("PLAN.md");
+  } catch {
+    return { started: true, detail: "PLAN.md unreadable; failing closed" };
+  }
+  const row = planDoc.split("\n").find((l) => /^\|\s*M3\s*\|/.test(l));
+  if (row === undefined) return { started: true, detail: "no M3 row in PLAN.md; failing closed" };
+  const status = (row.split("|")[4] ?? "").trim();
+  if (status === "") return { started: true, detail: "M3 row has no status cell; failing closed" };
+  const started = !/not started/i.test(status);
+  return { started, detail: `PLAN.md M3 status: ${status}` };
+}
+
 const scenarioHarness = join(EVALS, "scenarios", "harness.mjs");
+const harnessExists = existsSync(scenarioHarness);
+const planM3 = planSaysM3Started();
+const e5Legs = [
+  { name: "DSK_MILESTONE is M3 or later", on: (milestoneNumber(milestone) ?? -1) >= E5_GATED_FROM, detail: milestone },
+  { name: "PLAN.md says M3 has started", on: planM3.started, detail: planM3.detail },
+  { name: "the E5 harness exists", on: harnessExists, detail: harnessExists ? "evals/scenarios/harness.mjs" : "not built yet" },
+];
+const e5Gated = e5Legs.some((l) => l.on);
+
 const scenarioResults = specScenarios.map((id) => ({
-  id, kind: "scenario", status: existsSync(scenarioHarness) ? "NOT_IMPLEMENTED" : "PENDING",
-  detail: "E5 harness lands at M3 (PLAN.md M3.3); spec only",
+  id,
+  kind: "scenario",
+  status: harnessExists ? "NOT_IMPLEMENTED" : "PENDING",
+  detail: harnessExists
+    ? "harness present but this suite is not wired to it"
+    : "E5 harness lands at M3 (PLAN.md M3.3); spec only",
 }));
 
 const all = [...fixtureResults, ...scenarioResults];
 const tally = all.reduce((a, r) => ((a[r.status] = (a[r.status] ?? 0) + 1), a), {});
-const gated = all.filter((r) => r.status !== "PENDING");
-const pending = all.length - gated.length;
-const green = inventoryOk && gated.every((r) => r.status === "PASS");
+const pending = all.filter((r) => r.status === "PENDING").length;
+/* With the expiry on, PENDING is simply not PASS, so it counts against the run. */
+const green = inventoryOk && all.every((r) => r.status === "PASS" || (r.status === "PENDING" && !e5Gated));
 
 /* ------------------------------------------------------------------- report */
 
 const now = (process.env.DSK_NOW ?? new Date().toISOString()).slice(0, 10);
-/* Defaults to "adhoc", never to a milestone name. It used to default to "M0",
-   which meant the documented `bash evals/run.sh` overwrote the committed M0
-   red-gate report with whatever the current tree produces — silently destroying
-   the evidence that D-007's eval-first order was honoured. Naming a milestone
-   report is now a deliberate act. Found by the M1 adversarial pass. */
-const milestone = process.env.DSK_MILESTONE ?? "adhoc";
 const row = (r) => `| ${r.id} | ${r.kind} | ${r.status} | ${r.detail} |`;
 
 const report = `# Eval report ${now} (${milestone})
@@ -262,7 +322,17 @@ Runner: \`evals/run.sh\`. Oracle: the validator plus git-level assertions, no
 model judges any result (EVALS.md section 1.2).
 
 **Overall: ${green ? "GREEN" : "RED"}** — ${Object.entries(tally).map(([k, v]) => `${v} ${k}`).join(", ")}.
-${pending > 0 ? `\n${pending} suite(s) report PENDING and are outside this exit code: their harness is not built yet (D-023). They are listed below, unhidden.\n` : ""}
+
+## E5 gating (D-023 and its M3 expiry)
+
+E5 scenario gating is **${e5Gated ? "ON" : "OFF"}**${e5Gated ? ", so a PENDING scenario is a failure" : `, so ${pending} PENDING suite(s) sit outside this exit code`}.
+D-023 lets unbuilt scenario suites report PENDING outside the exit code;
+M1-REVIEW.md section 2.1 accepted that with a hard expiry at M3. Any one leg
+turns the gate on, and leg 2 fails closed.
+
+| Leg | State | Detail |
+|---|---|---|
+${e5Legs.map((l) => `| ${l.name} | ${l.on ? "ON" : "off"} | ${l.detail} |`).join("\n")}
 
 ## Inventory
 

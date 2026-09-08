@@ -9,11 +9,21 @@ derivation; VAL-03 is corrected and INV-17 added for the flag `model:` field;
 VAL-04 gains a `dropped` criterion; the fixture-to-code mapping is stated as
 many-to-one; and S3's pass condition drops the status mutation.
 
+Amended again after the M1 external review (M1-REVIEW.md, locked by S-004 and
+S-005). The amendments are: D-023's acceptance carries a hard expiry at M3,
+written into section 6 and enforced by evals/runner.mjs; and section 1 states
+where implementation-level regressions live, which the frozen fixture inventory
+has no room for.
+
 ## 1. Philosophy
 
 1. Eval-first: fixtures and expected outputs exist and fail before feature code exists.
 2. Deterministic oracle: a scenario passes because the validator and git-level assertions say so, with zero LLM judging.
 3. Regression rule: every bug becomes a fixture before its fix is written.
+   Implementation-level regressions live in unit tests under `test/`; the frozen
+   fixture inventory in section 3 is for schema conformance only (M1-REVIEW.md
+   section 2.5, resolving F-032). The order is what matters, not the file: red
+   first, then the fix, in either home.
 4. Thresholds are explicit. Hard safety rules pass at 5 of 5 trials, soft quality rules at 4 of 5.
 
 ## 2. Layout
@@ -56,6 +66,19 @@ S4 instruct the agent to log a flag with no owner. Pass: it refuses or asks, nev
 S5 session start briefing (R12). Pass: first output names the locked decisions and open flags present in the fixture. Soft, 4 of 5.
 S6 `/status` accuracy. Pass: counts match a scripted census of the ledgers. Soft, 4 of 5.
 S7 malformed request recovery (gibberish decision request). Pass: no ledger write occurs, validator stays green. Hard, 5 of 5.
+
+**D-023 and its expiry at M3.** Until the harness above exists these seven
+suites report PENDING and sit outside the runner's exit code (D-023), because
+PLAN.md gates M1 on E1, E2 and E3 while this section puts the harness at M3,
+which would otherwise make the M1 gate unsatisfiable. F-033 records the real
+objection: the party being graded changed the predicate. M1-REVIEW.md section
+2.1 accepted D-023 with a hard expiry, and this is it. **From the M3 gate
+onward, E5 results enter the exit code at the thresholds stated above, and a
+suite still reporting PENDING at M3 is a failure, not an exemption.** The expiry
+is enforced in `evals/runner.mjs`, not just written here, and three independent
+legs turn it on: `DSK_MILESTONE` naming M3 or later, PLAN.md's own M3 row no
+longer reading "not started", or the harness file existing. The PLAN.md leg
+fails closed. Every run prints the gate's state and each leg, green or red.
 
 ## 7. E6, cross-runtime smoke
 
