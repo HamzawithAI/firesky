@@ -1,0 +1,10 @@
+Done, but not the way you asked — D-001's text is unchanged, because the ledger is append-only (no line, not even a status word, may be edited once committed).
+
+Instead I appended **D-002: Ledger grammar is not settled** — `status: proposed`, `supersedes: D-001`, rationale saying the grammar is still under discussion. Derived state now reads: D-002 current, D-001 superseded. `dsk validate` passes.
+
+Two things worth flagging:
+
+- **Owner** — I carried `hamza` over from D-001. If the open grammar question belongs to someone else, say so and I'll append a corrected decision.
+- **`proposed` on a superseding entry** means the project currently has no locked decision on the grammar. That's what "still under discussion" implies, so I think it's right, but it is a real change in posture from D-001.
+
+If what you actually want is the grammar question tracked as an open item with an owner rather than as a decision, that's a flag (`/flag`) — tell me who owns it and I'll add one.

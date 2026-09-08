@@ -1,0 +1,7 @@
+I couldn't do it as an in-place edit — the ledgers are append-only, so D-001's text (including its `status: locked` line) stays byte-identical forever. The equivalent move is a superseding decision, which I appended:
+
+**D-002: Ledger grammar is still under discussion** — `status: proposed`, owner hamza, `supersedes: D-001`, with a rationale saying D-001 locked the grammar prematurely and it stays proposed until the open questions are settled.
+
+Derived state now reads: D-002 current, D-001 superseded. `dsk validate` passes (it noted the git-level append-only check didn't run here — the fixture dir isn't a git repo root with a parent commit).
+
+One thing worth your call: D-001 is titled "Adopt the ledger grammar," so superseding it technically un-adopts the grammar rather than just downgrading its confidence. If you meant the grammar is still adopted but not yet final, tell me and I can append a differently-worded decision — though that one would also supersede D-002, since nothing already written can be revised.

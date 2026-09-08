@@ -24,6 +24,7 @@ import { fileURLToPath } from "node:url";
 import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { gradeTrial, observe, readLedgers, seedTrial } from "./scenarios/graders.mjs";
+import { regradeTrial, sha16 } from "./scenarios/replay.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const EVALS = join(ROOT, "evals");
@@ -466,7 +467,6 @@ const e5Gated = e5Legs.some((l) => l.on);
  * validator — not impossible. F-055 stays open.
  */
 const RESULTS_DIR = join(EVALS, "scenarios", "results");
-const sha16 = (text) => createHash("sha256").update(text).digest("hex").slice(0, 16);
 
 /** The newest committed run. Timestamped ids sort lexicographically. */
 function latestResultsFile() {
@@ -529,50 +529,60 @@ function inputHashesNow() {
   };
 }
 
-/**
- * One trial, re-graded from its committed artifacts (D-032 section 4.3).
- *
- * Seed a trial tree exactly as the harness does, apply the committed diff, run
- * the same graders. The verdict this produces is the one that counts.
- */
-function regradeTrial(gate, trial) {
-  const problems = [];
-  const bodies = {};
-  for (const kind of ["raw", "output", "diff"]) {
-    const meta = trial.artifacts?.[kind];
-    if (meta === undefined) { problems.push(`trial ${trial.trial}: no ${kind} artifact recorded`); continue; }
-    const p = join(ROOT, meta.path);
-    if (!existsSync(p)) { problems.push(`trial ${trial.trial}: ${meta.path} is missing`); continue; }
-    const body = readFileSync(p, "utf8");
-    if (sha16(body) !== meta.sha256) problems.push(`trial ${trial.trial}: ${meta.path} changed since the run`);
-    bodies[kind] = body;
-  }
-  if (problems.length > 0) return { pass: false, problems };
+/* One trial, re-graded from its committed artifacts, lives in replay.mjs: the
+   same replay is run by evals/scenarios/regrade.mjs under M3-REVIEW-2.md
+   section 3.1, and two copies of it would compare nothing. */
 
-  const dir = seedTrial(ROOT, gate.fixture, mkdtempSync(join(tmpdir(), "dsk-regrade-")));
-  try {
-    const before = readLedgers(dir);
-    if (bodies.diff.trim() !== "") {
-      const applied = spawnSync("git", ["-C", dir, "apply", "--whitespace=nowarn", "-"],
-        { input: bodies.diff, encoding: "utf8" });
-      if (applied.status !== 0)
-        return { pass: false, problems: [`trial ${trial.trial}: the committed diff does not apply to a fresh seed — ${(applied.stderr || "").trim().slice(0, 140)}`] };
-    }
-    let payload = null;
+/**
+ * What an EARLIER committed run says about a scenario the newest one does not
+ * cover — reported beside the failure, never counted as one (F-069).
+ *
+ * The gate is one results file: D-032 section 4.1 makes each run a whole,
+ * sealed, timestamped unit, and the newest is the one that grades. That is
+ * deliberate and this function does not change it — every row it touches stays
+ * FAIL. What it changes is the sentence. A scenario missing from the newest run
+ * used to read "no result recorded for this scenario", which is true of that
+ * file and false about the repository, and it is the sentence a committed eval
+ * report carries for as long as the state lasts.
+ *
+ * M3-REVIEW-2.md section 3 authorised exactly the state that produces this: six
+ * scenarios re-graded from a prior run's artifacts and one re-run fresh. The
+ * protocol has no single file that represents that, so the runner says so in
+ * full — which run covers the scenario, what its artifacts re-derive to now, and
+ * which of that run's seals are stale — and leaves the verdict red.
+ *
+ * The count is RE-DERIVED from the older run's artifacts, never read off it, for
+ * the same reason section 4.3 gives: no integer the graded party wrote is
+ * load-bearing, including in a footnote.
+ */
+function earlierCoverage(id, gate, latestPath) {
+  const files = existsSync(RESULTS_DIR)
+    ? readdirSync(RESULTS_DIR).filter((f) => f.endsWith(".json")).sort().reverse().map((f) => join(RESULTS_DIR, f))
+    : [];
+  const now = inputHashesNow();
+  for (const p of files) {
+    if (p === latestPath) continue;
+    let doc;
     try {
-      payload = JSON.parse(bodies.raw);
+      doc = JSON.parse(readFileSync(p, "utf8"));
     } catch {
-      /* an unparseable payload is a CLI error, exactly as the harness read it */
+      continue;
     }
-    const text = payload?.result ?? bodies.output;
-    const cliError = payload === null || payload.is_error === true;
-    const graded = gradeTrial(gate, observe(dir, before, CLI), text, cliError, "recorded CLI error");
-    if (graded.pass !== trial.pass)
-      problems.push(`trial ${trial.trial}: recorded pass=${trial.pass}, re-derived ${graded.pass}`);
-    return { pass: graded.pass, problems, checks: graded.checks };
-  } finally {
-    rmSync(dir, { recursive: true, force: true });
+    const rows = (doc.scenarios ?? []).filter((s) => s.id === id);
+    if (rows.length !== 1) continue;
+    const row = rows[0];
+    const where = p.slice(ROOT.length + 1);
+    if (row.fixture !== gate.fixture)
+      return `${where} covers it but ran against ${row.fixture}, and the spec now names ${gate.fixture}`;
+    const trials = Array.isArray(row.results) ? row.results : [];
+    const passed = trials.map((tr) => regradeTrial(ROOT, CLI, gate, tr)).filter((r) => r.pass).length;
+    const stale = ["harness_sha256", "graders_sha256", "skill_sha256", "validator_sha256"]
+      .filter((k) => doc[k] !== now[k]).map((k) => k.replace(/_sha256$/, ""));
+    if (row.spec_sha256 !== gate.hash) stale.push(`${id}.md`);
+    return `${where} covers it and its artifacts re-derive ${passed}/${trials.length} against ${gate.threshold}` +
+      (stale.length === 0 ? ", with every seal intact" : `, but its ${stale.join(" and ")} seal${stale.length > 1 ? "s are" : " is"} stale`);
   }
+  return null;
 }
 
 function gradeScenarios() {
@@ -619,8 +629,18 @@ function gradeScenarios() {
   return specScenarios.map((id) => {
     const gate = specGate(id);
     const rows = (doc.scenarios ?? []).filter((s) => s.id === id);
-    if (rows.length === 0)
-      return { id, kind: "scenario", status: "FAIL", detail: `no result recorded for this scenario in ${graded}` };
+    if (rows.length === 0) {
+      /* Still FAIL: the gate grades one run. The detail says what the rest of
+         the repository holds, so a committed report does not read as though this
+         scenario was tried and failed (F-069). */
+      const earlier = earlierCoverage(id, gate, resultsPath);
+      return {
+        id, kind: "scenario", status: "FAIL",
+        detail: `not covered by ${graded}` +
+          (earlier === null ? "; no committed run covers it" : `; ${earlier}`) +
+          ". The gate grades one run (D-032 section 4.1), so this is red until one run covers every scenario.",
+      };
+    }
     if (rows.length > 1 || seen.has(id))
       return { id, kind: "scenario", status: "FAIL", detail: `${rows.length} rows recorded for ${id}; first-wins is not a gate` };
     seen.add(id);
@@ -639,7 +659,7 @@ function gradeScenarios() {
     if (trials.length !== gate.trials) problems.push(`${trials.length} trial records for ${gate.trials} trials`);
 
     /* The gate: re-derived, not read. */
-    const regraded = trials.map((tr) => regradeTrial(gate, tr));
+    const regraded = trials.map((tr) => regradeTrial(ROOT, CLI, gate, tr));
     for (const r of regraded) problems.push(...r.problems);
     const passed = regraded.filter((r) => r.pass).length;
     if (row.passed !== passed) problems.push(`results.json claims ${row.passed} passes, the artifacts yield ${passed}`);

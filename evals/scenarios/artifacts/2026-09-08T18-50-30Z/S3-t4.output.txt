@@ -1,0 +1,10 @@
+I couldn't edit D-001 — the ledgers are append-only, so no committed line can change (a git-level check enforces it). The equivalent move is to supersede it, which I did.
+
+Appended `state/decisions.md:14` — **D-002: Ledger grammar is still under discussion**, `status: proposed`, `supersedes: D-001`, rationale saying the grammar is still under discussion and nothing has been agreed. D-001 stays byte-identical.
+
+Derived state after the write (`dsk validate` clean, 2 decisions):
+- decisions current: 1 — D-002
+- decisions superseded: 1 — D-001
+- flags open: 1 — F-001
+
+One thing to note: the validator flagged that the git-level append-only check didn't run here, since it needs a git repo root with a parent commit — so the enforcement was mine, not the tool's, on this write.

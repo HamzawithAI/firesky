@@ -1,0 +1,25 @@
+Done — appended as **D-002**, which supersedes D-001.
+
+```
+### D-002: Ledger grammar is still under discussion
+status: proposed
+date: 2026-09-08
+owner: hamza
+author: agent
+model: claude-opus-5
+links: []
+supersedes: D-001
+
+Reverses D-001, which locked the grammar prematurely. The grammar is still
+under discussion and nothing about it is settled. The alternative was to
+leave D-001 locked, which would keep reporting the grammar as agreed.
+```
+
+What changed, precisely — since it isn't quite what you asked for:
+
+- D-001's own text is untouched and its line still reads `status: locked` forever. That field is never updated; the ledger is append-only, so rewriting a committed entry isn't available.
+- The live decision is now D-002 at `status: proposed`, carrying the new rationale. `dsk status` derives D-001 as **superseded** and D-002 as the one current decision, so the grammar no longer reads as agreed anywhere the state is reported.
+
+`dsk validate` passes (2 decisions, 1 flag), and `git diff` is 13 insertions with no deletions. One caveat on that check: the git-level append-only enforcement didn't actually run, because the repo has no parent commit yet — the validator said so. The clean diff is my own verification, not the hook's.
+
+Want me to also open a flag for the grammar question itself? D-002 records that it's unsettled, but nothing currently tracks it as an open question with an owner.

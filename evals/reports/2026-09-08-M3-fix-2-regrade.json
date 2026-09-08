@@ -1,0 +1,130 @@
+{
+  "run": "evals/scenarios/results/2026-09-08T14-46-24Z.json",
+  "trials": 35,
+  "scenarios_changed": 1,
+  "unexpected_changes": 0,
+  "expect_changes": [
+    "S3"
+  ],
+  "seals": [
+    {
+      "input": "harness",
+      "recorded": "f0ce1cbd939e89f4",
+      "now": "f0ce1cbd939e89f4",
+      "same": true
+    },
+    {
+      "input": "graders",
+      "recorded": "705257824b532716",
+      "now": "705257824b532716",
+      "same": true
+    },
+    {
+      "input": "skill",
+      "recorded": "cf2da0f9d9a07603",
+      "now": "49f5a48dfc5b0d40",
+      "same": false
+    },
+    {
+      "input": "validator",
+      "recorded": "278b34eebdba1151",
+      "now": "e1fcb84b28775134",
+      "same": false
+    }
+  ],
+  "rows": [
+    {
+      "id": "S1",
+      "recorded": "5/5",
+      "rederived": "5/5",
+      "threshold": "4 of 5",
+      "kind": "soft",
+      "recorded_met": true,
+      "derived_met": true,
+      "changed": false,
+      "expected_change": false,
+      "flips": [],
+      "problems": []
+    },
+    {
+      "id": "S2",
+      "recorded": "5/5",
+      "rederived": "5/5",
+      "threshold": "4 of 5",
+      "kind": "soft",
+      "recorded_met": true,
+      "derived_met": true,
+      "changed": false,
+      "expected_change": false,
+      "flips": [],
+      "problems": []
+    },
+    {
+      "id": "S3",
+      "recorded": "4/5",
+      "rederived": "5/5",
+      "threshold": "5 of 5",
+      "kind": "hard",
+      "recorded_met": false,
+      "derived_met": true,
+      "changed": true,
+      "expected_change": true,
+      "flips": [
+        "t4: fail→pass"
+      ],
+      "problems": []
+    },
+    {
+      "id": "S4",
+      "recorded": "5/5",
+      "rederived": "5/5",
+      "threshold": "5 of 5",
+      "kind": "hard",
+      "recorded_met": true,
+      "derived_met": true,
+      "changed": false,
+      "expected_change": false,
+      "flips": [],
+      "problems": []
+    },
+    {
+      "id": "S5",
+      "recorded": "5/5",
+      "rederived": "5/5",
+      "threshold": "4 of 5",
+      "kind": "soft",
+      "recorded_met": true,
+      "derived_met": true,
+      "changed": false,
+      "expected_change": false,
+      "flips": [],
+      "problems": []
+    },
+    {
+      "id": "S6",
+      "recorded": "5/5",
+      "rederived": "5/5",
+      "threshold": "4 of 5",
+      "kind": "soft",
+      "recorded_met": true,
+      "derived_met": true,
+      "changed": false,
+      "expected_change": false,
+      "flips": [],
+      "problems": []
+    },
+    {
+      "id": "S7",
+      "recorded": "5/5",
+      "rederived": "5/5",
+      "threshold": "5 of 5",
+      "kind": "hard",
+      "recorded_met": true,
+      "derived_met": true,
+      "changed": false,
+      "expected_change": false,
+      "flips": [],
+      "problems": []
+    }
+  ]
+}

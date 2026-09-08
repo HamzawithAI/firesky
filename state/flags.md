@@ -1532,3 +1532,58 @@ The smallest reversible interpretation, per CLAUDE.md rule 8: harden, because th
 alternative is a gate that can be satisfied by a rename. Reverting any of it is
 one commit, and none of it is reachable by the eval runner except through the
 results file's shape.
+
+### F-069: The evidence protocol has no representation for authorised mixed provenance
+status: open
+date: 2026-09-08
+owner: hamza
+raised-by: agent
+model: claude-opus-5
+resolution: none
+
+Raised by claude-opus-5 executing M3-REVIEW-2.md section 3, under CLAUDE.md rule
+8: the ruling authorises a state the implemented protocol cannot express, so this
+records the ambiguity, the smallest reversible interpretation taken, and what it
+costs.
+
+The gap. Section 3 authorises six scenarios re-graded from a prior run's
+committed artifacts and one scenario re-run fresh, and section 3.3 asks the
+combined report to state that mixed provenance plainly. D-032 section 4.1 makes a
+run a whole sealed timestamped unit, and `evals/runner.mjs` grades exactly one of
+them, the newest. So no committed file represents the authorised state, and the
+runner cannot be made to say "these seven scenarios are established" without
+either grading two runs as one or ignoring a seal. Both are how a false green
+gets built.
+
+What was NOT done, deliberately. The runner was not changed to grade the union of
+runs per scenario. It would not have turned anything green today — the older
+run's skill and validator seals are stale by construction, since amending them is
+what this series did — but it would make cherry-picking cheap: re-roll one hard
+scenario at two dollars until it lands, with the losing runs sitting committed and
+the newest one counting. A full re-run costs twelve dollars and thirty-five
+trials, and that price is part of what makes the gate mean something. Redesigning
+a gate the review had just designed, to make this session's output look better,
+is also exactly what D-014 clause 3 exists to prevent.
+
+What was done. The gate is untouched and every affected row stays FAIL. Only the
+sentence changed: a scenario absent from the newest run used to read "no result
+recorded for this scenario", which is true of that file and false about the
+repository. It now names the newest run that does cover it, re-derives that run's
+pass count from its artifacts rather than reading it, and says which of that
+run's seals are stale. A committed eval report should not read as though S1
+through S7 were tried and failed when six of them have five-of-five evidence
+sitting in the tree.
+
+The consequence, stated rather than softened: **E5 is mechanically RED and stays
+red until one run covers all seven scenarios under the current skill and
+validator.** That costs about $12.63 and thirty-five trials, is exactly the price
+F-064 disclosed in advance when it sealed the validator, and is not paid in this
+session because section 3 authorised the cheaper path and the M3 gate is not
+being re-evaluated here anyway. The evidential claim for those six scenarios is
+the re-grade in `evals/reports/2026-09-08-M3-fix-2-regrade.json`, and it is an
+argument for a human to accept, not a green light a machine issued.
+
+For Hamza, the two ways to close this: pay for one full run before the M3 gate is
+re-evaluated, or rule that per-scenario union grading is acceptable and accept the
+cherry-picking exposure with a mitigation, such as the runner printing how many
+committed runs cover each scenario.
