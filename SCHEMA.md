@@ -33,6 +33,11 @@ the diff against SCHEMA-DRAFT.md is never a surprise:
 10. **The ERR_MODEL_ID precondition made real** (F-035). The code is suppressed
     whenever the entry has no provenance block, which is what section 2 already
     said and the implementation only half did. Section 2.
+11. **D-025, flag resolution by derivation** (M1-REVIEW 2.3, resolving F-025).
+    A flag is resolved if and only if a sign-off names it in scope. Section 2.
+12. **The preamble rule** (M1-REVIEW 2.4, on F-029). Full-file immutability
+    stands with no region carve-outs, and a preamble carries only timeless text.
+    Section 2.
 
 ## 1. Files
 
@@ -103,6 +108,22 @@ flag whose date is absent or non-ISO is not dated `MODEL_FIELD_SINCE` or later
 and is out of the rule's reach; it is already ERR_PROVENANCE or ERR_DATE, so no
 green tree is reachable through that door.
 
+Resolution is derived, the same way supersession is (D-025, ruled by
+M1-REVIEW.md section 2.3 to resolve F-025): a flag is resolved if and only if a
+sign-off names it in its `scope:`, and that sign-off's prose carries the
+resolution note. The flag entry's own `status:` and `resolution:` fields are
+advisory, correct at write time and never afterwards, because D-021 forbids
+editing a committed ledger line and so no status word can ever move. The derived
+answer is the authoritative one everywhere it is shown: `dsk status`, `render`,
+and validator reporting. This is why F-005 to F-024 read `status: open` while
+S-003 closed them, and why nothing needs to be edited to make that true.
+
+ERR_RESOLUTION is unchanged and still fires on a flag written as `resolved` with
+`resolution: none`: the fields remain part of the grammar, so a self-contradictory
+one is still malformed at write time. Removing the advisory fields and retiring
+INV-10 is a grammar change, explicitly deferred to v0.2 by the same ruling. No
+fixture changes here.
+
 Criterion entry, criteria.md:
 
 ```
@@ -131,6 +152,20 @@ whitelist and no exception, including for a status transition. On
 `state/signoffs.md` the code is ERR_SIGNOFF_MUTATION; on `decisions.md`,
 `flags.md` and `criteria.md` it is ERR_INPLACE_EDIT. Exactly one of the two
 fires for any one file, so the codes are disjoint by file.
+
+Preambles (M1-REVIEW.md section 2.4, ruling on F-029). The git-level check
+protects every line of a ledger file, the preamble above the first `### `
+heading included. Full-file immutability stands and there is no region carve-out
+in the check, because a carve-out is a tamper surface and D-020 exists to close
+those. The consequence is a writing rule, not a code path: **a ledger preamble
+carries only timeless text and never a claim about state.** "Sign-offs are
+append-only entries" is timeless and legal; "no sign-off has been appended yet"
+is a state claim and becomes false the moment one is. The parser ignores
+preambles entirely (F-010), so nothing here is validated; it is a rule for
+whoever writes the file. `state/signoffs.md` in this repository opens with one
+such false line, written before three sign-offs were appended. It is
+acknowledged as a historical artifact and left in place, because correcting it
+would be exactly the in-place edit the rule forbids.
 
 Provenance (ERR_PROVENANCE, M0-REVIEW 4.5 closing F-019): an entry has no
 provenance block when its `author` is missing or is not `human` or `agent`, or

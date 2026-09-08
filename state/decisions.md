@@ -310,3 +310,18 @@ The model: requirement on flag entries applies only from MODEL_FIELD_SINCE,
 2026-09-08. F-005 to F-024 were lawfully written before the field existed and
 D-021 forbids editing them. Known limit accepted: a backdated flag dodges it,
 and the git record shows that without the validator enforcing it.
+
+### D-025: A flag is resolved when a sign-off names it
+status: proposed
+date: 2026-09-08
+owner: hamza
+author: agent
+model: claude-opus-5
+links: [M1-REVIEW.md#2.3, SCHEMA.md#2, D-021, F-025]
+supersedes: none
+
+Ruled by the M1 external review in M1-REVIEW.md section 2.3, transcribed here.
+Flags derive resolution as decisions derive supersession: resolved if and only
+if a sign-off names the flag in scope, the sign-off's prose carrying the note.
+The entry's own status and resolution fields become advisory. Removing them and
+retiring INV-10 is a v0.2 grammar change; no fixture changes now.
