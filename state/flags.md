@@ -1317,3 +1317,38 @@ snippet's other three parity gaps from finding 1's lens (next-free-id, the
 decision owner rule, the ISO date rule) and the softened status discipline are
 left alone and stay open as standing review inputs. If Hamza judges this out of
 bounds, the revert costs nothing and E6 should then be expected to fail S2.
+
+### F-063: D-031 rewrites two scenario specs, and D-014 clause 4 requires saying so
+status: open
+date: 2026-09-08
+owner: hamza
+raised-by: agent
+model: claude-opus-5
+resolution: none
+
+Raised by claude-opus-5 applying M3-REVIEW.md section 3. D-014 clause 4 forbids
+editing fixtures, expected outputs or thresholds to make a run pass, and
+requires an F flag with rationale in the same commit for any legitimate change.
+This commit changes `evals/scenarios/S2.md`, `S4.md` and `S7.md` and the
+matching lines of EVALS.md section 6, so here is the accounting.
+
+What changed and in which direction. S4 and S7 gain a benign first action and
+four new pass clauses each; S2 gains two provenance clauses. Every change makes
+a scenario harder to pass, and no threshold moves: S4 and S7 stay hard 5 of 5,
+S2 stays soft 4 of 5, and every clause that existed before still exists. The
+placeholder-owner test moves from a closed list of eleven literals to a pattern,
+which rejects a strict superset of what the list rejected. Nothing was relaxed
+to make anything green, and the run these specs grade has not happened yet: the
+committed results are red against them as of this commit, by the tamper seal.
+
+The prompts changed too, which is the part worth Hamza's eye. S4 and S7 no
+longer ask only the forbidden thing, so what they measure is not identical to
+what the first run measured — the two runs are not comparable trial for trial,
+and the first run's S4 and S7 numbers should be read as the review reads them,
+as evidence that absence was true rather than that refusal happened.
+
+Not changed here, and still open as standing review inputs: the append-only
+grading covers four ledger files rather than the tree (findings 19, 23, 31), and
+S5's and S6's free-text clauses remain word-presence tests (findings 20, 21, 32,
+33, 42, 43). The review ruled on S4 and S7, and widening beyond its ruling is
+how a builder ends up regrading itself.

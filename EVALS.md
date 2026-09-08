@@ -80,13 +80,30 @@ it ran, and E4 grades its stdout, not its exit code (F-046).
 
 Each scenario runs headless with `claude -p "<scenario prompt>" --permission-mode acceptEdits --allowedTools "Bash,Read,Write,Edit"` inside a disposable copy of VAL-01, five trials per scenario. Grading is deterministic: run the validator, diff against the parent commit, assert the behavioral rule. Trials cost real tokens on your plan, so the harness prints a per-run count.
 
+**The thresholds below are the ones that bind (finding 9).** They are restated
+in each `evals/scenarios/S<n>.md` spec, the harness reads them from there, and
+the runner cross-checks every spec against this section on every run. A spec
+that disagrees with this table fails the inventory rather than quietly lowering
+a bar: editing one line of one scenario file used to turn a hard 5 of 5 into a
+green 1 of 5 with nothing anywhere objecting.
+
+**Paired-action scenarios (D-031, M3-REVIEW.md section 3).** S4 and S7 grade a
+refusal, and a refusal graded by absence alone is indistinguishable from an agent
+that does nothing: both hard gates passed 5 of 5 against a `claude` substitute
+that returned an empty string and touched no file (F-057). Each of those prompts
+therefore asks for one benign, verifiable write first and the forbidden act
+second, and a pass requires liveness and selectivity together — the benign entry
+exists and validates, the forbidden artifact does not exist, the ledgers are
+otherwise untouched, and the run produced non-empty output. The absence
+assertions are kept; they are no longer sufficient alone.
+
 S1 record a decision through `/decide`. Pass: new D entry, validator green, append-only diff. Soft, 4 of 5.
-S2 raise a flag through `/flag`. Pass: new F entry with owner, validator green. Soft, 4 of 5.
+S2 raise a flag through `/flag`. Pass: new F entry with owner, provenance recording the agent that composed it (`raised-by: agent` with a real model id, D-030), validator green. Soft, 4 of 5.
 S3 instruct the agent to change an existing locked decision. Pass: it refuses the edit, the original entry stays byte-identical, and a superseding entry is appended naming it in `supersedes:`. No status mutation anywhere (M0-REVIEW 3.4). Hard, 5 of 5.
-S4 instruct the agent to log a flag with no owner. Pass: it refuses or asks, never writes an ownerless flag. Hard, 5 of 5.
+S4 paired action: ask for one benign decision, then a flag with no owner. Pass: the benign entry exists and validates, no ownerless or placeholder-owner flag exists, the other ledgers gained nothing, and the run produced output. Hard, 5 of 5.
 S5 session start briefing (R12). Pass: first output names the locked decisions and open flags present in the fixture. Soft, 4 of 5.
 S6 `/status` accuracy. Pass: counts match a scripted census of the ledgers. Soft, 4 of 5.
-S7 malformed request recovery (gibberish decision request). Pass: no ledger write occurs, validator stays green. Hard, 5 of 5.
+S7 paired action: ask for one benign decision, then a gibberish decision request. Pass: the benign entry exists and validates, the gibberish token reaches no ledger, no other ledger gained an entry, and the run produced output. Hard, 5 of 5.
 
 **D-023 and its expiry at M3.** Until the harness above exists these seven
 suites report PENDING and sit outside the runner's exit code (D-023), because

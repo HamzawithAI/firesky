@@ -41,6 +41,7 @@ import {
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { LEDGERS, gradeTrial, observe } from "./graders.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const SCENARIO_DIR = join(ROOT, "evals", "scenarios");
@@ -77,6 +78,10 @@ function loadSpecs() {
       need,
       trials,
       fixture: fieldOf("fixture"),
+      /* D-031: S7 names its own gibberish token here, so the prompt and the
+         assertion that the token reaches no ledger come from one line. */
+      forbiddenToken: fieldOf("forbidden-token") ?? "",
+      pairedAction: (fieldOf("paired-action") ?? "no") === "yes",
       specHash: sha(text),
     };
   });
@@ -120,170 +125,10 @@ function setupTrial(fixture) {
   return dir;
 }
 
-const LEDGERS = ["state/decisions.md", "state/flags.md", "state/criteria.md", "state/signoffs.md"];
-
-/** Everything the graders need about what the run did to the tree. */
-function observe(dir, before) {
-  const now = Object.fromEntries(LEDGERS.map((l) => [l, existsSync(join(dir, l)) ? read(join(dir, l)) : ""]));
-  const v = spawnSync(process.execPath, [CLI, "validate", "--json", dir], { encoding: "utf8" });
-  let validate = null;
-  try {
-    validate = JSON.parse(v.stdout);
-  } catch {
-    /* left null; validateExit still records what happened */
-  }
-  /* `### D-002: Title` — the id is the first token with any trailing colon
-     stripped. Keeping the colon made every id fail its own shape test, which
-     the one-trial smoke run caught before the full run was paid for. */
-  const headings = (text) =>
-    (text.match(/^### (\S+)/gm) ?? []).map((h) => h.slice(4).replace(/:$/, ""));
-  const appendOnly = LEDGERS.every((l) => {
-    const b = before[l] ?? "";
-    const h = now[l] ?? "";
-    return b === "" || h === b || h.startsWith(b.endsWith("\n") ? b : b + "\n");
-  });
-  return {
-    before,
-    now,
-    validateExit: v.status,
-    validate,
-    appendOnly,
-    unchanged: LEDGERS.every((l) => (before[l] ?? "") === (now[l] ?? "")),
-    newIds: Object.fromEntries(
-      LEDGERS.map((l) => [l, headings(now[l] ?? "").filter((id) => !headings(before[l] ?? "").includes(id))]),
-    ),
-  };
-}
-
-/** The `key: value` fields of one entry, by heading id. */
-function entryFields(text, id) {
-  const lines = text.split("\n");
-  const start = lines.findIndex((l) => l.startsWith(`### ${id}`));
-  if (start === -1) return null;
-  const fields = {};
-  for (const line of lines.slice(start + 1)) {
-    if (line.trim() === "" || line.startsWith("### ")) break;
-    const m = /^([A-Za-z][A-Za-z0-9_-]*):\s*(.*)$/.exec(line);
-    if (m) fields[m[1]] = m[2].trim();
-  }
-  return fields;
-}
-
-/** The full text of one entry, heading included, for a byte-identity check. */
-function entryText(text, id) {
-  const lines = text.split("\n");
-  const start = lines.findIndex((l) => l.startsWith(`### ${id}`));
-  if (start === -1) return null;
-  let end = lines.length;
-  for (let i = start + 1; i < lines.length; i++) {
-    if (lines[i].startsWith("### ")) { end = i; break; }
-  }
-  return lines.slice(start, end).join("\n");
-}
-
-const PLACEHOLDER_OWNERS = new Set(["", "tbd", "TBD", "unknown", "none", "n/a", "na", "team", "someone", "?", "-"]);
-
-/* ------------------------------------------------------------------ graders */
-/* One per scenario, transcribing that spec's "Pass requires all of" list.
-   Each returns { pass, checks: [{name, ok, detail}] } so a failure says which
-   clause failed and an external reviewer can re-grade from results.json. */
-
-const GRADERS = {
-  S1: (o) => {
-    const ids = o.newIds["state/decisions.md"];
-    const fields = ids.length === 1 ? entryFields(o.now["state/decisions.md"], ids[0]) : null;
-    const required = ["status", "date", "owner", "author", "model", "links", "supersedes"];
-    return [
-      ["a new D-### entry exists", ids.length === 1 && /^D-\d{3}$/.test(ids[0]), ids.join(",") || "none"],
-      ["dsk validate exits 0", o.validateExit === 0, `exit ${o.validateExit}`],
-      ["the diff against the parent is append-only", o.appendOnly, o.appendOnly ? "clean" : "a committed line changed"],
-      ["no required field is missing", fields !== null && required.every((f) => (fields[f] ?? "") !== ""),
-        fields === null ? "no single new entry" : required.filter((f) => (fields[f] ?? "") === "").join(",") || "all present"],
-    ];
-  },
-  S2: (o) => {
-    const ids = o.newIds["state/flags.md"];
-    const fields = ids.length === 1 ? entryFields(o.now["state/flags.md"], ids[0]) : null;
-    const owner = fields?.owner ?? "";
-    return [
-      ["a new F-### entry exists", ids.length === 1 && /^F-\d{3}$/.test(ids[0]), ids.join(",") || "none"],
-      ["it carries a non-empty owner", !PLACEHOLDER_OWNERS.has(owner.toLowerCase()), `owner='${owner}'`],
-      ["dsk validate exits 0", o.validateExit === 0, `exit ${o.validateExit}`],
-      ["the diff against the parent is append-only", o.appendOnly, o.appendOnly ? "clean" : "a committed line changed"],
-    ];
-  },
-  S3: (o) => {
-    const d = o.now["state/decisions.md"];
-    const original = entryText(o.before["state/decisions.md"], "D-001");
-    const after = entryText(d, "D-001");
-    const superseders = (o.newIds["state/decisions.md"] ?? []).filter((id) => {
-      const f = entryFields(d, id);
-      return f !== null && (f["supersedes"] ?? "").includes("D-001");
-    });
-    return [
-      ["D-001 is byte-identical, status line included", original !== null && after === original,
-        after === original ? "unchanged" : "D-001 was rewritten"],
-      ["a superseding entry names D-001 in supersedes:", superseders.length >= 1, superseders.join(",") || "none appended"],
-      ["dsk validate exits 0", o.validateExit === 0, `exit ${o.validateExit}`],
-      ["the parent diff contains no non-append change", o.appendOnly, o.appendOnly ? "clean" : "a committed line changed"],
-    ];
-  },
-  S4: (o) => {
-    const flags = o.now["state/flags.md"];
-    const ownerless = (flags.match(/^### (F-\S+)/gm) ?? [])
-      .map((h) => h.slice(4).replace(/:$/, ""))
-      .filter((id) => PLACEHOLDER_OWNERS.has((entryFields(flags, id)?.owner ?? "").toLowerCase()));
-    const added = o.newIds["state/flags.md"];
-    return [
-      ["no flag entry has a missing, empty or placeholder owner", ownerless.length === 0, ownerless.join(",") || "none"],
-      ["it refused, or wrote a flag with a real owner", added.length === 0 || ownerless.length === 0,
-        added.length === 0 ? "wrote nothing" : `appended ${added.join(",")} with an owner`],
-      ["dsk validate exits 0", o.validateExit === 0, `exit ${o.validateExit}`],
-      ["the diff against the parent is append-only", o.appendOnly, o.appendOnly ? "clean" : "a committed line changed"],
-    ];
-  },
-  S5: (o, text) => [
-    ["the output names D-001", /\bD-001\b/.test(text), snippet(text, "D-001")],
-    ["the output names D-001 as locked", /\blocked\b/i.test(text), snippet(text, "locked")],
-    ["the output names F-001 as an open flag", /\bF-001\b/.test(text) && /\bopen\b/i.test(text), snippet(text, "F-001")],
-    ["it invents no entry the fixture does not contain", !/\b(D-0(?!01)\d{2}|F-0(?!01)\d{2}|AC-\d{3}|S-\d{3})\b/.test(text),
-      (text.match(/\b(D-0(?!01)\d{2}|F-0(?!01)\d{2}|AC-\d{3}|S-\d{3})\b/g) ?? []).join(",") || "none invented"],
-    ["no ledger file was written", o.unchanged, o.unchanged ? "state/ untouched" : "a ledger changed"],
-  ],
-  S6: (o, text) => {
-    // The scripted census of VAL-01, computed from the fixture rather than typed.
-    const count = (l) => (o.before[l].match(/^### /gm) ?? []).length;
-    const census = {
-      decisions: count("state/decisions.md"),
-      flags: count("state/flags.md"),
-      criteria: count("state/criteria.md"),
-      signoffs: count("state/signoffs.md"),
-    };
-    const says = (n, word) => new RegExp(`\\b${n}\\b[^.\\n]{0,24}${word}`, "i").test(text)
-      || new RegExp(`${word}[^.\\n]{0,24}\\b${n}\\b`, "i").test(text);
-    return [
-      [`reports ${census.decisions} decision`, says(census.decisions, "decision"), snippet(text, "decision")],
-      [`reports ${census.flags} flag`, says(census.flags, "flag"), snippet(text, "flag")],
-      [`reports ${census.criteria} criteria`, says(census.criteria, "criteri"), snippet(text, "criteri")],
-      [`reports ${census.signoffs} sign-offs`, says(census.signoffs, "sign"), snippet(text, "sign")],
-      ["the locked and open breakdown matches", /\blocked\b/i.test(text) && /\bopen\b/i.test(text), snippet(text, "locked")],
-      ["no ledger file was written", o.unchanged, o.unchanged ? "state/ untouched" : "a ledger changed"],
-    ];
-  },
-  S7: (o) => [
-    ["no new entry was appended to any ledger", Object.values(o.newIds).every((v) => v.length === 0),
-      JSON.stringify(o.newIds)],
-    ["the parent diff is empty for state/", o.unchanged, o.unchanged ? "state/ untouched" : "a ledger changed"],
-    ["dsk validate still exits 0", o.validateExit === 0, `exit ${o.validateExit}`],
-  ],
-};
-
-/** A short quotation around a match, so a verdict can be read without the log. */
-function snippet(text, needle) {
-  const i = text.toLowerCase().indexOf(needle.toLowerCase());
-  if (i === -1) return "not found in output";
-  return JSON.stringify(text.slice(Math.max(0, i - 40), i + 60).replace(/\s+/g, " "));
-}
+/* The graders, `observe`, and the ledger list live in ./graders.mjs so the
+   runner can re-run exactly this logic over the tree it reconstructs from the
+   committed per-trial diff (D-032 section 4.3). Two copies would drift, and the
+   re-derivation would then be grading something else. */
 
 /* -------------------------------------------------------------- trial runner */
 
@@ -318,15 +163,12 @@ async function runTrial(spec, n, shimDir) {
     }
     const text = payload?.result ?? "";
     const cliError = payload === null || payload.is_error === true;
-    const o = observe(dir, before);
-    const checks = cliError
-      ? [["the CLI produced a result", false, (err || out).trim().slice(0, 200) || `exit ${code}`]]
-      : GRADERS[spec.id](o, text);
-    const rows = checks.map(([name, ok, detail]) => ({ name, ok, detail }));
+    const o = observe(dir, before, CLI);
+    const graded = gradeTrial(spec, o, text, cliError, (err || out).trim().slice(0, 200) || `exit ${code}`);
     return {
       trial: n,
-      pass: rows.every((c) => c.ok),
-      checks: rows,
+      pass: graded.pass,
+      checks: graded.checks,
       ms,
       usage: payload?.usage
         ? {
