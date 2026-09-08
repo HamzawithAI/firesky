@@ -6,7 +6,7 @@ Six milestones, one session each (F4 box: six sessions across three weeks). Each
 |---|---|---|---|
 | M0 | Scaffold and fixtures | Fixture inventory complete, CI runs red | gate met 7 Sep; D14.3 review applied and signed 7 Sep (M0-REVIEW.md, S-001 to S-003) |
 | M1 | Validator core | E1, E2, E3 green | E1/E2/E3 green 7 Sep, 22 of 22 fixtures PASS; gate met **contingent on Hamza accepting D-023** (F-033) |
-| M2 | Staleness, CI mode, render | E4 green, Action validates this repo | E4 green 8 Sep, 25 of 25 gated suites PASS, 34 unit tests; the shipped action validates this repo in CI. **Merge gating still needs admin** (F-047) |
+| M2 | Staleness, CI mode, render | E4 green, Action validates this repo | E4 green 8 Sep, 25 of 25 gated suites PASS, 34 unit tests; the shipped action validates this repo in CI. **Merge gating deferred to M5 with a trigger, not dropped** (F-047, M2-REVIEW section 4) |
 | M3 | Skill and AGENTS.md snippet | E5 thresholds met, E6 smoke pass | not started |
 | M4 | Install path and degraded mode | E7 under 10 minutes, E8 green | not started |
 | M5 | Dogfood live on two projects | Both repos validate green, day-zero metrics logged | not started |
@@ -51,6 +51,16 @@ Not delivered, and outside what this session can do: making the checks
 "gates this repo's own merges", is stricter than the table's "Action validates
 this repo", and only the table's version is met.
 
+**F-047 deferral, ruled by M2-REVIEW.md section 4.** The strict clause is
+deferred, not dropped, and it carries a trigger: **when the repo goes public at
+M5**, the workflow switches to branches plus pull requests, the eval check
+becomes a required status check on `main`, and Hamza's ten-minute review happens
+on the pull request itself. Enforcing it today would push the build into a
+pull-request workflow mid-stream or block direct pushes, for no gain while the
+repo has one committer. Until the trigger fires, CI on every push plus committed
+reports carries the gate in spirit, and the difference is recorded here rather
+than glossed.
+
 ## M3. Skill and cross-runtime snippet (session 4)
 
 1. Build the L2 minimal skill: `/decide`, `/flag`, `/status`, honoring R9, R10, R12. Register it per current Claude Code conventions for project skills and commands, and verify the commands load in a fresh session.
@@ -79,3 +89,13 @@ L3 MCP server, R21 drift check, R23 LLM review pass, remote transport, any sync 
 ## Review gates (D14)
 
 After M0 and after M3, an external review happens before the next milestone starts: a session or model that did not build the milestone receives PROJECT.md, EVALS.md, SCHEMA.md, the eval report, and the diff summary, and hunts for spec drift, weakened fixtures, and overstated reports. The build agent waits for its findings. Findings become F flags or fixes before proceeding.
+
+**Audit budget, D-029 (M2-REVIEW.md section 7).** From M3 onward the *internal*
+adversarial pass a build session runs on its own work is capped at **fifteen
+agents, one pass, roughly one million tokens**. Any finding the pass cannot
+verify inside that cap is written down as an open flag rather than re-derived by
+fan-out. Depth beyond the cap is the external review's job, not the builder's:
+the 122-agent pass at M1 earned its keep by catching F-037 and is still not the
+pattern. Its full artifacts stay committed and are declared inputs to the M3
+external review, alongside F-040 and F-042 (M2-REVIEW section 6) and the roughly
+sixty verified-but-unsurfaced findings of that pass (section 8).
