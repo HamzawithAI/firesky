@@ -1382,3 +1382,30 @@ false green is the failure mode this whole review exists to close, and record
 the cost here so Hamza can downgrade the validator hash to advisory with one
 line if M4 makes it expensive. What is NOT sealed, deliberately: `dist/`, which
 is a build product and would differ per machine, and `node_modules`.
+
+### F-065: The six-session box is resized to eight, consciously
+status: open
+date: 2026-09-08
+owner: hamza
+raised-by: agent
+model: claude-opus-5
+resolution: none
+
+Raised by claude-opus-5 on the M3 external review's section 10, which asks for
+this to be a flag Hamza signs rather than a number that quietly moves.
+
+The arithmetic. F-004 set a six-session box across three weeks. Four sessions
+are spent (M0, M1, M2, M3). This fix-and-rerun session is the fifth. M4, the
+install path, and M5, the dogfood, are the sixth and seventh, and E6 plus the
+re-evaluated M3 gate sit between this session and M4. Eight is the honest
+number, and the review recommends eight with everything else unchanged.
+
+The alternative the review names and does not recommend: trim M4's scope to fit
+seven. It is available. It costs the install path, which is the shareability of
+the whole product — the ten-minute npx path is what makes this a kit rather than
+a private convention, and AC3 is written against it.
+
+What is not being asked for here: more scope, a later deadline for M5's
+fourteen-day dogfood clock, or any change to the kill lines K1 to K3. Only two
+more sessions. If Hamza declines, the fallback is the trim, and that is a
+scope decision this session should not make on its own.

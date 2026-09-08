@@ -113,3 +113,59 @@ commit series: SCHEMA.md sections 0, 2 and 3, EVALS.md sections 1, 2, 3 and 4.3,
 the INV-18 fixture and the three E4 expected outputs recorded in F-048 and
 F-049, PLAN.md's M2 row and review-gates section, and the narrowed
 ERR_STALE_REF with the dsk status surface section 2.2 requires.
+
+### S-007
+actor: hamza
+role: owner
+date: 2026-09-08
+scope: [D-030, D-031, D-032, D-033, D-034, F-065]
+
+Hamza's explicit authorization of 8 Sep, in the prompt instructing this session
+to apply M3-REVIEW.md: "I explicitly authorize sign-offs with actor hamza
+covering D-030 through D-033, the D-029 amendment, and the eight-session box
+resize." It locks the four decisions the M3 external review left proposed —
+D-030, `raised-by` records the composing writer, from section 2; D-031,
+paired-action refusal scenarios, from section 3; D-032, the evidence protocol,
+from section 4; D-033, duplicate keys are an error, from section 5 — plus D-034,
+which is the D-029 amendment of section 6 and carries it the only way this
+schema allows, by superseding rather than editing. It closes F-065, the
+eight-session box resize of section 10, which the review asked to be a flag
+Hamza signs rather than a number that quietly moves.
+
+All five decisions keep the textual status proposed, because D-021 forbids
+editing a committed ledger line, and this entry is the state transition that
+locks them (P4, law 4, F-025). It also approves the amendments made under them
+in this commit series: SCHEMA.md sections 0, 2 and 6, including the sixteenth
+error code and the restated freeze; EVALS.md sections 2, 3 and 6, including the
+evidence protocol and the threshold cross-check; the INV-19 fixture and its
+expected output, disclosed in F-063 under D-014 clause 4; the paired-action
+rewrites of S4 and S7 and the provenance clause on S2; and PLAN.md's box and
+audit-budget paragraphs.
+
+Deliberately not covered, because the authorization named these and nothing
+else: F-062, the snippet extension this session made beyond the review's
+enumerated sections, which stays open for Hamza to accept or revert; F-063 and
+F-064, this session's own disclosures; F-055, which section 4.4 requires to
+stay open; and F-054 and F-060, which E6 governs and no work here touches.
+
+### S-008
+actor: hamza
+role: reviewer
+date: 2026-09-08
+scope: [F-040, F-042]
+
+The closure the M3 external review's section 7 authorizes, on Hamza's explicit
+instruction of 8 Sep to apply "closures per section 7". Section 7 reads
+"F-052 upheld, F-040 and F-042 closed", and names those two as the pair that
+joins the S-scope enumeration: the not-law-level ruling on F-040 stands, with
+its one close call now structurally closed by D-033, and F-042 expired on the
+facts. Both keep their textual status open, because D-021 forbids editing a
+committed ledger line and this scope is the closure (D-025).
+
+F-052 is deliberately NOT in this scope, and the omission is the conservative
+reading rather than an oversight. Section 7 says it is upheld, which is a
+finding that the flag was rightly raised, and lists only F-040 and F-042 as
+closed. Its substance is answered — ERR_DUP_KEY and INV-19 close the close call
+it recorded — but a sign-off scope is permanent and cannot be un-named, so
+naming a flag the ruling did not name is the one mistake here that no later
+append could correct. It stays open, and one line from Hamza closes it.

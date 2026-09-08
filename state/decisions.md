@@ -430,3 +430,33 @@ writing one timestamped file; every trial commits its headless output and its
 tree diff; the runner re-derives every pass count from those artifacts instead
 of reading an integer the graded party wrote. The limit stays stated: a local
 run is audited testimony, forgery made costly and auditable, not impossible.
+
+### D-034: The adversarial-pass budget is per completed pass
+status: proposed
+date: 2026-09-08
+owner: hamza
+author: agent
+model: claude-opus-5
+links: [M3-REVIEW.md#6, PLAN.md, F-056]
+supersedes: D-029
+
+Amends the budget it supersedes, on the M3 external review's section 6. The cap
+is per completed pass; an attempt killed by infrastructure or plan limits is
+spend, not a pass. A pass approaching the cap stops and files the remainder as
+open flags rather than finishing large. The M3 overrun, 1.96M against roughly
+1M, is accepted once on two law-level findings and is not precedent.
+
+### D-033: A repeated key inside one entry is an error
+status: proposed
+date: 2026-09-08
+owner: hamza
+author: agent
+model: claude-opus-5
+links: [M3-REVIEW.md#5, SCHEMA.md#2, F-052]
+supersedes: none
+
+Ruled by the M3 external review, section 5. A duplicated key can suppress
+provenance enforcement: `raised-by: agent` then `raised-by: human` reads as
+human-raised, so ERR_MODEL_ID never fires. New code ERR_DUP_KEY, fixture INV-19;
+adding a code by ruling is permitted, renaming stays forbidden. It sits after
+D-034 because the code was written before the entry, and the validator said so.

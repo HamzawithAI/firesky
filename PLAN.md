@@ -1,6 +1,14 @@
 # PLAN.md, dsk v0.1 build
 
-Six milestones, one session each (F4 box: six sessions across three weeks). Each milestone has an eval gate from EVALS.md. A milestone is done when its gate is green and the eval report is committed. Status column is updated by the build agent at the end of every session.
+Six milestones, one session each. Each milestone has an eval gate from EVALS.md. A milestone is done when its gate is green and the eval report is committed. Status column is updated by the build agent at the end of every session.
+
+**The box: eight sessions, resized consciously (F-065, M3-REVIEW.md section
+10).** F-004 set six across three weeks. Four are spent on M0 to M3, the M3
+fix-and-rerun is the fifth, and M4 and M5 make seven; E6 and the re-evaluated M3
+gate sit between. Eight is the honest number with everything else unchanged. The
+alternative, trimming M4's scope to fit, is available and not recommended: the
+install path is the shareability of the whole product. This is a resize for
+Hamza's sign-off, not a drift, and it is recorded before it is used.
 
 | M | Scope | Eval gate | Status |
 |---|---|---|---|
@@ -156,9 +164,16 @@ L3 MCP server, R21 drift check, R23 LLM review pass, remote transport, any sync 
 
 After M0 and after M3, an external review happens before the next milestone starts: a session or model that did not build the milestone receives PROJECT.md, EVALS.md, SCHEMA.md, the eval report, and the diff summary, and hunts for spec drift, weakened fixtures, and overstated reports. The build agent waits for its findings. Findings become F flags or fixes before proceeding.
 
-**Audit budget, D-029 (M2-REVIEW.md section 7).** From M3 onward the *internal*
-adversarial pass a build session runs on its own work is capped at **fifteen
-agents, one pass, roughly one million tokens**. Any finding the pass cannot
+**Audit budget, D-029 as amended by D-034 (M2-REVIEW.md section 7, M3-REVIEW.md
+section 6).** From M3 onward the *internal* adversarial pass a build session
+runs on its own work is capped at **fifteen agents, one pass, roughly one
+million tokens**. D-034 settles what the cap counts, which D-029 left open
+(F-056): **the cap is per completed pass**, an attempt killed by infrastructure
+or plan limits is recorded as spend rather than as a pass, and a running pass
+that approaches the cap **stops and files the remainder as open flags instead of
+finishing large**. The M3 overrun — 1.96M against roughly 1M, 2.4M with the
+failed first attempt — is accepted once, on the strength of two law-level
+findings, and is explicitly not precedent. Any finding the pass cannot
 verify inside that cap is written down as an open flag rather than re-derived by
 fan-out. Depth beyond the cap is the external review's job, not the builder's:
 the 122-agent pass at M1 earned its keep by catching F-037 and is still not the
