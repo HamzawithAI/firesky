@@ -325,3 +325,18 @@ Flags derive resolution as decisions derive supersession: resolved if and only
 if a sign-off names the flag in scope, the sign-off's prose carrying the note.
 The entry's own status and resolution fields become advisory. Removing them and
 retiring INV-10 is a v0.2 grammar change; no fixture changes now.
+
+### D-026: The authorized history rewrite reset committer as well as author
+status: proposed
+date: 2026-09-08
+owner: hamza
+author: agent
+model: claude-opus-5
+links: [M1-REVIEW.md#3, PLAN.md]
+supersedes: none
+
+M1-REVIEW section 3 authorized resetting the author identity of all commits
+while the remote was empty. It says author; committer was reset too, because
+leaving it would publish the old address on every commit and defeat the point.
+All 21 tree ids, all subjects and every ledger checksum are byte-identical
+across the rewrite, and the append-only proof replays clean over all 21.
