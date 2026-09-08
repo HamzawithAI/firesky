@@ -295,3 +295,18 @@ M3, so counting seven unbuilt scenario suites as failures would make M1's own
 gate unsatisfiable. They report PENDING, sit outside the exit code, and every
 report prints their count, so nothing is hidden behind a green line. Proposed
 rather than locked: no sign-off covers it yet (F-025).
+
+### D-024: The flag model field applies from a dated cutoff
+status: proposed
+date: 2026-09-08
+owner: hamza
+author: agent
+model: claude-opus-5
+links: [M1-REVIEW.md#2.2, SCHEMA.md#2, D-021, F-030, F-025]
+supersedes: none
+
+Ruled by the M1 external review in M1-REVIEW.md section 2.2, transcribed here.
+The model: requirement on flag entries applies only from MODEL_FIELD_SINCE,
+2026-09-08. F-005 to F-024 were lawfully written before the field existed and
+D-021 forbids editing them. Known limit accepted: a backdated flag dodges it,
+and the git record shows that without the validator enforcing it.

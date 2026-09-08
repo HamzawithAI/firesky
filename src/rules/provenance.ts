@@ -6,29 +6,21 @@
  * defines. Read literally the rule would fire on every criterion and every
  * sign-off in every green fixture, since criteria carry neither field and
  * sign-offs carry no author. Fixture: INV-06.
+ *
+ * The predicate itself lives in helpers.ts, shared with ERR_MODEL_ID, which
+ * SCHEMA.md section 2 conditions on it. Keeping one definition is the fix for
+ * the class of defect F-035 recorded.
  */
-import { AUTHOR_WORDS, field } from "./helpers.js";
-import type { DskError, Entry, Rule } from "../types.js";
-
-/** The provenance field each type uses for author type, or null if it has none. */
-function authorField(entry: Entry): "author" | "raised-by" | null {
-  if (entry.kind === "decision") return "author";
-  if (entry.kind === "flag") return "raised-by";
-  return null;
-}
+import { provenanceOf } from "./helpers.js";
+import type { DskError, Rule } from "../types.js";
 
 export const rule: Rule = {
   code: "ERR_PROVENANCE",
   run(tree) {
     const errors: DskError[] = [];
     for (const entry of tree.entries) {
-      if (entry.kind === "criterion") continue; // no provenance fields at all (F-027)
-
-      const key = authorField(entry);
-      const author = key === null ? undefined : field(entry, key);
-      const authorMissing = key !== null && (author === undefined || !AUTHOR_WORDS.has(author));
-      const dateMissing = field(entry, "date") === undefined;
-      if (!authorMissing && !dateMissing) continue;
+      const { authorKey, author, dateMissing, present } = provenanceOf(entry);
+      if (present) continue;
 
       errors.push({
         code: "ERR_PROVENANCE",
@@ -38,8 +30,8 @@ export const rule: Rule = {
         message: dateMissing
           ? "entry has no date"
           : author === undefined
-            ? `entry has no ${key}`
-            : `${key} '${author}' is neither human nor agent`,
+            ? `entry has no ${authorKey}`
+            : `${authorKey} '${author}' is neither human nor agent`,
       });
     }
     return errors;

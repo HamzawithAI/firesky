@@ -27,6 +27,12 @@ the diff against SCHEMA-DRAFT.md is never a surprise:
    F-006). Section 6.
 8. **D-022**: R19's "no orphan flags" clause is cut for v0.1 as unenforceable
    under this grammar. No code is minted for it. Section 6.
+9. **D-024, the dated grandfather for the flag `model:` field** (M1-REVIEW 2.2,
+   resolving F-030). The requirement applies to flag entries dated
+   `MODEL_FIELD_SINCE` or later only. Section 2.
+10. **The ERR_MODEL_ID precondition made real** (F-035). The code is suppressed
+    whenever the entry has no provenance block, which is what section 2 already
+    said and the implementation only half did. Section 2.
 
 ## 1. Files
 
@@ -81,6 +87,22 @@ ERR_RESOLUTION. `owner` missing or empty is ERR_OWNER. `raised-by` is `human` or
 when `raised-by` is agent, enforced by ERR_MODEL_ID (D-021 amendment 4, closing
 F-013 and F-018).
 
+    MODEL_FIELD_SINCE: 2026-09-08
+
+The `model:` requirement on flag entries applies only to entries dated
+`MODEL_FIELD_SINCE` or later (D-024, ruled by M1-REVIEW.md section 2.2 to
+resolve F-030). A flag dated earlier was lawfully written before the field
+existed, D-021 forbids editing it, and flags carry no `supersedes:` field to
+append a correction through (F-025), so no legal in-schema fix exists for it.
+The rule is deliberately flag-only: decisions carried `model:` from the
+promotion, so the grounds for grandfathering hold for no decision anywhere.
+Known limit, accepted for v0.1: a backdated entry dodges the rule, and the git
+record makes that visible without the validator enforcing it. Dates are ISO, so
+the comparison is a string comparison, with no clock read and no arithmetic. A
+flag whose date is absent or non-ISO is not dated `MODEL_FIELD_SINCE` or later
+and is out of the rule's reach; it is already ERR_PROVENANCE or ERR_DATE, so no
+green tree is reachable through that door.
+
 Criterion entry, criteria.md:
 
 ```
@@ -116,8 +138,11 @@ when its `date` is absent. The rule is applied per entry type, to the fields tha
 type's grammar defines: `author` and `date` on decisions, `raised-by` and `date`
 on flags, `date` on sign-offs. Criterion entries carry neither field and are out
 of scope. ERR_DATE remains distinct: the date is present but is not ISO format.
-ERR_MODEL_ID cannot fire on an entry that already has no provenance block, being
-conditioned on an author or raiser of `agent`.
+ERR_MODEL_ID cannot fire on an entry that already has no provenance block. That
+is a precondition of the code, not a consequence of its author test: an
+agent-authored entry with no `date` has no provenance block by the clause above,
+and the implementation checked only the author half of the definition until
+F-035. The two rules now read one shared predicate.
 
 ## 3. IDs, dates, links
 

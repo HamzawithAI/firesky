@@ -19,6 +19,33 @@ export function unset(value: string | undefined): boolean {
   return value === undefined || value === "" || value === "none";
 }
 
+/**
+ * The provenance block SCHEMA.md section 2 defines, per entry type (F-027):
+ * `author` and `date` on decisions, `raised-by` and `date` on flags, `date` on
+ * sign-offs, nothing on criteria. Shared so ERR_PROVENANCE and ERR_MODEL_ID
+ * cannot drift apart: the schema conditions the second on the first, and they
+ * did drift once (F-035).
+ */
+export interface Provenance {
+  /** The author-type field this entry kind uses, or null when it has none. */
+  readonly authorKey: "author" | "raised-by" | null;
+  readonly author: string | undefined;
+  readonly authorMissing: boolean;
+  readonly dateMissing: boolean;
+  /** False when SCHEMA.md would say the entry "has no provenance block". */
+  readonly present: boolean;
+}
+
+export function provenanceOf(entry: Entry): Provenance {
+  const authorKey = entry.kind === "decision" ? "author" : entry.kind === "flag" ? "raised-by" : null;
+  const author = authorKey === null ? undefined : field(entry, authorKey);
+  const authorMissing = authorKey !== null && (author === undefined || !AUTHOR_WORDS.has(author));
+  const dateMissing = field(entry, "date") === undefined;
+  // Criteria carry neither field, so the concept does not apply to them at all.
+  const present = entry.kind === "criterion" ? true : !authorMissing && !dateMissing;
+  return { authorKey, author, authorMissing, dateMissing, present };
+}
+
 export function allIds(tree: Tree): Set<string> {
   return new Set(tree.entries.map((e) => e.id));
 }
