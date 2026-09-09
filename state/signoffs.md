@@ -388,3 +388,39 @@ Nothing is silently carried.
 
 These entries keep their written status, because D-021 forbids editing a
 committed ledger line and this scope is the closure (D-025).
+
+### S-016
+actor: hamza
+role: reviewer
+date: 2026-09-09
+scope: [AC-001, AC-003, AC-004, AC-005]
+
+The four acceptance criteria the evidence supports, signed off against the suites
+EVALS.md section 9 maps them to, at the M4 and M5 gate.
+
+**AC-001**, seeded errors caught deterministically, through E1 and E2: nineteen
+invalid fixtures each match their expected error code, file, id, line and exit
+code, five valid fixtures come back clean, and the comparison is structural
+rather than textual. **AC-003**, install to first value under ten minutes,
+through E7: 2.6 seconds against a 600-second bar, measured over `npm pack`, a
+fresh-directory install from the tarball, the starter ledgers, a written D-001
+and `npx dsk validate .`, with the produced tree re-validated by the shipped
+binary rather than trusted from the script. F-076 bounds it: the registry fetch
+is the one step E7 cannot measure until publication. **AC-004**, zero-LLM mode,
+through E8: the whole fixture inventory re-run in children that have no
+credential-shaped variable in scope and cannot load a networking builtin, plus a
+static read of the source and its one dependency, plus status, staleness and
+render under the same conditions for R26's "every M-priority function".
+**AC-005**, a non-Claude runtime, through E6: three of three scenarios on the
+Gemini CLI, at exactly the weight F-075 records and no more.
+
+**AC-002 is not signed off and does not close today.** It is "the skill produces
+schema-valid entries in both live projects", and both live projects are one
+commit old. E5's thirty-five trials establish the skill's behaviour; they do not
+establish it in engine-v1 and fintry, which is what the criterion says. It closes
+on the fourteen-day window that started today, or it fails there — and F-079
+records that fintry's half of that window may really start at a merge.
+
+So v0.1's definition of done is four of five, CI green, and the dogfood live. The
+fifth is a measurement, not a build step, and the only honest way to have it
+today would be to weaken what it says.

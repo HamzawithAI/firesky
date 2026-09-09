@@ -35,8 +35,8 @@ turning out not to be small. Neither has happened yet.
 | M1 | Validator core | E1, E2, E3 green | E1/E2/E3 green 7 Sep, 22 of 22 fixtures PASS; gate met **contingent on Hamza accepting D-023** (F-033) |
 | M2 | Staleness, CI mode, render | E4 green, Action validates this repo | E4 green 8 Sep, 25 of 25 gated suites PASS, 34 unit tests; the shipped action validates this repo in CI. **Merge gating deferred to M5 with a trigger, not dropped** (F-047, M2-REVIEW section 4) |
 | M3 | Skill and AGENTS.md snippet | E5 thresholds met, E6 smoke pass | **GATE MET 9 Sep**, re-evaluated in session 8 under M3-REVIEW-3.md section 6. E5: one full 35-trial run, `2026-09-09T07-05-06Z`, seals matching the tree, 34/35 re-derived from committed diffs, all three hard gates 5 of 5 (F-069 closed by S-013). E6: 3/3 scenarios on the Gemini CLI, seals current, every verdict re-derived from its own checks; F-054 closes on fact (S-014). The suite exits 0, 35 PASS. Held at the strength of its evidence, not above it: **F-075** stays open as a named known limit — S3 passed on the second of two attempts on the same weak model, the run mixed two models inside one runtime and the results schema cannot say so, and three of three agent-authored entries wrote a model id that is not one. |
-| M4 | Install path and degraded mode | E7 under 10 minutes, E8 green | not started; combined with M5 and the M3 gate re-evaluation into session 8 (M3-REVIEW-3.md section 6) |
-| M5 | Dogfood live on two projects | Both repos validate green, day-zero metrics logged | not started; combined with M4 and the M3 gate re-evaluation into session 8 |
+| M4 | Install path and degraded mode | E7 under 10 minutes, E8 green | **gate met 9 Sep**. E7 PASS at 2.6s of AC3's 600s, measured over pack, fresh install, starter ledgers, first decision and `npx dsk validate .`, with the result re-validated by the shipped binary; the registry step is the one thing it cannot time (F-076). E8 PASS on all three legs, and it earned its keep on its first run by finding F-077. README rewritten and now graded (F-072 closed). No `dsk init`, by D-039, because the command is code inside the M3 seal (F-078). |
+| M5 | Dogfood live on two projects | Both repos validate green, day-zero metrics logged | **gate met 9 Sep**, publication paused for Hamza. engine-v1 and fintry both carry `state/`, the skill, the three commands and the AGENTS.md snippet, both validate green from their committed main trees, and both log a day-zero baseline with the fourteen-day clock ending 2026-09-23. Neither existing decision log was migrated, and each repo's own F-001 says why. F-079: fintry's files are on main while its work is on a branch, so its clock may really start at a merge. |
 
 ## M0. Scaffold and fixtures (session 1)
 
@@ -398,6 +398,81 @@ reported side by side, recalibration a v0.2 item), closes F-074 and closes F-054
 `evals/adversarial-pass.wf.js` reports the pair, and a static test in
 `test/d037-pass-budget.test.mjs` holds it — red on arrival, the field did not
 exist at `1c7bf4c`.
+
+### M4, delivered
+
+`README.md`, rewritten from the M0 scaffold notice it had carried through four
+milestones (F-072), and now under test: **E7** reads its own
+`## The ten-minute path` section, extracts the shell blocks and runs exactly
+those in a fresh temporary directory against a tarball packed at run time. The
+README is the specification for AC3, so it cannot drift back into fiction
+without turning a row red. 2.6 seconds against a 600-second bar.
+
+**E8**, three legs, all green: nothing in the source or its one dependency
+reaches a networking builtin and no `git` invocation names a remote-talking
+subcommand; the whole fixture inventory re-runs in children with no
+credential-shaped variable in scope and no loadable networking builtin, matched
+against the same expected files by the same predicate E1 uses; and status,
+staleness and render run under the same conditions, because R26 says every
+M-priority function and not just `validate`.
+
+E8 justified itself on its first execution. Its first environment stripped PATH
+down to Node's own directory, which took `git` with it, and three fixtures whose
+whole purpose is to be caught came back `ok: true`, exit 0. That is **F-077**: no
+git means ERR_INPLACE_EDIT and ERR_SIGNOFF_MUTATION report nothing while the
+merge gate still passes. The fix is one branch in `src/`, which is inside the
+seal this session's green gate rests on, so it is v0.2's first item and E8 now
+asserts git is reachable before it grades anything.
+
+**No `dsk init` (D-039, F-078).** PLAN's M4 item 1, EVALS section 8 and the CLI's
+own usage line all name a command v0.1 does not ship. Implementing it means
+editing `src/`, which is hashed into the E5 and E6 seals and frozen through M4
+and M5 by M3-REVIEW-3.md section 3.2; doing it here would turn a met gate red in
+the session authorised on condition the gate is green, at the price of another
+full run and a second manual E6. The rejected alternative — a separate
+`bin/dsk-init.mjs`, which the seal happens not to hash — is recorded in F-078 as
+lawyering the seal rather than keeping it. `templates/state/` and four README
+blocks do the job instead, and one wrong usage line ships.
+
+### M5, delivered, with publication paused
+
+`state/` initialised in **engine-v1** and **fintry**, each with the skill, the
+three commands, an AGENTS.md carrying the snippet, a first decision, a first
+flag, and `state/metrics.md` holding the day-zero baseline against EVALS.md
+section 10's defaults. Both validate green from their committed main trees. The
+fourteen-day window ends **2026-09-23**, which is where K1 is decided.
+
+Neither repository's existing `decisions/DECISION-LOG.md` was migrated, and each
+repo's own F-001 records the reason rather than the choice looking like neglect:
+those entries carry no author type and no model id, so transcribing them would
+mean inventing provenance, and law 3 is the one thing this schema does not bend
+on. **F-079** records the other honest asymmetry: engine-v1 was on main so its
+dogfood is live in the tree Hamza works in, while fintry was on a task branch and
+the files went to main, so fintry's clock may really start at a merge.
+
+**Publication is not done and is not this session's to do.** The repository stays
+private until Hamza's word. What fires with it is the F-047 checklist in
+TRIAGE.md section 4: branches and pull requests, the eval check made required on
+`main`, review on the pull request. All three need admin on a public repository.
+
+### The definition of done, honestly
+
+CLAUDE.md's bar is AC1 to AC5 through their mapped suites, CI green, and the
+dogfood live on two real projects with a day-zero baseline. Four of the five are
+signed off in **S-016**: AC-001 through E1 and E2, AC-003 through E7, AC-004
+through E8, AC-005 through E6 at exactly F-075's weight.
+
+**AC-002 is open and stays open.** It says the skill produces schema-valid
+entries in both live projects, and both live projects are one commit old. E5
+establishes the skill's behaviour; it does not establish it in engine-v1 and
+fintry, which is what the criterion asks. It closes on the fourteen-day window
+that started today, or it fails there. The only way to sign it off now would be
+to weaken what it says.
+
+So: eight sessions, spent as declared. Six milestones, six gates green. One
+acceptance criterion pending a measurement, seventeen flags open and every one
+of them named in TRIAGE.md, and a repository waiting on one word before it is
+public.
 
 ## M4. Install path and degraded mode (session 8, with M5)
 

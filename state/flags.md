@@ -1990,3 +1990,30 @@ and it ships wrong in v0.1.
 
 Closes when v0.2 implements `dsk init`, corrects the usage line, and the run that
 seals the next E5 covers both.
+
+### F-079: fintry's dogfood lives on main, and its work lives on a branch
+status: open
+date: 2026-09-09
+owner: hamza
+raised-by: agent
+model: claude-opus-5
+resolution: none
+
+M5 dogfood setup, recorded because it changes what day 14 measures. Hamza chose
+engine-v1 and fintry, and chose main as the branch. engine-v1 was on main, so its
+`state/`, the skill, the three commands and AGENTS.md are live in the tree he
+works in. fintry was on `task-1.5-traceability-in-the-loop`, so the same files
+were committed to fintry's main and the branch was restored exactly as found —
+which means an agent working in fintry's current branch sees no `state/`, no
+`AGENTS.md` and no skill until main merges in.
+
+Why it matters and is not cosmetic: K1 is "unprompted use on the second project
+by day 14", and a kit that is not in the working tree cannot be reached for. If
+fintry's branch is long-lived, its dogfood clock is really running from the merge
+and not from today, and the day-14 number would be measuring absence rather than
+disinterest.
+
+Two one-line fixes, both Hamza's: merge or rebase main into the working branch,
+or cherry-pick `0599484`. Until one happens, fintry's metrics.md is a baseline
+for a tree the work is not happening in, and engine-v1 is carrying the honest
+half of the two-project test.
