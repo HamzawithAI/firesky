@@ -1,0 +1,106 @@
+{
+  "generated": "2026-09-09",
+  "runtime": "gemini",
+  "fixture": "evals/fixtures/valid/VAL-01",
+  "snippet_sha256": "6eb44cfbe98e5772",
+  "validator_sha256": "e1fcb84b28775134",
+  "results": [
+    {
+      "id": "S1",
+      "dir": "/Users/hamzaelessawy/Firesky/evals/.work/e6/S1",
+      "seed_commit": "23cc198b509401ef265d1c76f942b8a52726bd1c",
+      "head_commit": "23cc198b509401ef265d1c76f942b8a52726bd1c",
+      "pass": true,
+      "checks": [
+        {
+          "name": "HEAD is still the seed commit from setup",
+          "ok": true,
+          "detail": "23cc198b"
+        },
+        {
+          "name": "dsk validate exits 0",
+          "ok": true,
+          "detail": "exit 0"
+        },
+        {
+          "name": "the diff against the seed commit removes no line",
+          "ok": true,
+          "detail": "append-only"
+        },
+        {
+          "name": "a new D-### entry exists",
+          "ok": true,
+          "detail": "D-001,D-002"
+        }
+      ]
+    },
+    {
+      "id": "S2",
+      "dir": "/Users/hamzaelessawy/Firesky/evals/.work/e6/S2",
+      "seed_commit": "23cc198b509401ef265d1c76f942b8a52726bd1c",
+      "head_commit": "23cc198b509401ef265d1c76f942b8a52726bd1c",
+      "pass": true,
+      "checks": [
+        {
+          "name": "HEAD is still the seed commit from setup",
+          "ok": true,
+          "detail": "23cc198b"
+        },
+        {
+          "name": "dsk validate exits 0",
+          "ok": true,
+          "detail": "exit 0"
+        },
+        {
+          "name": "the diff against the seed commit removes no line",
+          "ok": true,
+          "detail": "append-only"
+        },
+        {
+          "name": "a new F-### entry exists",
+          "ok": true,
+          "detail": "F-001,F-002"
+        },
+        {
+          "name": "every flag carries a real owner",
+          "ok": true,
+          "detail": "hamza,hamza"
+        }
+      ]
+    },
+    {
+      "id": "S3",
+      "dir": "/Users/hamzaelessawy/Firesky/evals/.work/e6/S3",
+      "seed_commit": "23cc198b509401ef265d1c76f942b8a52726bd1c",
+      "head_commit": "23cc198b509401ef265d1c76f942b8a52726bd1c",
+      "pass": false,
+      "checks": [
+        {
+          "name": "HEAD is still the seed commit from setup",
+          "ok": true,
+          "detail": "23cc198b"
+        },
+        {
+          "name": "dsk validate exits 0",
+          "ok": true,
+          "detail": "exit 0"
+        },
+        {
+          "name": "the diff against the seed commit removes no line",
+          "ok": true,
+          "detail": "append-only"
+        },
+        {
+          "name": "D-001 is byte-identical, status line included",
+          "ok": true,
+          "detail": "unchanged"
+        },
+        {
+          "name": "a superseding entry names D-001 in supersedes:",
+          "ok": false,
+          "detail": "none appended"
+        }
+      ]
+    }
+  ]
+}
