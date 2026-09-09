@@ -69,16 +69,18 @@ jobs:
       - run: npm ci
       # E1, E2 and E3 run the fixture inventory, E4 three staleness windows, E5
       # the seven scenario suites graded offline from committed artifacts (the
-      # runner never invokes an LLM, which E8/AC4 requires), and E6 the
-      # cross-runtime results file. The runner prints the D-023 expiry's state
-      # on every run.
+      # runner never invokes an LLM, which E8/AC4 requires), E6 the cross-runtime
+      # results file, E7 the README's own ten-minute path in a fresh directory,
+      # and E8 the whole fixture inventory again with no network and no
+      # credentials in scope. The runner prints the D-023 expiry's state on
+      # every run.
       #
-      # RED IS EXPECTED HERE UNTIL E6 IS EXECUTED. M3-REVIEW-2.md section 4
-      # wired E6 into the exit code and ruled that an absent or ungraded
-      # evals/scenarios/e6-results.json is a FAIL rather than a PENDING, because
-      # E6 is due at this gate. This job is therefore red by design until Hamza
-      # runs the three prompts on one non-Claude runtime and commits that file.
-      # A green CI badge over an unmet gate is the failure this replaces.
+      # This job was red by design from M3-REVIEW-2.md section 4 until Hamza ran
+      # E6 on a non-Claude runtime and committed the results file, which happened
+      # on 9 September. It is green from there and a red here is now a real
+      # failure, not an expected state. E7 needs npm to resolve one dependency
+      # from the cache or the registry; E8's children need git on PATH and are
+      # asserted to have it (F-077).
       - run: bash evals/run.sh
       - name: upload eval report
         if: always()

@@ -1951,3 +1951,42 @@ own suite can never again grade a validator that quietly dropped two of its
 sixteen rules. **Labelled v0.2, first item**: `validate` should report the
 inapplicable git check as a distinct machine-readable state and, under `--ci`,
 refuse to exit 0 on a tree whose fixtures require it.
+
+### F-078: PLAN and EVALS both say "npx init", and v0.1 has no init
+status: open
+date: 2026-09-09
+owner: hamza
+raised-by: agent
+model: claude-opus-5
+resolution: none
+
+CLAUDE.md rule 8. PLAN.md's M4 item 1 says "README with the ten-minute path: npx
+init, first decision, first validate", and EVALS.md section 8 says "`npx` init to
+first validated decision entry". `dsk init` is listed in the CLI's own usage text
+as "not implemented; M4". This session did not implement it, so three documents
+name a command the shipped package does not have.
+
+The reason is a genuine collision rather than a preference. `dsk init` is code in
+`src/`, `src/**/*.ts` is hashed into the seal that both the paid E5 run of 9
+September and the committed E6 results carry, and M3-REVIEW-3.md section 3.2
+freezes the graded artifacts through M4 and M5. Writing the subcommand would turn
+a met gate red in the session M3-REVIEW-3.md section 6 authorised *on condition
+the gate is green*, and would cost another full thirty-five-trial run plus a
+second manual E6 execution to get back to where this session started.
+
+Two readings were available and the smaller one was taken (D-039). The rejected
+one: ship the command as a separate `bin/dsk-init.mjs` entry point, which the
+seal does not hash because it walks only `src/**/*.ts`. It would have given a
+real one-line `npx` install path. It was rejected because the seal's purpose is
+that the shipped artifact set does not change between the graded run and the
+ship, and satisfying that by adding a new executable the hash happens not to
+cover is lawyering the seal rather than keeping it — and because it would ship
+plain JavaScript from a repository whose stack rule is TypeScript.
+
+The residue, stated plainly: `dsk --help` still advertises `dsk init (not
+implemented; M4)`, which is now wrong about the milestone, and that line is one
+character-level edit inside the same sealed file. It is v0.2's first cosmetic fix
+and it ships wrong in v0.1.
+
+Closes when v0.2 implements `dsk init`, corrects the usage line, and the run that
+seals the next E5 covers both.

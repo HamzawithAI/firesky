@@ -1,0 +1,4 @@
+schema: "0.1"
+project: my-project
+created: 2026-01-01
+staleness_days: 30

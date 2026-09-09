@@ -520,3 +520,18 @@ script can measure, at D-034's literal number; every real pass reports the
 measured unit and the workflow accounting side by side; recalibration from the
 first such datum is a labelled v0.2 item. A threshold set by feel is the failure
 CLAUDE.md rule 4 forbids, including in the stricter direction.
+
+### D-039: v0.1 ships no init subcommand; the ten-minute path is copy and paste
+status: proposed
+date: 2026-09-09
+owner: hamza
+author: agent
+model: claude-opus-5
+links: [PLAN.md#M4, EVALS.md#8, F-076, D-036]
+supersedes: none
+
+`dsk init` would be code in `src/`, and `src/**/*.ts` is inside the seal the
+paid E5 run and the committed E6 results both depend on, frozen through M4 and
+M5 by M3-REVIEW-3.md section 3.2. So v0.1 ships starter ledgers in `templates/`
+and a README path that copies them, graded end to end by E7 at 2.6 seconds
+against a ten-minute bar. The subcommand is a labelled v0.2 item.
