@@ -185,3 +185,29 @@ test("the script declares D-034's caps and reads them from one place", () => {
   assert.ok(tokens, "CAPS must declare a token cap");
   assert.ok(Number(tokens[1].replace(/_/g, "")) > 0, "the token cap must be positive");
 });
+
+/**
+ * D-038, Hamza's standing ruling on F-074 clause 3: the cap stays bound in the
+ * unit the script can measure, and every real pass reports that unit and the
+ * Workflow tool's subagent accounting SIDE BY SIDE. The pair is the calibration
+ * datum the ruling asks for; one number alone is what the two overruns already
+ * produced. Static, like the two tests above, because the reporting shape is a
+ * property of the shipped script rather than of a run nobody here can execute.
+ */
+test("the pass reports both accountings side by side (D-038)", () => {
+  const spend = /spend:\s*\{([\s\S]*?)\n  \},/.exec(source);
+  assert.ok(spend, `${SCRIPT} has no spend block in its return value`);
+  assert.match(spend[1], /tokens_measured:/, "the measured unit must be reported");
+  assert.match(
+    spend[1],
+    /tokens_workflow_accounting:/,
+    "the Workflow tool's accounting must have a field beside the measured one, or a pass files one number and D-038's datum never exists",
+  );
+  assert.match(spend[1], /tokens_measured_unit:/, "the measured number must say what unit it is in");
+  assert.match(source, /D-038/, `${SCRIPT} must cite the ruling it implements`);
+  assert.match(
+    source,
+    /both accountings \(D-038\)/,
+    "the operator watches a pass through its log, so the pair belongs there too",
+  );
+});

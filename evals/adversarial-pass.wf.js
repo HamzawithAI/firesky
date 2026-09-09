@@ -23,7 +23,13 @@
  * cap below is D-034's figure taken literally, in the unit this script can
  * actually read, and the first enforced pass is what tells Hamza whether that
  * number binds where D-034 meant it to. The script prints its own measured spend
- * against the cap for exactly that purpose. F-074 carries the question.
+ * against the cap for exactly that purpose. F-074 carried the question and
+ * D-038 rules it: the cap stays bound in the unit this script can measure, at
+ * D-034's literal number, and every real pass reports the measured unit and the
+ * Workflow tool's subagent accounting SIDE BY SIDE, so the first enforced pass
+ * produces a calibration datum instead of one number and a shrug. The operator
+ * fills `tokens_workflow_accounting` from the runtime's own report when filing
+ * the pass; recalibration off that datum is a labelled v0.2 item.
  *
  * HOW TO RUN IT. Through the Workflow tool, with this file's path as scriptPath.
  * Optional args, all of which only ever TIGHTEN the caps:
@@ -282,6 +288,12 @@ const lensesUnrun = pass.remainder(planned, lensesRan).concat(LENSES.slice(LENS_
 const flat = lensResults.filter(Boolean).flatMap((r) => r.findings.map((f) => ({ ...f, lens: r.lens })))
 log(`${flat.length} non-cosmetic finding(s) from ${lensesRan.length}/${LENSES.length} lenses; spend so far ${pass.spentSoFar()}`)
 if (lensesUnrun.length) log(`unrun lenses, to be filed as open flags: ${lensesUnrun.join(', ')}`)
+/* D-038 again, in the log this time, because the return value is read once and
+   the log is what an operator watches a pass through. */
+log(
+  `spend, both accountings (D-038): measured ${pass.spentSoFar()} of ${TOKEN_CAP} output tokens this runtime reports; ` +
+    `the Workflow tool's subagent total is not readable from inside the run — record it beside this number when filing the pass`,
+)
 
 const RANK = { law: 0, 'gate-soundness': 1, correctness: 2, honesty: 3, 'spec-drift': 4 }
 const ordered = flat.slice().sort((a, b) => (RANK[(a.severity || '').toLowerCase()] ?? 9) - (RANK[(b.severity || '').toLowerCase()] ?? 9))
@@ -316,7 +328,21 @@ const unverified = ordered.filter((f) => !judgedClaims.has(f.claim))
    flag, not re-derived by fan-out and not quietly dropped. */
 return {
   caps: { agents: AGENT_CAP, tokens: TOKEN_CAP },
-  spend: { agents_admitted: pass.admitted, tokens_measured: pass.spentSoFar() },
+  /* D-038: both accountings, side by side, on every real pass. `tokens_measured`
+     is what this script can read and enforce against; `tokens_workflow_accounting`
+     is the Workflow tool's subagent total, which no code inside the run can
+     reach, so it is left null for the operator to fill from the runtime's own
+     report when the pass is filed. A pass filed with it still null is a pass
+     that produced no calibration datum, which is the one thing D-038 asks for. */
+  spend: {
+    agents_admitted: pass.admitted,
+    tokens_measured: pass.spentSoFar(),
+    tokens_measured_unit: 'output tokens for the turn, as this runtime reports them',
+    tokens_workflow_accounting: null,
+    tokens_workflow_accounting_note:
+      'D-038: fill from the Workflow tool\'s reported subagent spend when filing this pass. ' +
+      'The pair is the calibration datum; recalibrating the cap off it is a v0.2 item.',
+  },
   aborted: pass.aborted,
   abort_reason: pass.reason,
   refused_labels: pass.refused,

@@ -325,3 +325,36 @@ ledger line and this scope is the closure (D-025).
 
 **E5 is met. The M3 gate is not**, and this entry does not claim it is: E6 is
 absent, the runner reports it FAIL, and the suite exits 1 on that alone.
+
+### S-014
+actor: hamza
+role: reviewer
+date: 2026-09-09
+scope: [D-038, F-074, F-054]
+
+Hamza's prompt of 9 September, opening the final session: "Standing ruling on
+F-074 clause 3, which I authorize for sign-off." D-038 records the ruling in the
+ledger, `evals/adversarial-pass.wf.js` now prints both accountings on every real
+pass, and the recalibration is a labelled v0.2 item rather than a number invented
+now. F-074's other two clauses were disclosures under CLAUDE.md rule 8 and
+D-014 clause 4, not questions: clause 1's election is accepted as made and its
+v0.2 residue is carried into the ship triage, and clause 2's test is accepted as
+built. The flag closes.
+
+F-054 closes on fact rather than on ruling. It recorded that E6 could not be
+executed on this machine, having no non-Claude runtime and no non-Anthropic key.
+Hamza executed it elsewhere on 9 September and committed the graded results file,
+so the state the flag described no longer exists. What that run is and is not
+evidence of is recorded in F-075, which stays open as a named known limit.
+
+**The M3 gate is MET.** E5: one full thirty-five-trial run,
+`2026-09-09T07-05-06Z`, under seals matching the tree, 34 of 35 re-derived from
+committed diffs, all three hard gates at 5 of 5, the single miss a soft scenario
+at a threshold it met. E6: three of three scenarios on the Gemini CLI, seals
+current, every verdict re-derived from its own checks. The suite exits 0 with 35
+PASS. The gate is met at the strength of its evidence and no more: E6 is one
+manual run on one runtime, its S3 row is the second of two attempts, and F-075
+carries that in full rather than letting the results file speak for itself.
+
+These entries keep their written status, because D-021 forbids editing a
+committed ledger line and this scope is the closure (D-025).

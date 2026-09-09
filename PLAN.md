@@ -34,7 +34,7 @@ turning out not to be small. Neither has happened yet.
 | M0 | Scaffold and fixtures | Fixture inventory complete, CI runs red | gate met 7 Sep; D14.3 review applied and signed 7 Sep (M0-REVIEW.md, S-001 to S-003) |
 | M1 | Validator core | E1, E2, E3 green | E1/E2/E3 green 7 Sep, 22 of 22 fixtures PASS; gate met **contingent on Hamza accepting D-023** (F-033) |
 | M2 | Staleness, CI mode, render | E4 green, Action validates this repo | E4 green 8 Sep, 25 of 25 gated suites PASS, 34 unit tests; the shipped action validates this repo in CI. **Merge gating deferred to M5 with a trigger, not dropped** (F-047, M2-REVIEW section 4) |
-| M3 | Skill and AGENTS.md snippet | E5 thresholds met, E6 smoke pass | M3-REVIEW-3.md applied in full (D-036 and D-037 locked by S-011; F-070 and F-071 closed by S-012). **E5 is MET**: one full 35-trial run, `2026-09-09T07-05-06Z`, under seals frozen at 82591cf, every count re-derived from committed artifacts — S1 5/5, S2 5/5, S3 5/5, S4 5/5, S5 5/5, S6 4/5, S7 5/5, all three hard gates at 5 of 5, 52,241 output tokens, $11.95, 527s. F-069 closed by S-013. **E6 is still absent and still FAIL**, and it is now the whole of the remainder (F-054). **GATE NOT MET**, and this session does not re-evaluate it. |
+| M3 | Skill and AGENTS.md snippet | E5 thresholds met, E6 smoke pass | **GATE MET 9 Sep**, re-evaluated in session 8 under M3-REVIEW-3.md section 6. E5: one full 35-trial run, `2026-09-09T07-05-06Z`, seals matching the tree, 34/35 re-derived from committed diffs, all three hard gates 5 of 5 (F-069 closed by S-013). E6: 3/3 scenarios on the Gemini CLI, seals current, every verdict re-derived from its own checks; F-054 closes on fact (S-014). The suite exits 0, 35 PASS. Held at the strength of its evidence, not above it: **F-075** stays open as a named known limit — S3 passed on the second of two attempts on the same weak model, the run mixed two models inside one runtime and the results schema cannot say so, and three of three agent-authored entries wrote a model id that is not one. |
 | M4 | Install path and degraded mode | E7 under 10 minutes, E8 green | not started; combined with M5 and the M3 gate re-evaluation into session 8 (M3-REVIEW-3.md section 6) |
 | M5 | Dogfood live on two projects | Both repos validate green, day-zero metrics logged | not started; combined with M4 and the M3 gate re-evaluation into session 8 |
 
@@ -347,6 +347,57 @@ The suite exits 1 on E6 alone: 34 PASS, 1 FAIL. `node evals/scenarios/e6.mjs
 setup` rebuilds the three trees and prints the refreshed procedure, including the
 PATH line the snippet's instructions need. The M3 gate is re-evaluated only once
 `evals/scenarios/e6-results.json` is committed, and M4 does not start before then.
+
+## The final session (session 8): the M3 gate re-evaluated, then M4 and M5
+
+M3-REVIEW-3.md section 6 authorised this session on one condition, "every gate is
+green when it starts", so it opens by deciding whether that condition holds.
+
+**The M3 gate is MET.** Both halves, graded rather than asserted:
+
+*E5.* Run `2026-09-09T07-05-06Z`, one full thirty-five-trial run under seals
+frozen at `82591cf` and still matching the tree, every count re-derived by the
+runner from the committed diffs (D-032 section 4.3). 34 of 35: S1 5/5, S2 5/5,
+S3 5/5, S4 5/5, S5 5/5, S6 4/5, S7 5/5, all three hard gates at 5 of 5, the one
+miss a soft scenario at a threshold it met. D-036's strict form is satisfied —
+one run, no union, no composite.
+
+*E6.* Executed by Hamza on the Gemini CLI on 9 September and committed. The
+runner passes it: the runtime is named and is not Claude, all three scenarios
+appear exactly once, every verdict is re-derived from that row's own checks, and
+the snippet and validator hashes still match the tree. Read directly, the three
+trial trees corroborate the file — S1 appended a decision, S2 a flag with a real
+owner, S3 left D-001 byte-identical and appended a superseder — and no trial
+removed a line from `state/`.
+
+**And what E6 is not.** The results file shows a clean 3 of 3 and cannot show
+what F-075 records. S3 ran twice on `gemini-3.1-flash-lite`: attempt 1 is
+committed as a failure in `15085cd` (refused the edit, appended no superseder),
+attempt 2 in `1c7bf4c` passed. The grader overwrites the file in place, so the
+retry survives only in the commit history. So the honest reading is the append-only
+law carried to a weak model two of two, and the refuse-and-supersede workflow one
+of two. The run also mixed two models inside one runtime — S1 on
+`gemini-3.5-flash`, S2 and S3 on `gemini-3.1-flash-lite` — and the schema has one
+`runtime` string and no per-row model, so it cannot say so. In attempt 2 the
+runtime never ran `dsk validate` itself; the shim was not on its PATH and the
+grader supplied the check. And all three agent-authored entries recorded a
+provenance value that is not a model id (`gemini-2.5-pro`, which is not what ran,
+and `gemini-cli-agent` twice), every one of which passes `ERR_MODEL_ID` because
+that rule only checks the field is set.
+
+None of that reopens the gate. EVALS.md section 7 already fixes AC5's evidential
+weight at "exactly one attested manual run on one named runtime", E6 is a smoke
+test with no m-of-n threshold, and the failing attempt was committed before the
+passing one rather than discarded — the disclosure D-036 exists to force is
+present, in the ledger and in the report, at the ship gate rather than after it.
+F-075 stays open as a named known limit and clause 5 is a labelled v0.2 item.
+
+**S-014** locks D-038 (Hamza's standing ruling on F-074 clause 3: the cap stays
+bound in the unit the script can measure, at the literal number, both accountings
+reported side by side, recalibration a v0.2 item), closes F-074 and closes F-054.
+`evals/adversarial-pass.wf.js` reports the pair, and a static test in
+`test/d037-pass-budget.test.mjs` holds it — red on arrival, the field did not
+exist at `1c7bf4c`.
 
 ## M4. Install path and degraded mode (session 8, with M5)
 

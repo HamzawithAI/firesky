@@ -505,3 +505,18 @@ gains a hard token budget parameter, aborts at the cap, and files whatever
 remains as open flags, which is what D-034's own language always said. A rule
 without a deterministic check is a wish. Implemented as evals/adversarial-pass.wf.js
 and unit-tested in test/d037-pass-budget.test.mjs.
+
+### D-038: D-037's cap is bound in the unit the script can measure
+status: proposed
+date: 2026-09-09
+owner: hamza
+author: agent
+model: claude-opus-5
+links: [F-074, D-037, D-034]
+supersedes: none
+
+Hamza's standing ruling on F-074 clause 3. The cap stays bound in the unit the
+script can measure, at D-034's literal number; every real pass reports the
+measured unit and the workflow accounting side by side; recalibration from the
+first such datum is a labelled v0.2 item. A threshold set by feel is the failure
+CLAUDE.md rule 4 forbids, including in the stricter direction.

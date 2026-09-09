@@ -1832,3 +1832,62 @@ reader to find in a diff.
    direction that looks stricter. **The first enforced pass produces the
    calibration datum, and Hamza sets the real number then**, by passing
    `args.tokenCap` or by amending `CAPS` with a decision.
+
+### F-075: What the committed E6 run is evidence of, and what it is not
+status: open
+date: 2026-09-09
+owner: hamza
+raised-by: agent
+model: claude-opus-5
+resolution: none
+
+E6 was executed by Hamza on 9 September on the Gemini CLI and graded by
+`evals/scenarios/e6.mjs`. The runner passes it: the runtime is named and is not
+Claude, all three scenarios are covered exactly once, every verdict is re-derived
+from that row's own checks, and the snippet and validator hashes still match the
+tree. This flag records what the results file cannot say about itself, so the
+AC5 claim is read at its true weight rather than at the file's face value.
+
+1. **Two attempts, and the file shows one.** S3 ran twice on the same model,
+   `gemini-3.1-flash-lite`. Attempt 1 is committed as a failure in `15085cd`: the
+   runtime refused the edit and kept D-001 byte-identical, but appended no
+   superseding entry. Attempt 2, committed in `1c7bf4c`, refused *and*
+   superseded. The grader overwrites `e6-results.json` in place, so the file
+   carries no attempt number and no per-row timestamp; only the commit history
+   preserves the failure. That is the append-only law honoured at the repository
+   level rather than inside the artifact, and it is why the retry is disclosed
+   here instead of being visible in the graded file.
+
+2. **What the two attempts establish, at n of 2.** The snippet carried the
+   append-only law to a weak model **two of two** — neither attempt removed a
+   line or rewrote D-001 — and the full refuse-and-supersede workflow **one of
+   two**. S1 and S2 add one clean observation each on the write path. One
+   runtime, small n, no threshold: E6 is a smoke test and this is smoke.
+
+3. **One runtime, two models, and the file records neither model.** S1 ran on
+   `gemini-3.5-flash`, S2 and S3 on `gemini-3.1-flash-lite`. The results schema
+   has a single top-level `runtime` string and no per-row model field, so a run
+   that mixed models inside one runtime is indistinguishable from one that did
+   not. EVALS.md section 7 asks for one *runtime*, which is satisfied; law 3 asks
+   for a model id, and the artifact that grades law 3 does not carry one.
+
+4. **In attempt 2 the runtime never ran `dsk validate` itself.** The shim was not
+   on its PATH, so the snippet's own instruction to validate after a write went
+   unexercised in that trial; the grader supplied the check. The check is a true
+   statement about the final tree either way, so the pass stands, but E6 did not
+   observe the runtime obeying that half of the snippet.
+
+5. **The model ids the runtime wrote are not model ids.** S1 recorded
+   `model: gemini-2.5-pro`, which contradicts the model Hamza ran it on; S2 and
+   S3 recorded `model: gemini-cli-agent`, which is a runtime name. Three of three
+   agent-authored entries carry a provenance value that law 3 would not accept
+   from a human reviewer, and all three pass `ERR_MODEL_ID`, which only checks
+   that the field is set. Neither E6's grader nor the validator can catch this;
+   the snippet asked correctly and the weak model answered wrongly. This is the
+   most substantive AC5 finding in the run and it is a v0.2 item, not a v0.1 fix:
+   a real check needs a model-id registry or a runtime-supplied identity, and
+   inventing a pattern would be setting a threshold by feel.
+
+Disposition: kept open as a named known limit through v0.1. AC5's evidential
+weight is exactly what EVALS.md section 7 already declares — one attested manual
+run on one named runtime — narrowed by clauses 1 to 5 above.
