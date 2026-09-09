@@ -469,6 +469,13 @@ fintry, which is what the criterion asks. It closes on the fourteen-day window
 that started today, or it fails there. The only way to sign it off now would be
 to weaken what it says.
 
+**CI, on the commit that carries the report.** All five jobs green at `12ff07f`
+(run 34386761904): fixture inventory, typescript strict, unit tests 82 of 82, the
+eval suite at 39 PASS with E7 at 1.5s in the runner's own environment, and the
+shipped Action validating this repository with the append-only check asserted to
+have actually applied. PLAN's rule is that a milestone is done when its gate is
+green in CI and the report is committed; both are true for M4 and M5.
+
 So: eight sessions, spent as declared. Six milestones, six gates green. One
 acceptance criterion pending a measurement, seventeen flags open and every one
 of them named in TRIAGE.md, and a repository waiting on one word before it is
