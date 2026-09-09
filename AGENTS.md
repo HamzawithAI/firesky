@@ -36,9 +36,13 @@ what is open. `dsk status` prints it; otherwise read the ledgers.
 ### Three rules, and they are not negotiable
 
 **1. Append and supersede. Never edit.** No committed line in any `state/` file
-may change — not a status word, not a typo, not a date. A git-level check fails
-the build on any in-place edit, so this is enforced and not merely requested. To
-reverse decision `D-001`, leave it untouched and append a new decision naming it:
+may change — not a status word, not a typo, not a date. `dsk validate` enforces
+this with a git-level check that compares the last commit against its parent, so
+an in-place edit fails the build once it is committed. It is not detected while
+it is still uncommitted in the working tree, and not at all in a repository with
+no parent commit. That gap is not permission: in an uncommitted tree you are the
+only thing enforcing the law. To reverse decision `D-001`, leave it untouched
+and append a new decision naming it:
 
 ```
 ### D-012: Store dates as ISO week numbers instead

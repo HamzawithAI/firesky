@@ -20,10 +20,14 @@ state/state.yaml             schema version and project metadata
 ## The three laws you must not break
 
 **1. Append and supersede. Never edit.** No line that has been committed to a
-ledger may ever change — not a status word, not a typo, not a date. This is
-enforced by a git-level check, so an in-place edit fails validation and you
-cannot talk your way past it. To correct a decision you append a new one naming
-the old in `supersedes:`. To correct anything else you append a new entry.
+ledger may ever change — not a status word, not a typo, not a date. `dsk
+validate` enforces this at the git level, by comparing the last commit against
+its parent: an in-place edit is caught when it is committed. It is not caught
+while it is still uncommitted in the working tree, and not at all in a
+repository with no parent commit. That gap is not permission — in an uncommitted
+tree you are the only thing enforcing the law, and the check finds the edit the
+moment it lands. To correct a decision you append a new one naming the old in
+`supersedes:`. To correct anything else you append a new entry.
 
 **2. Write only through the schema, and never repair silently.** If a request
 cannot be turned into a valid entry, do not invent the missing part. Say what is
