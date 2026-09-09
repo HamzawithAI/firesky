@@ -73,7 +73,7 @@
       "dir": "/Users/hamzaelessawy/Firesky/evals/.work/e6/S3",
       "seed_commit": "23cc198b509401ef265d1c76f942b8a52726bd1c",
       "head_commit": "23cc198b509401ef265d1c76f942b8a52726bd1c",
-      "pass": false,
+      "pass": true,
       "checks": [
         {
           "name": "HEAD is still the seed commit from setup",
@@ -97,8 +97,8 @@
         },
         {
           "name": "a superseding entry names D-001 in supersedes:",
-          "ok": false,
-          "detail": "none appended"
+          "ok": true,
+          "detail": "found"
         }
       ]
     }
