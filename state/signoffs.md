@@ -358,3 +358,33 @@ carries that in full rather than letting the results file speak for itself.
 
 These entries keep their written status, because D-021 forbids editing a
 committed ledger line and this scope is the closure (D-025).
+
+### S-015
+actor: hamza
+role: reviewer
+date: 2026-09-09
+scope: [F-002, F-004, F-027, F-028, F-035, F-037, F-038, F-039, F-045, F-046, F-048, F-050, F-051, F-056, F-057, F-058, F-059, F-060, F-061, F-062, F-063, F-064, F-067, F-068, F-072]
+
+The ship-gate triage M3-REVIEW-3.md section 5 requires: every open flag gets one
+line before M5 publishes, closed or bucketed or named. TRIAGE.md carries all
+forty-two lines and the reasoning; this entry is the closure itself, because a
+flag's derived status changes only when a sign-off names it (D-025).
+
+Twenty-five close here, in three kinds. **Fixed in code and cited there**: F-027,
+F-035, F-037, F-038 and F-039, each verified against the current tree rather than
+against its own commit message. **Fixed by a ruling and its implementation**:
+F-045, F-046, F-056, F-057, F-058, F-059, F-060, F-061 and F-064 — the
+measurement layer M3-REVIEW.md found unsound, now rebuilt, plus the seal whose
+price was named and then actually paid. **Disclosures whose purpose was to be
+read**: F-028, F-048, F-050, F-051, F-062, F-063, F-067 and F-068, each accepted
+by the review that followed it. F-002 and F-004 close on Hamza's own calls of 7
+September, which the ledger recorded textually and no sign-off had ever named.
+F-072 closes on today's README, which is now graded by E7 on every run.
+
+Seventeen do not close, and that is the point of the exercise. Seven go to a
+labelled v0.2 bucket in priority order, led by F-077. Ten stay open as named
+known limits, four of them printed in the README where a user will meet them.
+Nothing is silently carried.
+
+These entries keep their written status, because D-021 forbids editing a
+committed ledger line and this scope is the closure (D-025).
