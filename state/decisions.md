@@ -535,3 +535,33 @@ paid E5 run and the committed E6 results both depend on, frozen through M4 and
 M5 by M3-REVIEW-3.md section 3.2. So v0.1 ships starter ledgers in `templates/`
 and a README path that copies them, graded end to end by E7 at 2.6 seconds
 against a ten-minute bar. The subcommand is a labelled v0.2 item.
+
+### D-040: The product is firesky; the package and the command do not move
+status: locked
+date: 2026-09-09
+owner: hamza
+author: human
+model: none
+links: [D-006, D-005, PROJECT.md#12]
+supersedes: D-006
+
+Hamza's call of 9 September, closing the last open naming question. The product
+is **firesky**, which is what the repository is already called. The npm package
+stays `decision-state-kit` and the binary stays `dsk`: both are shipped surfaces
+under seal, and a rename now would cost a graded run to buy nothing a reader
+needs. The v0.1 rename window D-006 kept open is closed unused.
+
+### D-041: The repository goes public under MIT
+status: locked
+date: 2026-09-09
+owner: hamza
+author: human
+model: none
+links: [D-005, F-047, TRIAGE.md#4]
+supersedes: none
+
+Hamza's word of 9 September, which D-005 has been waiting for since the first
+commit. It is the trigger M2-REVIEW.md section 4 attached to F-047: on
+publication the workflow moves to branches and pull requests and the eval check
+becomes required on `main`. The publishing acts themselves need repository-admin
+rights and are Hamza's, so F-047 stays open until they are taken.

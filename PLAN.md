@@ -36,7 +36,7 @@ turning out not to be small. Neither has happened yet.
 | M2 | Staleness, CI mode, render | E4 green, Action validates this repo | E4 green 8 Sep, 25 of 25 gated suites PASS, 34 unit tests; the shipped action validates this repo in CI. **Merge gating deferred to M5 with a trigger, not dropped** (F-047, M2-REVIEW section 4) |
 | M3 | Skill and AGENTS.md snippet | E5 thresholds met, E6 smoke pass | **GATE MET 9 Sep**, re-evaluated in session 8 under M3-REVIEW-3.md section 6. E5: one full 35-trial run, `2026-09-09T07-05-06Z`, seals matching the tree, 34/35 re-derived from committed diffs, all three hard gates 5 of 5 (F-069 closed by S-013). E6: 3/3 scenarios on the Gemini CLI, seals current, every verdict re-derived from its own checks; F-054 closes on fact (S-014). The suite exits 0, 35 PASS. Held at the strength of its evidence, not above it: **F-075** stays open as a named known limit — S3 passed on the second of two attempts on the same weak model, the run mixed two models inside one runtime and the results schema cannot say so, and three of three agent-authored entries wrote a model id that is not one. |
 | M4 | Install path and degraded mode | E7 under 10 minutes, E8 green | **gate met 9 Sep**. E7 PASS at 2.6s of AC3's 600s, measured over pack, fresh install, starter ledgers, first decision and `npx dsk validate .`, with the result re-validated by the shipped binary; the registry step is the one thing it cannot time (F-076). E8 PASS on all three legs, and it earned its keep on its first run by finding F-077. README rewritten and now graded (F-072 closed). No `dsk init`, by D-039, because the command is code inside the M3 seal (F-078). |
-| M5 | Dogfood live on two projects | Both repos validate green, day-zero metrics logged | **gate met 9 Sep**, publication paused for Hamza. engine-v1 and fintry both carry `state/`, the skill, the three commands and the AGENTS.md snippet, both validate green from their committed main trees, and both log a day-zero baseline with the fourteen-day clock ending 2026-09-23. Neither existing decision log was migrated, and each repo's own F-001 says why. F-079: fintry's files are on main while its work is on a branch, so its clock may really start at a merge. |
+| M5 | Dogfood live on two projects | Both repos validate green, day-zero metrics logged | **gate met 9 Sep**, publication paused for Hamza. engine-v1 and fintry both carry `state/`, the skill, the three commands and the AGENTS.md snippet, both validate green from their committed main trees, and both log a day-zero baseline with the fourteen-day clock ending 2026-09-23. Neither existing decision log was migrated, and each repo's own F-001 says why. F-079 is closed: main is merged into fintry's working branch and both repos are pushed, so the clock runs where the work is. Publication is decided (D-041) and pending the owner's steps in PUBLISH.md; F-047 stays open until they are taken. |
 
 ## M0. Scaffold and fixtures (session 1)
 
@@ -480,6 +480,39 @@ So: eight sessions, spent as declared. Six milestones, six gates green. One
 acceptance criterion pending a measurement, seventeen flags open and every one
 of them named in TRIAGE.md, and a repository waiting on one word before it is
 public.
+
+### Closing decisions, and what is left for the owner
+
+Hamza's calls of 9 September, after the gates were read:
+
+**D-040 closes D-006**, the last open naming question and one of the four that
+came into M0 from PROJECT.md section 12. The product is **firesky**. The npm
+package stays `decision-state-kit` and the binary stays `dsk`, because both are
+sealed shipped surfaces and renaming them now would spend a graded run to buy a
+reader nothing. The rename window D-006 held open since 7 September closes
+unused. **D-041** is the word D-005 has been waiting for since the first commit:
+the repository goes public under MIT.
+
+The dogfood is now live in the trees the work happens in. engine-v1 and fintry
+are both pushed, and `main` is merged into fintry's working branch on Hamza's
+authorisation, which closes **F-079** by S-017 — its fourteen days now run where
+the work is, not on a branch nobody is on. One correction the sign-off carries:
+fintry moved while this session ran, the branch F-079 names is gone, and the
+dogfood commit's hash is `0c4d6a8` rather than the `0599484` the mid-session
+report gave.
+
+F-077 and F-078 are promoted to the top of the README's known limits, where a
+reader meets them before relying on the kit rather than after. Docs only; no
+sealed file was touched and E7 stayed green across the edit.
+
+**PUBLISH.md** is the owner's checklist: make the repository public, then the
+F-047 clauses — a ruleset on `main`, the five eval jobs as required checks,
+branches and pull requests from there — then close F-047 by hand, since
+`/signoff` is not built in v0.1. Every step needs repository-admin rights and
+none of them is an agent's to take. **F-047 stays open until they are.**
+
+Publishing to npm is deliberately not on that list. Nothing in v0.1 requires it,
+and F-076 closes when it happens.
 
 ## M4. Install path and degraded mode (session 8, with M5)
 

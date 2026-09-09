@@ -11,6 +11,12 @@ triage was taken. All forty-two have a line below, and F-074 is listed with them
 because it closed today rather than before today — forty-three rows, twenty-six
 of them closed, twenty-five of those by S-015 and F-074 by S-014.
 
+**Appended after the first pass**: F-079, raised during the M5 dogfood and closed
+the same day by S-017. Forty-four rows, twenty-seven closed, **seventeen open**:
+seven bucketed for v0.2, ten named known limits. Two of the ten — F-077 and
+F-078 — are now printed at the top of the README's own status section, where a
+reader meets them before relying on the kit.
+
 **How to read it.** Nothing here edits a flag; D-021 forbids that and the ledger
 is append-only. A flag's *derived* status changes when a sign-off names it
 (D-025), so the closures below are made by **S-015** in `state/signoffs.md` and
@@ -73,7 +79,8 @@ Three dispositions, and they mean exactly this:
 | F-075 what the E6 run is and is not evidence of | known limit | AC5's weight is one manual run on one runtime, narrowed by five clauses. Clause 5, a model id that is not one, is in the v0.2 bucket. |
 | F-076 E7 cannot measure the registry round trip | known limit | Closes at publication, not before. Every other step of the ten-minute path is timed. |
 | F-077 no git means two rules report nothing and validate exits 0 | **v0.2, first** | The fix is one branch inside the seal this session's green gate depends on. Contained today: E8 asserts git is reachable before it grades anything. |
-| F-078 PLAN and EVALS say "npx init" and v0.1 has none | **v0.2** | The collision and the rejected alternative are in the flag; `dsk --help` ships one wrong line as a result. |
+| F-078 PLAN and EVALS say "npx init" and v0.1 has none | **v0.2** | The collision and the rejected alternative are in the flag; `dsk --help` ships one wrong line as a result. Now printed in the README's known limits as well. |
+| F-079 fintry's dogfood was on main, its work on a branch | closed | Raised after this triage was first written, and closed the same day by S-017: main is merged into fintry's working branch and both are pushed, so the fourteen-day window runs in the tree the work happens in. |
 
 ## 2. The v0.2 bucket, in order
 

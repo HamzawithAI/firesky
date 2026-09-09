@@ -424,3 +424,33 @@ records that fintry's half of that window may really start at a merge.
 So v0.1's definition of done is four of five, CI green, and the dogfood live. The
 fifth is a measurement, not a build step, and the only honest way to have it
 today would be to weaken what it says.
+
+### S-017
+actor: hamza
+role: owner
+date: 2026-09-09
+scope: [D-040, D-041, F-079]
+
+Hamza's closing decisions of 9 September, and the one flag they let close.
+
+**D-040** answers D-006, the last naming question, which has been open since the
+first commit: the product is firesky, the package stays `decision-state-kit` and
+the binary stays `dsk`. D-006 is superseded by derivation, not edited. **D-041**
+is the word D-005 was waiting for: the repository goes public under MIT. F-047
+does not close with it, because publication is the trigger and not the work — the
+three acts in TRIAGE.md section 4 need repository-admin rights on a public
+repository and are Hamza's to take.
+
+**F-079 closes on the merge it asked for.** It recorded that fintry's dogfood
+files sat on `main` while the work happened on a branch, so K1 risked measuring
+absence. Authorised and done: `main` is merged into the working branch and both
+are pushed, and `dsk validate` is green on the working tree, not only on main.
+engine-v1's main is pushed too.
+
+One correction to F-079's own text, appended here because D-021 forbids editing
+it. It names the working branch as `task-1.5-traceability-in-the-loop`, which was
+true when it was written. That branch is gone: the repository moved on while this
+session ran, `main` was rebased under the dogfood commit — which is why its hash
+is `0c4d6a8` and not the `0599484` the earlier report gave — and the current
+working branch is `leading-and-gate`. The merge went there. Nothing about the
+flag's substance changes; the branch name in it is stale and this says so.

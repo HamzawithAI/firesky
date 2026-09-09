@@ -125,12 +125,25 @@ runs everything and writes a dated report to [`evals/reports/`](evals/reports/).
 
 ## Status, and what v0.1 does not do
 
-v0.1 is the validator, the schema, the skill and the snippet. Honestly stated:
+v0.1 is the validator, the schema, the skill and the snippet. The two you should
+know before you rely on it, first:
 
-- **No `dsk init`.** The ten-minute path above is a copy and a paste on purpose;
-  the subcommand is a v0.2 item (D-039).
-- **Two rules need git.** The append-only checks shell out to git. Where git is
-  absent they report nothing and `validate` still exits 0 (F-077).
+- **Two rules need git, and their absence is not loud enough (F-077).** The
+  append-only checks — `ERR_INPLACE_EDIT` and `ERR_SIGNOFF_MUTATION` — shell out
+  to git. Where git is missing, or where the checkout has no parent commit,
+  they report nothing and `validate` still exits **0**. It prints a note, but the
+  exit code and the `--json` payload look exactly like a clean tree, so a CI
+  image without git turns the append-only law off and passes the build while
+  doing it. Until v0.2 fixes this: keep `fetch-depth: 2` on `actions/checkout`,
+  and make sure git is on PATH wherever `dsk validate` gates a merge.
+- **There is no `dsk init` (D-039, F-078).** The ten-minute path above is a copy
+  and a paste on purpose. `dsk --help` still lists `init` as "not implemented;
+  M4", which is now wrong about the milestone as well as the command — the
+  subcommand and that line are both v0.2, because the file they live in is
+  sealed to the evaluation run this release was graded by.
+
+And the rest:
+
 - **The MCP server, the tracker drift check and the LLM review pass are not
   built.** They are deferred by decision, not missing by accident.
 - **Cross-runtime evidence is one manual run** on one non-Claude runtime, and
