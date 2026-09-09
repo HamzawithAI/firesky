@@ -213,6 +213,46 @@ attested manual run on one named runtime.
 
 E7: scripted fresh-environment run, `npx` init to first validated decision entry, wall-clock under 10 minutes (AC3). E8: full validator suite executed with no network and no API keys present (AC4).
 
+**Sixth amendment, M4: both are built, both are in the exit code, neither gets a
+PENDING window.** D-023's pattern protected an earlier gate from a suite
+belonging to a later milestone; these belong to the milestone that adds them, so
+they enter the runner red and go green when the thing they grade exists — which
+is what happened to E7, and did not happen to E8.
+
+**E7 reads the README rather than restating it.** `evals/install/e7.mjs` finds
+the `## The ten-minute path` section in README.md, extracts the shell blocks a
+new reader would run, and runs exactly those in a fresh temporary directory
+against a tarball built by `npm pack` at run time. The README is the
+specification; a README that drifts from what works is a red row, which is the
+F-045 discipline pointed at the document that has been false since M0 (F-072).
+The clock starts at `npm pack` and stops when the shipped validator — run
+independently, not trusted from the script's exit code — accepts the tree the
+path produced, with at least one `D-###` entry in it.
+
+Two limits, stated rather than implied. **The registry round trip is not
+measured**: v0.1 is unpublished, so E7 rewrites the install-by-name line to
+install-by-tarball, reports that it did, and F-076 carries the gap until the
+package is published. **The machine is not fresh**: Node, npm and npm's cache
+are the ones already present. A cold machine is not something this suite can
+honestly simulate.
+
+**E8 is three legs, and D7's red-before-green does not apply to it in the usual
+way.** The property E8 grades — the validator needs no network and no
+credentials — was built at M1 and M2; this suite is the first thing that checks
+it, so it was green on arrival, which is the F-048 precedent (INV-18 entered the
+frozen inventory green). What was red first is the runner row, because the suite
+did not exist. The legs: `E8-static` reads the shipped source and its one
+runtime dependency and asserts nothing can reach the network, including that no
+`git` invocation in `src/` names a remote-talking subcommand; `E8-fixtures`
+re-runs the entire frozen fixture inventory through the CLI in children that
+have no credential-shaped variable in scope and cannot load a networking
+builtin, compared against the same expected files by the same predicate E1 and
+E2 use, so the two suites must agree exactly; `E8-surface` covers R26's "every
+M-priority function", running status, staleness and render under the same
+conditions. What E8 does not prove is stated in `evals/degraded/no-network.mjs`:
+it is not a sandbox, and it does not establish that a subprocess could not reach
+the network — that is what the static leg's git check is for.
+
 ## 9. Acceptance criteria mapping
 
 | AC | Suites |

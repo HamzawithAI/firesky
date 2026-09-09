@@ -25,6 +25,8 @@ import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { gradeTrial, observe, readLedgers, seedTrial } from "./scenarios/graders.mjs";
 import { regradeTrial, sha16 } from "./scenarios/replay.mjs";
+import { gradeE7 } from "./install/e7.mjs";
+import { gradeE8 } from "./degraded/e8.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const EVALS = join(ROOT, "evals");
@@ -261,6 +263,11 @@ function compareToExpected(id, kind, actual, exitCode) {
   return problems;
 }
 
+/* Where each fixture actually lives once git fixtures are materialised. E8
+   re-runs this same set degraded, and a second copy of the resolution logic
+   would be a second thing to keep in step. */
+const fixtureTargets = [];
+
 function runFixture(id, kind) {
   const dir = join(EVALS, kind === "valid" ? "fixtures/valid" : "fixtures/invalid", id);
   let target = dir;
@@ -271,6 +278,7 @@ function runFixture(id, kind) {
     target = m.work;
     prep = " (git fixture materialised)";
   }
+  fixtureTargets.push({ id, kind, target });
   if (!cliBuilt) return { id, kind, status: "NOT_IMPLEMENTED", detail: "dist/cli.js not built" + prep };
 
   const r = spawnSync(process.execPath, [CLI, "validate", "--json", target], { encoding: "utf8" });
@@ -771,7 +779,17 @@ function gradeE6() {
 
 const e6Results = gradeE6();
 
-const all = [...fixtureResults, ...e4Results, ...scenarioResults, ...e6Results];
+/* ------------------------------------------- E7 and E8, the M4 gate (AC3, AC4)
+ *
+ * Both enter the exit code on arrival, with no PENDING window. D-023's pattern
+ * existed to keep an EARLIER gate satisfiable while a suite for a LATER
+ * milestone was unbuilt; these two belong to the milestone being built in the
+ * same session that adds them, exactly as E6 did at M3-REVIEW-2.md section 4.
+ */
+const e7Results = gradeE7({ ROOT });
+const e8Results = gradeE8({ ROOT, CLI, fixtures: fixtureTargets, compare: compareToExpected });
+
+const all = [...fixtureResults, ...e4Results, ...scenarioResults, ...e6Results, ...e7Results, ...e8Results];
 const tally = all.reduce((a, r) => ((a[r.status] = (a[r.status] ?? 0) + 1), a), {});
 const pending = all.filter((r) => r.status === "PENDING").length;
 /* With the expiry on, PENDING is simply not PASS, so it counts against the run. */
@@ -852,6 +870,36 @@ each row's verdict re-derived from its own checks.
 | ID | Kind | Status | Detail |
 |---|---|---|---|
 ${e6Results.map(row).join("\n")}
+
+## E7, the install path (AC3)
+
+Not a copy of the install path: \`evals/install/e7.mjs\` reads the README's own
+\`## The ten-minute path\` section, extracts the shell blocks a new reader would
+run, and runs exactly those in a fresh temporary directory against a tarball
+built by \`npm pack\` at run time. The README is therefore the specification, and a
+README that drifts from what works turns this row red. One substitution is made
+and reported: the install-by-name line becomes install-by-tarball, because v0.1
+is not published yet (F-076). Everything the path produced is then re-checked by
+the shipped validator rather than trusted from the script's exit code.
+
+| ID | Kind | Status | Detail |
+|---|---|---|---|
+${e7Results.map(row).join("\n")}
+
+## E8, degraded mode (AC4, R26)
+
+Three legs, reported separately because they prove different things. \`E8-static\`
+reads the shipped source and its one runtime dependency and asserts nothing can
+reach the network, including that no \`git\` invocation names a remote-talking
+subcommand. \`E8-fixtures\` re-runs the whole frozen inventory through the CLI in
+children that have no credential-shaped variable in scope and cannot load a
+networking builtin, compared by the same predicate E1 and E2 use — the two
+suites must agree exactly. \`E8-surface\` covers R26's "every M-priority
+function", so status, staleness and render run under the same conditions.
+
+| ID | Kind | Status | Detail |
+|---|---|---|---|
+${e8Results.map(row).join("\n")}
 
 ## Error-code coverage
 

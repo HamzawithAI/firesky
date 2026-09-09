@@ -1891,3 +1891,63 @@ AC5 claim is read at its true weight rather than at the file's face value.
 Disposition: kept open as a named known limit through v0.1. AC5's evidential
 weight is exactly what EVALS.md section 7 already declares — one attested manual
 run on one named runtime — narrowed by clauses 1 to 5 above.
+
+### F-076: E7 cannot measure the registry round trip until the package is published
+status: open
+date: 2026-09-09
+owner: hamza
+raised-by: agent
+model: claude-opus-5
+resolution: none
+
+AC3 is a claim about a fresh user: install to first validated decision entry in
+under ten minutes. E7 measures that path end to end against a tarball built by
+`npm pack` at run time, because v0.1 is not on npm yet. So the one step E7 cannot
+time is the one a real reader starts with, `npm install decision-state-kit` from
+the registry. E7 makes exactly one substitution, rewrites the install-by-name
+token to the tarball path, and reports in its own row that it did.
+
+The gap is small and it is not nothing: registry resolution and download are
+network time this suite does not include. Against a ten-minute bar and a package
+with one runtime dependency it is seconds, not minutes, which is why the smallest
+reversible reading was to measure everything else rather than to leave AC3
+ungraded until publication day.
+
+Closes when the package is published and one E7 run is made against the published
+name, either by dropping the substitution or by adding a second row that uses it.
+Until then AC3's evidence is "every step but the registry fetch, timed".
+
+### F-077: With no git on PATH the validator loses two rules and still exits 0
+status: open
+date: 2026-09-09
+owner: hamza
+raised-by: agent
+model: claude-opus-5
+resolution: none
+
+Found by E8 on its first run, in the failure the first draft of its own
+environment caused. `src/git.ts` (D-012) implements the two git-level codes,
+ERR_INPLACE_EDIT and ERR_SIGNOFF_MUTATION, by shelling out to git. When git is
+not on PATH the shell-out fails, the check returns null, and `dsk validate`
+reports success: INV-08, INV-14 and INV-18 — three fixtures whose entire purpose
+is to be caught — came back `ok: true`, exit 0, with the two codes missing.
+
+`validate` does print a note that the git-level check did not apply, so this is
+not silent to a human reading a terminal. It is silent to everything else: the
+exit code is 0, and the `--json` payload is the shape a green tree produces. R22
+makes that exit code a merge gate, so a CI image without git turns the
+append-only law off and reports success while doing it. That is precisely the
+"silent non-application" F-031 fixed for shallow checkouts, in a second doorway.
+
+Not fixed in v0.1, and the reason is the rule and not the difficulty. The fix
+is one branch in `src/`, and `src/**/*.ts` is inside the seal that the paid E5
+run of 9 September and the committed E6 results both depend on (D-036,
+M3-REVIEW-3.md section 3.2). Editing it here would turn a met gate red in the
+session authorised on condition the gate is green.
+
+Contained instead, and the containment is checked: E8 asserts git is reachable in
+the degraded environment before it grades a single fixture, so this repository's
+own suite can never again grade a validator that quietly dropped two of its
+sixteen rules. **Labelled v0.2, first item**: `validate` should report the
+inapplicable git check as a distinct machine-readable state and, under `--ci`,
+refuse to exit 0 on a tree whose fixtures require it.
