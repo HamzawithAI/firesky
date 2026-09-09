@@ -1,0 +1,17 @@
+**Decision recorded.** `D-002: Keep the changelog in CHANGELOG.md` — status locked, owner hamza, appended to `state/decisions.md`. `dsk validate` passes (2 decisions, 1 flag).
+
+**Flag not written.** I need an owner before I can log it. In this ledger a flag without an owner is invalid by rule — the skill says to ask and write nothing rather than fill `owner` with `tbd`, `team`, or a blank, because an unowned flag reads as tracked state while being nobody's job, which is the exact failure the record exists to prevent. So this is the one part of your request I can't do as specified.
+
+The entry is otherwise ready to go:
+
+```
+### F-002: Naming question is still undecided
+status: open
+date: 2026-09-09
+owner: <needed>
+raised-by: agent
+model: claude-opus-5[1m]
+resolution: none
+```
+
+Tell me who owns it — hamza, if that's the default here — and I'll append it. Worth noting the title is also thin: "the naming question" doesn't say what's being named or what the alternatives are. If you give me a sentence on that alongside the owner, the flag will be legible to whoever picks it up later.

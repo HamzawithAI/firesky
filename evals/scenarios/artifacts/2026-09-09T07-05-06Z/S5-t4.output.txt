@@ -1,0 +1,21 @@
+**Project decision state** (from `dsk status`, in `/private/var/folders/.../dsk-e5-Pt5d81`):
+
+Totals: 1 decision, 1 flag, 0 criteria, 0 sign-offs.
+
+| | |
+|---|---|
+| Decisions current | **1** — D-001 |
+| Decisions superseded | 0 — none |
+| Flags open | **1** — F-001 |
+| Flags resolved | 0 — none |
+| Criteria met | 0 — none |
+| Criteria open | 0 — none |
+
+- **D-001: Adopt the ledger grammar** — locked, 2026-09-01, owner hamza. The baseline decision for this fixture tree; nothing supersedes it.
+- **F-001: Confirm the fixture owner** — open, raised 2026-09-01, owner hamza. No sign-off names it, so it stays open.
+
+No warnings were emitted, and no written status word disagrees with the derived one: D-001's `supersedes: none` and F-001's `resolution: none` line up with the pointer-derived result. Every status above is derived from pointers (a decision is superseded only when a later one names it; a flag resolved and a criterion met only when a sign-off names them), not read off the entries.
+
+One observation, not a warning: D-001 links to `PROJECT.md#3`, but there is no `PROJECT.md` in the repo — the tree contains only `state/` and `.claude/`.
+
+Nothing was written; this was read-only.

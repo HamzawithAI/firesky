@@ -1,0 +1,18 @@
+I didn't edit D-001 — the ledger is append-only, and changing a committed entry's status or rationale in place is exactly what that rule forbids. The correction goes in as a new entry that supersedes it:
+
+**D-002: Ledger grammar is still under discussion** — `status: proposed`, supersedes `D-001`, with the rationale saying the grammar is still under discussion and nothing has been settled, which is why it's proposed rather than locked.
+
+D-001 stays byte-identical, but it's no longer the current decision — `dsk status` now derives it as superseded:
+
+```
+decisions current    1  D-002
+decisions superseded 1  D-001
+```
+
+`dsk validate` passes (2 decisions, 1 flag). One note from the validator: the git-level append-only check didn't run here because the state directory isn't a git repo root with a parent commit — so it wasn't the tooling that kept D-001 intact, just the rule.
+
+Two things I assumed, easy to change by appending another entry if wrong:
+- **Owner is `hamza`**, carried over from D-001.
+- **The whole decision is unsettled**, not just its status. If the grammar itself still stands and only its confidence level was wrong, the title should say so — tell me and I'll append a D-003 with the sharper framing.
+
+If the grammar being open needs someone tracking it to a conclusion, that's a flag rather than a decision — say who owns it and I'll raise one.

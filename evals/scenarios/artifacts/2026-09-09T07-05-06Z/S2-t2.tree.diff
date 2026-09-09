@@ -1,0 +1,16 @@
+diff --git a/state/flags.md b/state/flags.md
+index 020c8da..36c2fcf 100644
+--- a/state/flags.md
++++ b/state/flags.md
+@@ -6,3 +6,11 @@ date: 2026-09-01
+ owner: hamza
+ raised-by: human
+ resolution: none
++
++### F-002: Staleness window: 30 or 60 days?
++status: open
++date: 2026-09-09
++owner: hamza
++raised-by: agent
++model: claude-opus-5[1m]
++resolution: none

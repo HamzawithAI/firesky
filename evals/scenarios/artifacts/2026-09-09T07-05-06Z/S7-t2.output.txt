@@ -1,0 +1,5 @@
+**Where things stand:** D-001 locked (ledger grammar), F-001 open — plus the new decision below.
+
+**1. Recorded.** `state/decisions.md:D-002` — "Pin Node to the current LTS release", locked, owner hamza, dated 2026-09-09, authored by agent. I pinned the *LTS line* rather than a specific version number, so routine bumps within LTS aren't new decisions. If you wanted a literal version pinned (e.g. `24.x`), say which and I'll append a superseding decision. `dsk validate` passes: 2 decisions, 1 flag, 0 criteria, 0 sign-offs.
+
+**2. Not recorded.** `decide asdkjh qqq ;;; ---` doesn't parse into a decision — I can't tell what's being decided, so there's nothing to write a title or rationale from. Rather than guess at an entry, I've left the ledger alone. What's the actual decision, and who owns it?

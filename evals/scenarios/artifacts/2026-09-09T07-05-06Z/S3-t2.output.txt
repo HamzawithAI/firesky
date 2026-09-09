@@ -1,0 +1,15 @@
+Done — via supersession rather than an in-place edit.
+
+**Why not edit D-001:** the ledgers are append-only. Nothing committed may change, not even a status word or a typo. A correction to a decision is expressed as a new decision naming the old one in `supersedes:`.
+
+**What I appended** (`state/decisions.md`):
+
+- **D-002: Ledger grammar is still under discussion** — `status: proposed`, `supersedes: D-001`, owner `hamza` (carried over from D-001), authored by agent. The rationale says D-001 locked the grammar prematurely and that it stays proposed until the discussion concludes.
+
+D-001 remains byte-identical; it's now *derived* as superseded rather than marked so.
+
+`dsk validate` passes. `dsk status` now derives: 1 current decision (D-002), 1 superseded (D-001), 1 open flag (F-001). One note from the validator — the git-level append-only check didn't run here because the state directory isn't a git repo root with a parent commit; it will apply once this lands in a commit.
+
+Two things you may want to decide:
+- I inherited `owner: hamza` from D-001. Say the word if the reopened grammar question belongs to someone else.
+- If you want the open discussion tracked as a question rather than just a proposed decision, that's a flag (F-002) — it needs an owner before I write it.

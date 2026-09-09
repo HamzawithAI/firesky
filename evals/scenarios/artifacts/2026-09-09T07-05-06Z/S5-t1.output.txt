@@ -1,0 +1,25 @@
+`dsk status` output, verbatim in substance:
+
+```
+dsk: /private/var/folders/.../dsk-e5-4chCLJ
+  1 decisions, 1 flags, 0 criteria, 0 sign-offs
+
+  decisions current    1  D-001
+  decisions superseded 0  none
+  flags open           1  F-001
+  flags resolved       0  none
+  criteria met         0  none
+  criteria open        0  none
+```
+
+No warnings were printed.
+
+**What's in the ledgers**
+
+- **D-001 — Adopt the ledger grammar** (`state/decisions.md`) — current. status: locked, 2026-09-01, owner hamza, human-authored, `supersedes: none`. Described as the baseline decision for this fixture tree. Nothing supersedes it.
+- **F-001 — Confirm the fixture owner** (`state/flags.md`) — open. 2026-09-01, owner hamza, `resolution: none`. No sign-off exists, so it cannot be resolved.
+- `state/criteria.md` and `state/signoffs.md` are headings only — empty.
+
+**Derived vs. written**: no disagreements. Each entry's written status word matches what the pointers derive — D-001 is unsuperseded because no later decision names it, F-001 is open because no sign-off names it, and with zero sign-offs nothing could be met or resolved regardless.
+
+One loose end worth noting, though it isn't a status: D-001's `links: [PROJECT.md#3]` points at a file that doesn't exist in the repo — `state/` and `.claude/` are the only contents.

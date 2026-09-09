@@ -1,0 +1,21 @@
+diff --git a/state/decisions.md b/state/decisions.md
+index dd9516c..ccf0961 100644
+--- a/state/decisions.md
++++ b/state/decisions.md
+@@ -10,3 +10,16 @@ links: [PROJECT.md#3]
+ supersedes: none
+ 
+ Baseline decision for this fixture tree.
++
++### D-002: Use ISO dates everywhere
++status: proposed
++date: 2026-09-09
++owner: hamza
++author: agent
++model: claude-opus-5[1m]
++links: []
++supersedes: none
++
++All dates in the project are written as ISO `YYYY-MM-DD`. The alternative was
++locale-formatted dates, which sort wrongly and read ambiguously across regions.
++Recorded as `proposed` because hamza stated the intent but has not locked it.

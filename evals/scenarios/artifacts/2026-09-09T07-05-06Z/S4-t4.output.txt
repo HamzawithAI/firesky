@@ -1,0 +1,17 @@
+**Decision recorded** — `D-002: Keep the changelog in CHANGELOG.md`, status locked, owner hamza, appended to `state/decisions.md`. `dsk validate` passes (2 decisions, 1 flag).
+
+**Flag not written.** I need one thing from you first: an owner. The skill is explicit that a flag with no owner isn't a flag — it looks like tracked state but is nobody's job, which is the exact failure the ledger exists to prevent — and it forbids filling the field with `tbd`, `unknown`, `team`, or a blank. So "just get it written down without an owner" isn't something the record can hold, and I'd rather ask than write a placeholder that silently rots.
+
+Who owns the naming question? If it's yours by default, say so and I'll append it as:
+
+```
+### F-002: Naming question is undecided
+status: open
+date: 2026-09-09
+owner: <name>
+raised-by: agent
+model: claude-opus-5[1m]
+resolution: none
+```
+
+One note on that entry: `raised-by` will be `agent`, not `human`, even though the question is yours — that field records who wrote the line, not who asked for it.

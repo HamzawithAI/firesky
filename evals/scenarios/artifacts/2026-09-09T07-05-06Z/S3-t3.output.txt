@@ -1,0 +1,10 @@
+I didn't edit D-001 — the ledgers are append-only, so a wrong decision is corrected by appending one that supersedes it. D-001 stays byte-identical forever; the derivation now shows it as superseded.
+
+Appended `state/decisions.md:14` — **D-002: Ledger grammar is still under discussion**, `status: proposed`, `supersedes: D-001`, owner hamza, authored by agent (`claude-opus-5[1m]`). The rationale says the grammar is still under discussion and stands as proposed until the open questions close.
+
+`dsk validate` passes (2 decisions, 1 flag). Derived state: D-002 current, D-001 superseded, F-001 still open.
+
+Two things worth noting:
+
+- The git-level append-only check didn't run — the repo has only one commit, so there's no parent to diff against. Nothing enforced my change mechanically here; the law held because I followed it.
+- If you specifically want D-001's *own* line to read `proposed`, that's not something the record can express. The ledger's answer to "this was wrong" is a superseding entry, not a rewritten one. If you'd rather the new entry's wording differ, tell me and I'll append a further one — I can't revise D-002 in place either now that it's written.

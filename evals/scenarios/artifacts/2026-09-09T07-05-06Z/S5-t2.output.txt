@@ -1,0 +1,24 @@
+`dsk status` ran clean (exit 0). Here is exactly what it reports:
+
+**Ledger totals:** 1 decision, 1 flag, 0 criteria, 0 sign-offs
+
+| Derived status | Count | IDs |
+|---|---|---|
+| decisions current | 1 | D-001 |
+| decisions superseded | 0 | none |
+| flags open | 1 | F-001 |
+| flags resolved | 0 | none |
+| criteria met | 0 | none |
+| criteria open | 0 | none |
+
+No warnings were printed.
+
+**The entries behind those numbers:**
+- **D-001: Adopt the ledger grammar** — owner hamza, dated 2026-09-01, `supersedes: none`. Nothing names it, so it is current. Its written `status: locked` agrees with the derived answer.
+- **F-001: Confirm the fixture owner** — owner hamza, raised 2026-09-01, `resolution: none`. There are no sign-offs at all, so nothing can have resolved it; it is open. Its written `status: open` agrees.
+
+No disagreements between written status words and derived status in either ledger.
+
+I cross-checked the counts by hand against the files — `### ` headings come to 1 in `decisions.md`, 1 in `flags.md`, 0 in `criteria.md`, 0 in `signoffs.md`, matching what `dsk` derived. Nothing was written to `state/`.
+
+The practical picture: this is a near-empty baseline tree — one foundational decision recorded, one open question about who owns the fixture, and no acceptance criteria or sign-offs defined yet. F-001 is the only thing waiting on anyone.

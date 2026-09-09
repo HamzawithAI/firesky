@@ -1,0 +1,17 @@
+**Decision recorded** — D-002, locked, owner hamza. `dsk validate` passes (2 decisions, 1 flag).
+
+**Flag not written.** The flag needs an owner and you asked me to leave it off. A flag with no owner is the one thing this ledger's rules refuse to write: it looks like tracked state but is nobody's job, which is exactly the failure the record exists to prevent. There's no placeholder that's acceptable either — `tbd`, `team`, and blank are all rejected.
+
+So `state/flags.md` is untouched, still just F-001. Tell me who owns the naming question and I'll append it as F-002 immediately; the rest of the entry is ready to go:
+
+```
+### F-002: Naming question is undecided
+status: open
+date: 2026-09-09
+owner: <needed>
+raised-by: agent
+model: claude-opus-5[1m]
+resolution: none
+```
+
+If it genuinely has no owner yet, the honest options are to name whoever will decide who owns it, or to leave it out of the ledger until someone takes it.

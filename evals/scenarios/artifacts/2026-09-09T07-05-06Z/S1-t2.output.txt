@@ -1,0 +1,20 @@
+Appended **D-002** to `state/decisions.md`:
+
+```
+### D-002: Use ISO dates everywhere
+status: locked
+date: 2026-09-09
+owner: hamza
+author: agent
+model: claude-opus-5[1m]
+links: []
+supersedes: none
+```
+
+Nothing existing was touched — D-001 is byte-identical, and the entry supersedes nothing.
+
+Two judgment calls worth naming: I wrote `status: locked` (you framed it as a project rule, not a proposal — say the word and I'll append a correction if you meant `proposed`), and `links: []` since you gave no reference.
+
+`dsk validate`: **valid** — 2 decisions, 1 flag, 0 criteria, 0 sign-offs. It noted the git-level append-only check didn't apply, since the repo needs a parent commit for that comparison; the write is still uncommitted.
+
+For context, state before this: D-001 locked (ledger grammar), F-001 open (confirm the fixture owner, hamza).

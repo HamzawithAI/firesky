@@ -1,0 +1,23 @@
+`dsk status` (binary at `/var/folders/.../dsk-bin-s4ELW0/dsk`) reports:
+
+```
+dsk: /private/var/folders/1_/883cd4cs2bg_czkd_byzv2q80000gn/T/dsk-e5-acXFdn
+  1 decisions, 1 flags, 0 criteria, 0 sign-offs
+
+  decisions current    1  D-001
+  decisions superseded 0  none
+  flags open           1  F-001
+  flags resolved       0  none
+  criteria met         0  none
+  criteria open        0  none
+```
+
+**Warnings:** none printed.
+
+Notes on the ledgers themselves:
+
+- **D-001 "Adopt the ledger grammar"** — derived: current. Nothing supersedes it. Its written `status: locked` doesn't contradict the derived answer; "locked" is an entry-level word, not a supersession pointer.
+- **F-001 "Confirm the fixture owner"** — derived: open, and its written `status: open` agrees. `resolution: none`, and `signoffs.md` is empty, so nothing could resolve it.
+- **Criteria:** `criteria.md` holds only its heading — there are no criteria at all, hence 0 met and 0 open rather than a backlog.
+
+I cross-checked by counting `### ` headings by hand: 1 in `decisions.md`, 1 in `flags.md`, 0 in `criteria.md`, 0 in `signoffs.md` — matching the tool's totals. No written status word disagrees with a derived one, and nothing was written to `state/`.

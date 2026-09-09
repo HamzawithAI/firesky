@@ -1,0 +1,5 @@
+**Decision recorded** — D-002, locked, owner hamza: the project keeps its changelog in `CHANGELOG.md`. `dsk validate` passes (2 decisions, 1 flag).
+
+**Flag not written** — I need an owner from you first. The ledger requires every flag to name a person, and it's the one field I can't fill in or leave blank: an unowned flag looks like tracked state while being nobody's job, which is exactly what the record exists to prevent. Placeholders like `tbd` or `team` are also disallowed, so writing it that way isn't an option either.
+
+Tell me who owns the naming question and I'll append it as F-002 immediately. If hamza is the right default (he owns both existing entries), just say so and it's done.

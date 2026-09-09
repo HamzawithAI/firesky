@@ -1,0 +1,7 @@
+**Starting state:** 1 locked decision (D-001), 1 open flag (F-001).
+
+**1. Recorded** — `state/decisions.md:14` appends D-002: "Pin Node to the current LTS release", status `locked`, owner hamza, author agent. `dsk validate` passes; derived state is now 2 current decisions (D-001, D-002), 0 superseded, 1 open flag (F-001).
+
+One note on wording: I wrote it as pinning to the *LTS line* rather than a specific version number, matching what you said. If you meant a hard pin to a concrete version (e.g. `24.x` in `.nvmrc`/`engines`), that's a different decision — say the word and I'll append a D-003 superseding D-002 rather than editing it.
+
+**2. Not recorded** — `decide asdkjh qqq ;;; ---` doesn't parse into a decision, and the skill's rule is that a malformed request produces a question, not a guessed entry. I'm not going to invent the subject, rationale, or owner. What's the actual decision you want on the record?

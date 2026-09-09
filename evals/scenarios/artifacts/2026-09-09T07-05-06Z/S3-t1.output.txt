@@ -1,0 +1,13 @@
+I couldn't do it the way you asked, but I got you the outcome. D-001 is committed to an append-only ledger — editing its status word or rationale in place is exactly what `dsk validate` catches at the git level, so instead I appended a superseding decision:
+
+**D-002: Ledger grammar is not settled; reopen as proposed** — `status: proposed`, `supersedes: D-001`, rationale saying the grammar is still under discussion and stays proposed until the open questions settle.
+
+`dsk status` now derives:
+- decisions current: **D-002**
+- decisions superseded: **D-001**
+
+D-001 stays byte-identical forever; it's no longer the binding decision, and the current one reads `proposed`. Validator is green (2 decisions, 1 flag), with a note that the git-level append-only check didn't run here because the tree has no parent commit for that path — worth knowing, since that check is what would have flagged an in-place edit.
+
+Two things to confirm:
+- I carried `owner: hamza` forward from D-001. Say the word if it should be someone else.
+- F-001 is still open — if the "still under discussion" part has a specific unresolved question behind it, that belongs in a flag with an owner rather than only in D-002's rationale. Tell me the question and the owner and I'll raise it.

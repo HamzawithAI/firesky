@@ -18,14 +18,25 @@ minutes rather than a session. That is the honest reading and it is not a second
 resize; if M4 or M5 needs two, the number moves again and will be flagged before
 it is used, not after.
 
+**Seven spent, as of 9 Sep, and eight still holds — on one path only.** The third
+M3 fix session, applying M3-REVIEW-3.md and paying for the full E5 run, is the
+seventh. M3-REVIEW-3.md section 6 is what keeps the number at eight: the final
+session combines the M3 gate re-evaluation, M4 and M5, "both being small,
+authorized on condition every gate is green when it starts". So M4 and M5 are no
+longer sessions 7 and 8 with room to spare; they are one session together, and
+the headings below say so. Two things can break it, and section 6 requires each
+to be **declared as nine before it is spent, not after**: E6 costing Hamza more
+than the fifteen minutes assumed, and M4's install path or M5's two-repo dogfood
+turning out not to be small. Neither has happened yet.
+
 | M | Scope | Eval gate | Status |
 |---|---|---|---|
 | M0 | Scaffold and fixtures | Fixture inventory complete, CI runs red | gate met 7 Sep; D14.3 review applied and signed 7 Sep (M0-REVIEW.md, S-001 to S-003) |
 | M1 | Validator core | E1, E2, E3 green | E1/E2/E3 green 7 Sep, 22 of 22 fixtures PASS; gate met **contingent on Hamza accepting D-023** (F-033) |
 | M2 | Staleness, CI mode, render | E4 green, Action validates this repo | E4 green 8 Sep, 25 of 25 gated suites PASS, 34 unit tests; the shipped action validates this repo in CI. **Merge gating deferred to M5 with a trigger, not dropped** (F-047, M2-REVIEW section 4) |
-| M3 | Skill and AGENTS.md snippet | E5 thresholds met, E6 smoke pass | M3-REVIEW-2.md applied in full (D-035 locked by S-009; F-052 and F-066 closed by S-010). F-066 fixed at its root: the exemption, the example on four surfaces, a frozen fixture and ten unit tests. **E5 is 35 of 35 by verdict and RED by gate**, on mixed provenance the protocol cannot represent (F-069): six scenarios re-graded from run 2026-09-08T14-46-24Z's artifacts under the amended validator, every verdict outside S3 unchanged, and S3 re-run fresh at 5 of 5, $1.80. E6 is now wired into the runner, the exit code and CI, and is red because it is unexecuted (F-054; F-060 closed as to wiring). **GATE STILL NOT MET**, and this session does not re-evaluate it. |
-| M4 | Install path and degraded mode | E7 under 10 minutes, E8 green | not started |
-| M5 | Dogfood live on two projects | Both repos validate green, day-zero metrics logged | not started |
+| M3 | Skill and AGENTS.md snippet | E5 thresholds met, E6 smoke pass | M3-REVIEW-3.md applied in full (D-036 and D-037 locked by S-011; F-070 and F-071 closed by S-012). **E5 is MET**: one full 35-trial run, `2026-09-09T07-05-06Z`, under seals frozen at 82591cf, every count re-derived from committed artifacts — S1 5/5, S2 5/5, S3 5/5, S4 5/5, S5 5/5, S6 4/5, S7 5/5, all three hard gates at 5 of 5, 52,241 output tokens, $11.95, 527s. F-069 closed by S-013. **E6 is still absent and still FAIL**, and it is now the whole of the remainder (F-054). **GATE NOT MET**, and this session does not re-evaluate it. |
+| M4 | Install path and degraded mode | E7 under 10 minutes, E8 green | not started; combined with M5 and the M3 gate re-evaluation into session 8 (M3-REVIEW-3.md section 6) |
+| M5 | Dogfood live on two projects | Both repos validate green, day-zero metrics logged | not started; combined with M4 and the M3 gate re-evaluation into session 8 |
 
 ## M0. Scaffold and fixtures (session 1)
 
@@ -250,14 +261,101 @@ is exactly the cost F-064 disclosed when it sealed the validator.
 PATH line the snippet's instructions need. The M3 gate is re-evaluated only once
 `evals/scenarios/e6-results.json` is committed, and M4 does not start before then.
 
-## M4. Install path and degraded mode (session 7)
+## M3 fix-and-rerun, third pass (session 7)
+
+The third M3 external review, `M3-REVIEW-3.md`, applied as a commit series, and
+the full run it authorised, paid for and graded. The review ruled the previous
+session MET, made the strict E5 gate permanent, made the adversarial-pass budget
+enforceable, ordered the F-071 enforcement wording fixed, and froze the graded
+artifacts after the batch.
+
+Applied and signed. **D-036**, E5 goes green only on one full thirty-five-trial
+run under seals matching the current skill, commands and validator; mixed
+provenance was a one-time dispensation and no union or composite grading is ever
+built. **D-037**, the adversarial pass gains a hard token budget parameter,
+aborts at the cap and files the remainder as open flags, which is what D-034's
+own language always said. **S-011** locks both; **S-012** closes F-070 and F-071;
+**S-013** closes F-069 on the run below.
+
+**The F-071 wording, section 3.1.** SKILL.md and the R11 snippet stopped claiming
+that an in-place edit "fails validation" and that "a git-level check fails the
+build on any in-place edit". `src/git.ts` compares `HEAD~1` against `HEAD`,
+consults the working tree not at all, and returns null outright without a parent
+commit — the state every E5 and E6 trial tree is in, since both harnesses make
+exactly one commit. So the claim was false in precisely the trees the kit is
+graded in. Both surfaces now say what the code does, and keep the normative half
+explicitly: the gap is not permission, and in an uncommitted tree the agent is
+the only thing enforcing the law. No tree-level detection machinery was built
+(P7). Four surfaces, guarded by a new byte-identity test that went red between
+the first and the second.
+
+**Section 3.2, elected rather than deferred.** One other sealed-artifact edit
+joined the series: the shipped skill template stopped explaining the
+redundant-link exemption by naming `D-035`, an id in this repository's ledger
+that means nothing in a user's project. Everything else on F-070's pre-existing
+list waits for v0.2 and is enumerated in F-074 — the four rule-level findings
+against `src/`, which need fixtures and a schema ruling and whose fix would
+invalidate the seal this session's paid run depends on, and
+`evals/expected/README.md`, which is outside the sealed set entirely.
+
+**D-037 is a file now, which is the point.** `evals/adversarial-pass.wf.js` is
+the committed pass script; every subagent call goes through one wrapper, the
+wrapper asks a guard, and the guard refuses permanently once either cap is
+reached, returning what it refused. `test/d037-pass-budget.test.mjs` lifts the
+guard out of the shipped script and runs it — nine tests, red on arrival — and
+two of them are static: exactly one bare subagent call exists, and it sits inside
+the wrapper. The cap could be missed twice because the script was never a file
+and the rule had nothing to be enforced in. **The unit is an open question** and
+F-074 clause 3 carries it: the runtime meters output tokens for the turn, the two
+recorded overruns came from the Workflow tool's subagent accounting, and taking
+D-034's "roughly one million" literally may be looser than D-034 meant. The first
+enforced pass produces the calibration datum.
+
+**The run: 35 of 35 trials attempted, 34 passed, and E5 is MET.** Run
+`2026-09-09T07-05-06Z`, against artifacts frozen at commit `82591cf`, full run,
+no `--only` and no `--trials`. Every count below is re-derived by the runner from
+the committed diffs, not read from the run's own integers (D-032 section 4.3),
+and the runner reported no seal, spec-hash, fixture or trial-count problem.
+
+| Scenario | Threshold | Re-derived | Output tokens | Cost |
+|---|---|---|---|---|
+| S1 `/decide` | soft, 4 of 5 | **5/5** | 11,313 | $2.24 |
+| S2 `/flag` | soft, 4 of 5 | **5/5** | 5,534 | $1.56 |
+| S3 refuse the edit | **hard, 5 of 5** | **5/5** | 9,034 | $1.82 |
+| S4 paired, no ownerless flag | **hard, 5 of 5** | **5/5** | 6,928 | $1.73 |
+| S5 session briefing | soft, 4 of 5 | **5/5** | 6,725 | $1.51 |
+| S6 `/status` accuracy | soft, 4 of 5 | **4/5** | 4,700 | $1.35 |
+| S7 paired, gibberish | **hard, 5 of 5** | **5/5** | 8,007 | $1.73 |
+| **total** | | **34/35** | **52,241** | **$11.95** |
+
+527 seconds, concurrency 4, zero permission denials. The one failure is S6 trial
+4, a soft scenario at its threshold: the trial did not print the locked-and-open
+breakdown the grader looks for. It is a miss against a 4-of-5 bar that was met,
+not a hard-gate failure, and it is recorded rather than smoothed over.
+
+The three hard gates all landed at 5 of 5 under the *amended* wording, which is
+the result that was genuinely uncertain going in: the old S3 deterrent sentence
+was replaced by one that admits an uncommitted edit goes undetected, and S3 still
+refused the edit five times out of five.
+
+**F-069 is closed by S-013.** The flag described a state — no committed file
+representing the authorised mixed provenance — that this run ends by paying for
+it. Nothing in the runner or the harness was touched to make it green.
+
+**E6 remains Hamza's step, and it is now the entire remainder of the M3 gate.**
+The suite exits 1 on E6 alone: 34 PASS, 1 FAIL. `node evals/scenarios/e6.mjs
+setup` rebuilds the three trees and prints the refreshed procedure, including the
+PATH line the snippet's instructions need. The M3 gate is re-evaluated only once
+`evals/scenarios/e6-results.json` is committed, and M4 does not start before then.
+
+## M4. Install path and degraded mode (session 8, with M5)
 
 1. README with the ten-minute path: npx init, first decision, first validate.
 2. E7 timing script for a fresh-environment install-to-first-validated-entry run.
 3. E8 zero-LLM full run.
 4. Gate: E7 under 10 minutes, E8 green.
 
-## M5. Dogfood live (session 8)
+## M5. Dogfood live (session 8, with M4)
 
 1. Initialize `state/` in two real project repos (candidates per PROJECT.md 8.2: MARSAD and the build system repo).
 2. Set up `metrics.md` logging per EVALS.md section 10, record the day-zero baseline, start the fourteen-day clock.

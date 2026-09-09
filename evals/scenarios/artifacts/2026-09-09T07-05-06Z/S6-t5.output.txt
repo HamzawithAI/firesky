@@ -1,0 +1,23 @@
+`dsk status` output (the tool is installed, so these counts are its own — the hand count of `### ` headings agrees: 1 in decisions.md, 1 in flags.md, 0 in criteria.md and signoffs.md):
+
+```
+dsk: /private/var/folders/1_/883cd4cs2bg_czkd_byzv2q80000gn/T/dsk-e5-eNAIUG
+  1 decisions, 1 flags, 0 criteria, 0 sign-offs
+
+  decisions current    1  D-001
+  decisions superseded 0  none
+  flags open           1  F-001
+  flags resolved       0  none
+  criteria met         0  none
+  criteria open        0  none
+```
+
+**Decisions** — current: D-001 "Adopt the ledger grammar" (owner hamza, 2026-09-01). Superseded: none; nothing supersedes D-001.
+
+**Flags** — open: F-001 "Confirm the fixture owner" (owner hamza, 2026-09-01). Resolved: none — there are no sign-offs at all, so no flag can be derived as resolved.
+
+**Criteria** — none recorded, so none met and none open.
+
+**Warnings** — `dsk` printed none, and I found nothing to add: no written status word disagrees with its derived status. D-001 is written `status: locked` and derives as current (no later decision names it); F-001 is written `status: open` and derives as open (no sign-off names it). `signoffs.md` and `criteria.md` are headers only, which is why both resolved and met are empty.
+
+Nothing was written to `state/`.

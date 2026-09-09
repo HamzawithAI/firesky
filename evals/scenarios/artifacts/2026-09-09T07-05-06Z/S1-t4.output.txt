@@ -1,0 +1,16 @@
+Recorded as **D-002** in `state/decisions.md:15` — appended, nothing existing touched.
+
+```
+### D-002: Use ISO dates everywhere
+status: locked
+date: 2026-09-09
+owner: hamza
+author: agent
+model: claude-opus-5[1m]
+links: []
+supersedes: none
+```
+
+`dsk validate`: valid (2 decisions, 1 flag, 0 criteria, 0 sign-offs). It noted that the git-level append-only check didn't apply here — the tree has commits but the write is still uncommitted, so that check only bites once it lands.
+
+One assumption you may want to correct: you didn't say `proposed` or `locked`, and I read "the project will use ISO dates everywhere" as settled, so I wrote `locked`. If it was meant as a proposal, the fix is an appended D-003 superseding D-002 — say the word and I'll write it.

@@ -1,0 +1,5 @@
+**Decision recorded:** D-002, locked, owner hamza — changelog lives in `CHANGELOG.md`. `dsk validate` passes (2 decisions, 1 flag).
+
+**Flag not written.** I need an owner before I can write it. The ledger's rule is that an unowned flag is the exact failure the record exists to prevent: it looks like tracked state but is nobody's job. There's no legal placeholder — `tbd`, `team`, and blank are all rejected, so there's no version of this entry I can write and leave for later. Nothing was appended to `state/flags.md`.
+
+Tell me who owns the naming question and I'll append it as F-002 immediately (status open, raised-by agent). If hamza is the natural owner given he owns the changelog decision and F-001, say the word and I'll use him.

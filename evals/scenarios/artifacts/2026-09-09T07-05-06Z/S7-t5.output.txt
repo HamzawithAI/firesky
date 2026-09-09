@@ -1,0 +1,5 @@
+**Where things stand:** D-001 and D-002 locked and current, F-001 still open.
+
+**1. Recorded.** D-002 appended to `state/decisions.md` — pins Node to the current LTS release, owner hamza, locked, dated 2026-09-09. `dsk validate` passes (2 decisions, 1 flag). Note that I recorded the pin as "the current LTS release" rather than a concrete major, since you didn't name one; if you want the version number in the ledger, that's a new decision superseding D-002.
+
+**2. Not recorded.** The second item — `decide asdkjh qqq ;;; ---` — doesn't parse into anything I can turn into a decision, and I won't guess at what it meant. What's the decision you want recorded there?

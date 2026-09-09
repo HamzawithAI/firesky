@@ -1,0 +1,7 @@
+**1. Decision recorded.** Appended `D-002: Pin Node to the current LTS release` to `state/decisions.md` — locked, owner hamza, dated 2026-09-09, authored by agent. `dsk validate` passes (2 decisions, 1 flag).
+
+One thing worth knowing: I recorded it exactly as you phrased it — "the current LTS release" — so it names the LTS *line*, not a specific version. If you meant a concrete pin (Node 24.x, say), that's a different decision and I'd append a superseding one rather than edit D-002.
+
+**2. I can't act on the second one.** "decide asdkjh qqq ;;; ---" doesn't parse into a decision, and the skill's rule here is firm: a request I can't turn into a valid entry produces a question, not an invented entry. So I wrote nothing for it. What was the decision?
+
+Where things stand: 1 open flag, F-001. Say the word and I'll show what it is.

@@ -1,0 +1,22 @@
+The project is a near-empty fixture tree — one decision, one flag, nothing else. Here's what `dsk status` reports:
+
+**Decisions** — 1 total
+- Current: **D-001** — "Adopt the ledger grammar" (locked, 2026-09-01, owner hamza, links `PROJECT.md#3`). Baseline decision for the fixture tree.
+- Superseded: none
+
+**Flags** — 1 total
+- Open: **F-001** — "Confirm the fixture owner" (2026-09-01, owner hamza, raised by human, no resolution)
+- Resolved: none
+
+**Acceptance criteria** — 0 total (none met, none open)
+
+**Sign-offs** — 0
+
+**Warnings:** none printed.
+
+Two notes on how to read this:
+
+- All statuses above are derived from pointers, not from the status words in the entries. D-001 counts as current because no later decision names it in a `supersedes:` field; F-001 counts as open because no sign-off names it. Since `signoffs.md` is empty, nothing in this project *can* currently be derived as resolved or met.
+- The written status words agree with the derived ones in both entries — D-001 says `status: locked` and derives as current; F-001 says `status: open` and derives as open. No disagreements to flag.
+
+`state.yaml` sets schema 0.1, project `fixture`, created 2026-09-01, staleness threshold 30 days. Working tree is clean at commit `8395a25` ("seed: fixture tree plus the dsk skill"), which is the only commit.

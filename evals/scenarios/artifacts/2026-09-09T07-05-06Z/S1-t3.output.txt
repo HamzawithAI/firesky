@@ -1,0 +1,18 @@
+Recorded as **D-002** in `state/decisions.md`, appended below D-001 (no existing lines touched):
+
+```
+### D-002: Use ISO dates everywhere
+status: locked
+date: 2026-09-09
+owner: hamza
+author: agent
+model: claude-opus-5[1m]
+links: []
+supersedes: none
+```
+
+with a four-line rationale (ISO sorts correctly and is unambiguous across regions; alternative was locale formatting).
+
+Two things worth naming:
+- **`status: locked` was my call.** You said "record a decision that the project will use ISO dates," which reads as settled rather than proposed. If it's still up for discussion, the fix is an appended entry superseding D-002 — say the word and I'll write it.
+- `dsk validate` passes: *valid (2 decisions, 1 flags, 0 criteria, 0 sign-offs)*. It also noted that the git-level append-only check didn't run, since the change is uncommitted — that check applies once it lands in a commit.

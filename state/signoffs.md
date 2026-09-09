@@ -293,3 +293,35 @@ from the same triage.
 
 Both keep their textual status open, because D-021 forbids editing a committed
 ledger line and this scope is the closure (D-025).
+
+### S-013
+actor: hamza
+role: reviewer
+date: 2026-09-09
+scope: [F-069]
+
+The closure M3-REVIEW-3.md section 2.2 makes conditional and Hamza's prompt of 9
+September authorises on that condition: "If it is green, close F-069."
+
+It is green. One full thirty-five-trial run, `2026-09-09T07-05-06Z`, executed
+against artifacts frozen at commit 82591cf, under seals that match the tree it
+was graded in: harness, graders, the skill this series amended, all three
+slash-command files, the validator, and VAL-01's own tree. Every count is
+re-derived from the committed diffs rather than read from the run's own integers
+(D-032 section 4.3). S1 5/5, S2 5/5, S3 5/5, S4 5/5, S5 5/5, S6 4/5, S7 5/5 —
+all seven at or above their thresholds, all three hard gates at 5 of 5. 52,241
+output tokens, $11.95, 527 seconds, and no seal, spec-hash, fixture or
+trial-count problem reported by the runner.
+
+F-069 recorded that the evidence protocol had no representation for the mixed
+provenance M3-REVIEW-2.md section 3 authorised, and named the two ways to close
+it: pay for one full run, or rule that union grading is acceptable. D-036 refuses
+the second permanently and this run pays for the first. The flag closes because
+the state it described no longer exists, not because the protocol changed —
+nothing in the runner or the harness was touched to make this green.
+
+It keeps its textual status open, because D-021 forbids editing a committed
+ledger line and this scope is the closure (D-025).
+
+**E5 is met. The M3 gate is not**, and this entry does not claim it is: E6 is
+absent, the runner reports it FAIL, and the suite exits 1 on that alone.
