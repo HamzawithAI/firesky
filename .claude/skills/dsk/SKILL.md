@@ -92,9 +92,9 @@ Reverses D-001. Week numbers match how the team already reports.
 D-001 stays byte-identical forever. The derivation makes it superseded.
 
 `supersedes:` alone carries the relationship, so the entry does not also need
-`links: [D-001]`. Writing the link as well is legal — D-035 exempts a `links`
-member the same entry supersedes — but it is redundant, and the redundant form
-is what this example used to teach.
+`links: [D-001]`. Writing the link as well is legal — a `links` member that the
+same entry supersedes is exempt from the stale-reference check — but it is
+redundant, so do not add it by habit.
 
 ## /flag — raise an open question
 
