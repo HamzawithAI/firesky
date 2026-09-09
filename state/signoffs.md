@@ -225,3 +225,71 @@ the class of defect is graded rather than merely fixed.
 
 Both keep their textual status open, because D-021 forbids editing a committed
 ledger line and this scope is the closure (D-025).
+
+### S-011
+actor: hamza
+role: owner
+date: 2026-09-09
+scope: [D-036, D-037]
+
+Hamza's explicit authorization of 9 September, in the prompt instructing this
+session to apply M3-REVIEW-3.md: "sign-offs with actor hamza covering D-036,
+D-037, and the closures in section 7, which I explicitly authorize." This entry
+is the decision half; S-012 is the closure half, split by role as S-007 and
+S-008 were and as S-009 and S-010 were.
+
+It locks **D-036**, which makes the strict E5 gate permanent: one full
+thirty-five-trial run under seals that match the current skill, commands and
+validator, and no union or composite grading, ever. The mixed provenance
+M3-REVIEW-2.md section 3 authorised was a dispensation for a verdict and is now
+explicitly not a gate feature.
+
+It locks **D-037**, which turns D-034's budget from a sentence into a check. Both
+decisions keep the textual status `proposed`, because D-021 forbids editing a
+committed ledger line and this entry is the state transition that locks them
+(P4, law 4, F-025).
+
+It also approves what this commit series did under those two rulings: the
+enforcement wording corrected on all four shipped surfaces under section 3.1; the
+section 3.2 election disclosed in F-074 clause 1; the byte-identity guard
+disclosed in F-074 clause 2; and `evals/adversarial-pass.wf.js` with its nine
+unit tests.
+
+Deliberately not covered, because the authorization named two decisions and the
+section 7 closures and nothing else: F-072, F-073 and F-074, which this series
+raises and which stay open for Hamza; F-069, which section 7 closes only when the
+full run lands green and which therefore cannot be settled by this entry; F-054
+and F-060, which E6 governs; and F-055 and F-064, which their own rulings require
+to stay open.
+
+### S-012
+actor: hamza
+role: reviewer
+date: 2026-09-09
+scope: [F-070, F-071]
+
+The closures M3-REVIEW-3.md section 7 names, under the same authorization S-011
+cites.
+
+**F-070**, closed by D-037 under section 4. The flag recorded the second overrun
+of the D-034 cap — 1,730,637 tokens across fifteen agents, roughly seventy per
+cent over — and its own diagnosis, that the script capped agents and not tokens.
+The cap is now enforced in a committed script and unit-tested against the guard
+that ships. Section 4's ruling that this was "the last one that can happen by
+accident" is what this closure attests to. The thirty-three findings the pass
+could not verify inside the cap are **not** closed with it: they keep an open
+home in F-073, so that section 5's ship-gate triage, which walks open flags,
+still sees them.
+
+**F-071**, closed as to the wording, under section 3.1. Both shipped surfaces
+stopped claiming that an in-place edit "fails validation"; both now say what
+`src/git.ts` does, which is to compare the last commit against its parent, catch
+the edit when it is committed, not see it in an uncommitted working tree, and not
+run at all without a parent commit — the state every E5 and E6 trial tree is in.
+The four self-corrections F-071 recorded were already applied when it was raised.
+Its README residue is **not** closed with it and is re-homed as F-072, because
+section 3.3 defers the README to M4 and a closed flag would hide a live falsehood
+from the same triage.
+
+Both keep their textual status open, because D-021 forbids editing a committed
+ledger line and this scope is the closure (D-025).

@@ -475,3 +475,33 @@ exists to catch superseded context treated as live, and a link sitting beside
 its own `supersedes:` declaration is self-evidently historical. Narrow and per
 member: a different superseded id in the same list still fires. Fixture VAL-02
 D-006. The shipped example drops the redundant links line under section 2.2.
+
+### D-036: E5 goes green only on one full run under current seals
+status: proposed
+date: 2026-09-09
+owner: hamza
+author: agent
+model: claude-opus-5
+links: [M3-REVIEW-3.md#2, EVALS.md#6, D-032, F-069]
+supersedes: none
+
+Ruled by the third M3 external review, section 2, closing F-069. E5 is green only
+on one full thirty-five-trial run whose seals match the current skill, commands
+and validator. Mixed provenance was a one-time dispensation for a verdict, never
+a gate feature, and no union or composite grading is ever built: a gate that
+composes cheap partial runs prices cherry-picking at $1.80 instead of $12.63.
+
+### D-037: The adversarial pass budget is enforced by the script
+status: proposed
+date: 2026-09-09
+owner: hamza
+author: agent
+model: claude-opus-5
+links: [M3-REVIEW-3.md#4, D-034, F-070]
+supersedes: none
+
+Ruled by the third M3 external review, section 4, closing F-070. The pass script
+gains a hard token budget parameter, aborts at the cap, and files whatever
+remains as open flags, which is what D-034's own language always said. A rule
+without a deterministic check is a wish. Implemented as evals/adversarial-pass.wf.js
+and unit-tested in test/d037-pass-budget.test.mjs.

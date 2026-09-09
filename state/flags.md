@@ -1720,3 +1720,115 @@ still says the validator does not exist and every fixture reports
 NOT_IMPLEMENTED, with a fixture count of 20 against the real 24. PLAN.md schedules
 the README rewrite at M4; until then it is the first thing a reader sees and it
 is false.
+
+### F-072: README.md is still false, and it is the first thing a reader sees
+status: open
+date: 2026-09-09
+owner: hamza
+raised-by: agent
+model: claude-opus-5
+resolution: none
+
+The second half of F-071, re-homed so that closing F-071 does not close this.
+
+F-071 recorded two things it deliberately did not correct. The first was the
+enforcement wording in SKILL.md and the R11 snippet, which M3-REVIEW-3.md section
+3.1 ordered fixed and this session fixed on all four surfaces. The second is this
+one: README.md has not been touched since the first commit. It says the validator
+does not exist, that every fixture reports NOT_IMPLEMENTED, and it gives a
+fixture count of 20 against the real 24. All three statements are false, and it
+is the file a stranger opens first.
+
+M3-REVIEW-3.md section 3.3 rules that it stays as it is here, because the README
+is M4's deliverable and rewriting it in a seal-breaking batch session would be
+scope drift. That ruling is accepted. What is not accepted is that the closure of
+F-071 should take the record of a live falsehood with it: a sign-off scope is
+permanent, D-025 makes naming a flag its closure, and this repository publishes
+at M5 with its open flags triaged one line each under section 5. A defect with no
+open flag is a defect that triage cannot see.
+
+So this flag carries it, and it closes when M4 rewrites README.md — not before,
+and not by the same sign-off that closes the wording.
+
+### F-073: The thirty-three unverified findings of the capped pass need a home that survives F-070's closure
+status: open
+date: 2026-09-09
+owner: hamza
+raised-by: agent
+model: claude-opus-5
+resolution: none
+
+The same structural point as F-072, for the other closure M3-REVIEW-3.md section
+7 authorises.
+
+F-070 records a budget breach and, under D-034's instruction that unverified
+findings are written down rather than re-derived by fan-out, it also carries the
+33 findings the pass could not verify inside the cap. Section 7 closes F-070 by
+D-037, and rightly: the breach is answered, the cap is now enforced in code.
+Section 5 separately says those 33 findings are in scope of the ship-gate triage
+before M5 publishes. Both are true, and together they leave the findings inside a
+closed flag while a triage that walks open flags is what has to see them.
+
+The findings themselves are not restated here. They are in F-070's text, in the
+pass's own words, and copying them would create a second version of evidence that
+can drift from the first. This flag is the pointer that keeps them in the open
+set: **read F-070's "Unverified, filed as open" section, and give every item in
+it one line at the section 5 triage** — closed, deferred to a labelled v0.2
+bucket, or kept as a named known limit.
+
+Four of them are rule-level, against src/, and this session did not touch them
+for the reason F-070 already gave and section 3.2 confirms: they need fixtures
+and a schema ruling, not a wording fix in a batch commit, and any src/ change
+invalidates the seal the paid run depends on. They are the strongest candidates
+for the v0.2 bucket rather than for closure.
+
+This flag closes when the section 5 triage has given every item its line.
+
+### F-074: What this session chose beyond the review's letter
+status: open
+date: 2026-09-09
+owner: hamza
+raised-by: agent
+model: claude-opus-5
+resolution: none
+
+CLAUDE.md rule 8 and D-014 clause 4. Three choices in this commit series are not
+dictated by M3-REVIEW-3.md, and each is written down here rather than left for a
+reader to find in a diff.
+
+1. **The section 3.2 election.** Section 3.2 gives every other pending edit to a
+   sealed artifact two homes, this series or v0.2, and leaves the choice open.
+   One edit took the series: the shipped skill template explained the
+   redundant-link exemption by naming `D-035`, an id in *this* repository's
+   ledger that means nothing in a user's project, and it closed with a note about
+   what the example "used to teach", which is this repo's history. Both are gone;
+   the rule is stated by what it does. Everything else on F-070's pre-existing
+   list stays for v0.2: the four rule-level findings against `src/`, which need
+   fixtures and a schema ruling and whose fix would invalidate the seal the paid
+   run in this same session depends on, and `evals/expected/README.md`, whose
+   ERR_STALE_REF paragraph D-028 and D-035 have both overtaken — that file is
+   outside the sealed set, so section 3.2 does not reach it either way, and it is
+   listed here so the omission is a choice on the record rather than an oversight.
+
+2. **A test for an invariant two files assert in prose.** AGENTS.md's preamble and
+   PLAN.md's M3 section both claim the R11 snippet is embedded byte-identically,
+   and the two SKILL.md copies are claimed identical in the same breath. Nothing
+   checked either, which F-070's pre-existing list also recorded. This session
+   added `test/four-surface-identity.test.mjs` before making a four-surface edit,
+   and it went red between the first surface and the second, which is what it is
+   for. Adding a test is not in the review's letter; making a four-file hand edit
+   without one, in the session that freezes those files, seemed worse.
+
+3. **The unit D-037's cap is counted in.** This is the one that needs Hamza. The
+   workflow runtime reports output tokens for the turn. The two recorded overruns
+   — roughly 1.96M at M3 and 1,730,637 at the second fix session — came from the
+   Workflow tool's subagent accounting, which is a different and larger number.
+   The enforced cap is therefore D-034's "roughly one million" taken literally in
+   the unit the script can read, which may be looser than D-034 intended, and a
+   cap that never binds is the failure D-037 exists to end. The smallest
+   reversible reading was to take the number literally and make the script report
+   its own measured spend against it; inventing a tighter number would be setting
+   a threshold by feel, which CLAUDE.md rule 4 exists to prevent even in the
+   direction that looks stricter. **The first enforced pass produces the
+   calibration datum, and Hamza sets the real number then**, by passing
+   `args.tokenCap` or by amending `CAPS` with a decision.
